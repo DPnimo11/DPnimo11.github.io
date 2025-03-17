@@ -1,13 +1,22 @@
-/* General styles */
-body {
-    font-family: Arial, sans-serif;
+/* General Reset */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body and General Styles */
+body {
+    font-family: Arial, sans-serif;
     background-color: #f4f4f9;
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 header {
-    background-color: #333;
+    background-color: #003C70; /* Upenn Blue */
     color: white;
     padding: 1rem;
     text-align: center;
@@ -29,19 +38,29 @@ nav ul li a {
     font-weight: bold;
 }
 
+/* Main Content Styling */
 main {
     padding: 2rem;
+    flex: 1;
 }
 
 section {
     margin-bottom: 3rem;
 }
 
+h1 {
+    color: #003C70; /* Upenn Blue */
+}
+
+/* Footer Styling */
 footer {
-    background-color: #333;
+    background-color: #003C70; /* Upenn Blue */
     color: white;
     text-align: center;
     padding: 1rem;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
 }
 
 footer ul {
@@ -57,4 +76,27 @@ footer ul li {
 footer ul li a {
     color: white;
     text-decoration: none;
+    font-weight: bold;
+}
+
+footer ul li a:hover {
+    color: #F1C1C1; /* Upenn Red */
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+    nav ul li {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    footer ul {
+        display: block;
+        margin-top: 10px;
+    }
+
+    footer ul li {
+        display: block;
+        margin-bottom: 10px;
+    }
 }
