@@ -1,102 +1,144 @@
-/* General Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* General Portfolio Styles */
+body {
+    font-family: 'Quicksand', sans-serif;
+    background-color: #F8F0E5; /* Light Cream */
+    color: #5B5B5B; /* Dark Gray */
+    scroll-behavior: smooth;
 }
 
-/* Body and General Styles */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
-    min-height: 100vh;
+/* Custom Pastel Palette */
+.bg-pastel-cream { background-color: #F8F0E5; }
+.bg-pastel-blue { background-color: #E1EEDD; }
+.bg-pastel-pink { background-color: #FFD6D6; }
+.bg-pastel-purple { background-color: #E5D4FF; }
+.text-pastel-dark { color: #5B5B5B; }
+.border-pastel-dark { border-color: #5B5B5B; }
+.hover-bg-pastel-dark:hover { background-color: #5B5B5B; }
+.hover-text-pastel-cream:hover { color: #F8F0E5; }
+
+/* Navigation Styling */
+nav a {
+    transition: color 0.3s ease;
+}
+
+/* Style for the active navigation link */
+.nav-link.active {
+    color: #FFD6D6; /* Pastel Pink for active link */
+    font-weight: bold;
+}
+
+/* Section Padding */
+section {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+}
+
+.font-gochi {
+    font-family: 'Gochi Hand', cursive;
+}
+
+/* --- Embedded Paint Project Styles --- */
+/* We scope all the original paint project styles to the #paint-app container */
+#paint-app * {
+    font-family: 'Gochi Hand', 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color: #0E131F;
+}
+
+#paint-app {
+    background-color: #BDD4E7;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    border: 4px solid #0E131F;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+#paint-app h1 {
+    text-align: center;
+    font-size: 4rem; /* Adjusted for portfolio */
+    margin-bottom: 1.5rem;
+}
+
+#paint-app button {
+    font-size: 1.125rem; /* Adjusted for portfolio */
+    border-radius: 10px;
+    padding: 5px;
+    background-color:#FCB1A6;
+    border: 3px solid #0E131F;
+    margin: 5px; /* Adjusted margin */
+    width: 120px; /* Adjusted width */
+    transition: background-color 0.2s ease;
+}
+
+#paint-app button:hover {
+    background-color: #fca295;
+}
+
+#paint-app input[type="color"] {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    width: 80px; /* Adjusted size */
+    height: 80px; /* Adjusted size */
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+#paint-app #whiteboard {
+    padding: 0px;
+    width: 100%; /* Responsive width */
     display: flex;
     flex-direction: column;
+    border: 4px solid #0E131F;
+    max-width: 100%;
+    aspect-ratio: 1 / 1;
+    background-color: white;
+    /* Defines a variable scoped to the paint app */
+    --board-dim: 64; 
 }
 
-header {
-    background-color: #003C70; /* Upenn Blue */
-    color: white;
-    padding: 1rem;
-    text-align: center;
+#paint-app .box {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    width: calc(100% / var(--board-dim));
+    aspect-ratio: 1 / 1;
 }
 
-nav ul {
-    list-style: none;
+#paint-app .row {
+    display: flex;
+    margin: 0;
     padding: 0;
 }
 
-nav ul li {
-    display: inline;
-    margin: 0 15px;
+#paint-app #toolbar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1rem;
 }
 
-nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
+#paint-app #content {
+    display: flex;
+    flex-direction: column; /* Stack toolbar and whiteboard on smaller screens */
+    align-items: center;
+    gap: 20px;
 }
 
-/* Main Content Styling */
-main {
-    padding: 2rem;
-    flex: 1;
+/* Media query for larger screens to place toolbar beside whiteboard */
+@media (min-width: 768px) {
+    #paint-app #content {
+        flex-direction: row;
+        justify-content: center;
+        align-items: flex-start;
+    }
+    #paint-app #toolbar {
+        margin-bottom: 0;
+        margin-right: 1.5rem;
+    }
 }
 
-section {
-    margin-bottom: 3rem;
-}
-
-h1 {
-    color: #003C70; /* Upenn Blue */
-}
-
-/* Footer Styling */
-footer {
-    background-color: #003C70; /* Upenn Blue */
-    color: white;
+#paint-app #footer {
+    margin-top: 1rem;
+    font-size: 1rem;
     text-align: center;
-    padding: 1rem;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-}
-
-footer ul {
-    list-style: none;
-    padding: 0;
-}
-
-footer ul li {
-    display: inline;
-    margin: 0 15px;
-}
-
-footer ul li a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-footer ul li a:hover {
-    color: #bc3a3a; /* Upenn Red */
-}
-
-/* Mobile responsiveness */
-@media (max-width: 600px) {
-    nav ul li {
-        display: block;
-        margin-bottom: 10px;
-    }
-
-    footer ul {
-        display: block;
-        margin-top: 10px;
-    }
-
-    footer ul li {
-        display: block;
-        margin-bottom: 10px;
-    }
 }
