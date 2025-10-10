@@ -79,7 +79,6 @@ section {
     border: 0;
     width: 80px; /* Adjusted size */
     height: 80px; /* Adjusted size */
-    border-radius: 15px;
     cursor: pointer;
 }
 
