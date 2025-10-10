@@ -7,10 +7,11 @@ body {
 }
 
 /* Custom Pastel Palette */
-.bg-pastel-cream { background-color: #F8F0E5; }
-.bg-pastel-blue { background-color: #E1EEDD; }
-.bg-pastel-pink { background-color: #FFD6D6; }
-.bg-pastel-purple { background-color: #E5D4FF; }
+.bg-pastel-cream { background-color: #FAF3DD; }
+.bg-pastel-blue { background-color: #AED9E0; }  
+.bg-pastel-pink { background-color: #FFA69E; }
+.bg-pastel-purple { background-color: #d0b3fd; }
+.bg-celeste { background-color: #B8F2E6; }
 .text-pastel-dark { color: #5B5B5B; }
 .border-pastel-dark { border-color: #5B5B5B; }
 .hover-bg-pastel-dark:hover { background-color: #5B5B5B; }
@@ -23,7 +24,7 @@ nav a {
 
 /* Style for the active navigation link */
 .nav-link.active {
-    color: #FFD6D6; /* Pastel Pink for active link */
+    color: #5E6472; /* Pastel Pink for active link */
     font-weight: bold;
 }
 
@@ -62,7 +63,7 @@ section {
     font-size: 1.125rem; /* Adjusted for portfolio */
     border-radius: 10px;
     padding: 5px;
-    background-color:#FCB1A6;
+    background-color: #FCB1A6;
     border: 3px solid #0E131F;
     margin: 5px; /* Adjusted margin */
     width: 120px; /* Adjusted width */
@@ -74,11 +75,12 @@ section {
 }
 
 #paint-app input[type="color"] {
-    padding: 0;
-    margin: 0;
-    border: 0;
-    width: 80px; /* Adjusted size */
-    height: 80px; /* Adjusted size */
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+    width: 75px; /* Adjusted size */
+    height: 75px; /* Adjusted size */
+    background-color: transparent;
     cursor: pointer;
 }
 

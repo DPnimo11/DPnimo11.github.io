@@ -108,6 +108,7 @@ toolbar[5].addEventListener("click", () => clearBoard());
 // Eraser Button
 toolbar[4].addEventListener("click", (e) => {
     toolbar.forEach(btn => btn.style.backgroundColor = "#FCB1A6");
+    toolbar[0].style.backgroundColor = "transparent";
     e.target.style.backgroundColor = "#C092C7";
     eraser = true;
     rainbow = false;
@@ -118,6 +119,7 @@ toolbar[4].addEventListener("click", (e) => {
 toolbar[3].addEventListener("click", (e) => {
     gradient = !gradient;
     toolbar.forEach(btn => btn.style.backgroundColor = "#FCB1A6");
+    toolbar[0].style.backgroundColor = "transparent";
     
     if (gradient) {
         e.target.style.backgroundColor = "#C092C7";
@@ -134,6 +136,7 @@ toolbar[3].addEventListener("click", (e) => {
 // Rainbow Button
 toolbar[2].addEventListener("click", (e) => {
     toolbar.forEach(btn => btn.style.backgroundColor = "#FCB1A6");
+    toolbar[0].style.backgroundColor = "transparent";
     e.target.style.backgroundColor = "#C092C7";
     rainbow = true;
     eraser = false;
@@ -147,6 +150,7 @@ toolbar[1].addEventListener("click", (e) => {
            btn.style.backgroundColor = "#FCB1A6";
         }
     });
+    toolbar[0].style.backgroundColor = "transparent";
     e.target.style.backgroundColor = "#C092C7";
     if(gradient) toolbar[3].style.backgroundColor = "#C092C7";
 
