@@ -1,0 +1,87 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="About | Darren Wang" description="About Darren Wang, a Penn CIS and Robotics student working across software, research, ML, and systems.">
+  <section class="about-hero">
+    <div class="about-copy">
+      <p class="eyebrow">About</p>
+      <h1>A little context.</h1>
+      <p>
+        I am a Penn computer science student pursuing an accelerated master's in robotics. Most of my recent work sits somewhere between research code and usable software: computational biology pipelines, ML/data projects, systems assignments, and small web apps that make a workflow less annoying.
+      </p>
+      <p>
+        I like projects where the implementation details matter. The parts I enjoy most are usually the unglamorous ones: deciding what data shape is honest, making a demo stable enough to hand to someone else, and turning a vague idea into something you can actually inspect.
+      </p>
+      <div class="action-row">
+        <a class="button primary" href="/projects/">Projects</a>
+        <a class="button" href="/resume.pdf">Resume</a>
+        <a class="button ghost" href="mailto:darrenwa@upenn.edu">Email</a>
+      </div>
+    </div>
+    <figure class="about-portrait">
+      <img src="/img/headshot-primary.jpg" alt="Portrait of Darren Wang" />
+      <figcaption>Current profile image.</figcaption>
+    </figure>
+  </section>
+
+  <section class="about-notes" aria-label="Brief notes">
+    <div>
+      <span>School</span>
+      <p>University of Pennsylvania, CIS with accelerated master's work in robotics.</p>
+    </div>
+    <div>
+      <span>Work</span>
+      <p>Research software, ML pipelines, full-stack apps, and systems projects.</p>
+    </div>
+    <div>
+      <span>Outside code</span>
+      <p>Working out, ping pong, TV, and getting outside when the weather cooperates.</p>
+    </div>
+  </section>
+
+  <section class="section-heading about-heading">
+    <div>
+      <p class="eyebrow">Photo log</p>
+      <h2>Some non-project context.</h2>
+    </div>
+  </section>
+
+  <section class="photo-ledger" aria-label="Personal photos">
+    <figure class="photo-card tall">
+      <img src="/img/about-cmu.jpg" alt="Darren with friends on a Pittsburgh rooftop" loading="lazy" />
+      <figcaption>
+        <strong>CMU / Pittsburgh</strong>
+        <span>One of the older photos from the PGSS stretch.</span>
+      </figcaption>
+    </figure>
+    <figure class="photo-card">
+      <img src="/img/about-nature.jpg" alt="Darren standing near a river overlook" loading="lazy" />
+      <figcaption>
+        <strong>Outside</strong>
+        <span>Day trip outside the city.</span>
+      </figcaption>
+    </figure>
+    <figure class="photo-card">
+      <img src="/img/about-cmu-solo.jpg" alt="Darren on a rooftop with Pittsburgh in the background" loading="lazy" />
+      <figcaption>
+        <strong>Rooftop</strong>
+        <span>Same city, less formal context.</span>
+      </figcaption>
+    </figure>
+    <figure class="photo-card">
+      <img src="/img/yoshi.webp" alt="Darren holding a green plush" loading="lazy" />
+      <figcaption>
+        <strong>Off-screen</strong>
+        <span>A lighter photo from the camera roll.</span>
+      </figcaption>
+    </figure>
+    <figure class="photo-card wide">
+      <img src="/img/about-plush.jpg" alt="Darren holding a large stuffed toy in a store" loading="lazy" />
+      <figcaption>
+        <strong>Off-screen</strong>
+        <span>Another low-stakes entry in the archive.</span>
+      </figcaption>
+    </figure>
+  </section>
+</BaseLayout>

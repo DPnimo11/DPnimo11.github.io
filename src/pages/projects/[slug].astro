@@ -1,0 +1,67 @@
+---
+import DemoPanel from "../../components/DemoPanel.astro";
+import ProjectVisual from "../../components/ProjectVisual.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { projects } from "../../data/projects";
+
+export function getStaticPaths() {
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+---
+
+<BaseLayout title={`${project.title} | Darren Wang`} description={project.summary}>
+  <article class="project-detail">
+    <a class="back-link" href="/projects/">Back to projects</a>
+    <header class="detail-hero">
+      <div>
+        <p class="eyebrow">{project.kicker} / {project.status}</p>
+        <h1>{project.title}</h1>
+        <p>{project.summary}</p>
+        <div class="action-row">
+          {project.links.map((link) => <a class="button" href={link.href} target="_blank" rel="noreferrer">{link.label}</a>)}
+        </div>
+      </div>
+      <ProjectVisual variant={project.visual} image={project.image} title={project.title} />
+    </header>
+
+    <DemoPanel project={project} />
+
+    <section class="detail-grid">
+      <div class="detail-copy">
+        <h2>Problem</h2>
+        <p>{project.problem}</p>
+        <h2>Approach</h2>
+        <p>{project.approach}</p>
+        <h2>Result</h2>
+        <p>{project.result}</p>
+      </div>
+      <aside class="fact-panel">
+        <div>
+          <span>Year</span>
+          <strong>{project.year}</strong>
+        </div>
+        <div>
+          <span>Stack</span>
+          <div class="tag-row">{project.stack.map((tag) => <span>{tag}</span>)}</div>
+        </div>
+        <div>
+          <span>Highlights</span>
+          <ul>
+            {project.highlights.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+        <div>
+          <span>Signals</span>
+          <ul>
+            {project.metrics.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </aside>
+    </section>
+  </article>
+</BaseLayout>

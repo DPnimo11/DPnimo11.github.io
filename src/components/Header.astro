@@ -1,0 +1,33 @@
+---
+const currentPath = Astro.url.pathname;
+
+const links = [
+  { href: "/", label: "Home" },
+  { href: "/projects/", label: "Projects" },
+  { href: "/about/", label: "About" },
+  { href: "/resume.pdf", label: "Resume" },
+];
+---
+
+<header class="site-header">
+  <a class="brand" href="/" aria-label="Darren Wang home">
+    <span class="brand-mark">DW</span>
+    <span>Darren Wang</span>
+  </a>
+  <nav aria-label="Primary navigation">
+    {
+      links.map((link) => (
+        <a
+          href={link.href}
+          class:list={[
+            currentPath === link.href || (link.href !== "/" && currentPath.startsWith(link.href))
+              ? "active"
+              : "",
+          ]}
+        >
+          {link.label}
+        </a>
+      ))
+    }
+  </nav>
+</header>

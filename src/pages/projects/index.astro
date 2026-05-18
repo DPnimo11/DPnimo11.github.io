@@ -1,0 +1,39 @@
+---
+import ProjectCard from "../../components/ProjectCard.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { archiveProjects, projects } from "../../data/projects";
+---
+
+<BaseLayout title="Projects | Darren Wang" description="Curated software, research, systems, and ML projects by Darren Wang.">
+  <section class="page-title">
+    <p class="eyebrow">Project index</p>
+    <h1>Projects</h1>
+    <p>
+      Recent public work, with live interaction where it is stable and short case studies where the project depends on keys, backends, or local compute.
+    </p>
+  </section>
+
+  <section class="project-grid wide">
+    {projects.map((project) => <ProjectCard project={project} />)}
+  </section>
+
+  <section class="archive-section">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Earlier builds</p>
+        <h2>Older public repos.</h2>
+      </div>
+    </div>
+    <div class="archive-grid">
+      {
+        archiveProjects.map((project) => (
+          <a class="archive-card" href={project.href} target="_blank" rel="noreferrer">
+            <h3>{project.title}</h3>
+            <p>{project.note}</p>
+            <div class="tag-row">{project.tags.map((tag) => <span>{tag}</span>)}</div>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
