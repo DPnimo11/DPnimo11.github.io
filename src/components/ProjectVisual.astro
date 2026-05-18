@@ -1,0 +1,24 @@
+---
+interface Props {
+  variant: string;
+  image?: string;
+  title: string;
+}
+
+const { variant, image, title } = Astro.props;
+---
+
+<div class:list={["project-visual", `visual-${variant}`]}>
+  {
+    image ? (
+      <img src={image} alt="" loading="lazy" />
+    ) : (
+      <div class="visual-fallback" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+        <strong>{title}</strong>
+      </div>
+    )
+  }
+</div>

@@ -1,0 +1,186 @@
+---
+import type { Project } from "../data/projects";
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+---
+
+{
+  project.demo === "leetloop" && (
+    <section class="demo-panel demo-leetloop" aria-labelledby="demo-title">
+      <div class="panel-heading">
+        <p class="eyebrow">Interactive artifact</p>
+        <h2 id="demo-title">A tiny review queue</h2>
+      </div>
+      <div class="leetloop-demo" data-leetloop-demo>
+        <div class="queue-header">
+          <span>Today</span>
+          <strong data-due-count>3 due</strong>
+        </div>
+        <div class="review-list" data-review-list></div>
+        <div class="review-actions" aria-label="Review actions">
+          <button type="button" data-review-action="again">Again</button>
+          <button type="button" data-review-action="solved">Solved</button>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+{
+  project.demo === "terminal" && (
+    <section class="demo-panel terminal-panel" aria-labelledby="demo-title">
+      <div class="panel-heading">
+        <p class="eyebrow">Transcript demo</p>
+        <h2 id="demo-title">PennOS shell sketch</h2>
+      </div>
+      <pre><code>pennfat# mkfs disk.fs 1024 1
+pennfat# mount disk.fs
+pennfat# touch notes.txt
+pennfat# chmod +rw notes.txt
+
+$ ./pennos disk.fs log/scheduler.log
+pennos&gt; nice 1 sleep 8 &
+[job 1] pid 4 running
+pennos&gt; jobs
+1  running  sleep 8
+pennos&gt; fg 1</code></pre>
+    </section>
+  )
+}
+
+{
+  project.demo === "pipeline" && (
+    <section class="demo-panel pipeline-panel" aria-labelledby="demo-title">
+      <div class="panel-heading">
+        <p class="eyebrow">Pipeline view</p>
+        <h2 id="demo-title">From inputs to rendered physics</h2>
+      </div>
+      <ol class="pipeline-steps">
+        <li><span>01</span><strong>Upload</strong><p>Two source images enter a browser UI.</p></li>
+        <li><span>02</span><strong>Estimate</strong><p>Gemini proposes editable physical properties.</p></li>
+        <li><span>03</span><strong>Generate</strong><p>TripoSR creates meshes for the objects.</p></li>
+        <li><span>04</span><strong>Render</strong><p>Blender runs the collision and streams the result.</p></li>
+      </ol>
+    </section>
+  )
+}
+
+{
+  project.demo === "map" && (
+    <section class="demo-panel map-panel" aria-labelledby="demo-title">
+      <div class="panel-heading">
+        <p class="eyebrow">Product surface</p>
+        <h2 id="demo-title">Location posts and network filters</h2>
+      </div>
+      <div class="map-sketch" aria-hidden="true">
+        <span class="marker m1"></span>
+        <span class="marker m2"></span>
+        <span class="marker m3"></span>
+        <span class="map-route"></span>
+      </div>
+    </section>
+  )
+}
+
+{
+  project.demo === "charts" && (
+    <section class="demo-panel chart-panel" aria-labelledby="demo-title">
+      <div class="panel-heading">
+        <p class="eyebrow">Analysis surface</p>
+        <h2 id="demo-title">Modeling artifacts</h2>
+      </div>
+      <div class="bar-chart" aria-hidden="true">
+        <span style="--h: 42%"></span>
+        <span style="--h: 68%"></span>
+        <span style="--h: 55%"></span>
+        <span style="--h: 81%"></span>
+        <span style="--h: 47%"></span>
+      </div>
+    </section>
+  )
+}
+
+{
+  project.demo === "paper" && (
+    <section class="demo-panel paper-panel" aria-labelledby="demo-title">
+      <div class="panel-heading">
+        <p class="eyebrow">Research artifact</p>
+        <h2 id="demo-title">Docking and reranking loop</h2>
+      </div>
+      <div class="paper-figure">
+        <span>AlphaFold structures</span>
+        <span>ZDOCK candidates</span>
+        <span>ANI-2x refinement</span>
+        <span>Pose ranking</span>
+      </div>
+    </section>
+  )
+}
+
+{
+  project.demo === "affinity" && (
+    <section class="demo-panel affinity-panel" aria-labelledby="demo-title">
+      <div class="panel-heading">
+        <p class="eyebrow">Feature model</p>
+        <h2 id="demo-title">Embedding benchmark frame</h2>
+      </div>
+      <div class="matrix-figure" aria-hidden="true">
+        {Array.from({ length: 64 }).map((_, index) => <span style={`--v: ${(index * 19) % 100}%`}></span>)}
+      </div>
+    </section>
+  )
+}
+
+<script is:inline>
+  (() => {
+    const root = document.querySelector("[data-leetloop-demo]");
+    if (!root) return;
+
+    const list = root.querySelector("[data-review-list]");
+    const dueCount = root.querySelector("[data-due-count]");
+    const items = [
+      { title: "Binary Search", tag: "arrays", due: "now", interval: 1 },
+      { title: "Course Schedule", tag: "graphs", due: "today", interval: 3 },
+      { title: "LRU Cache", tag: "design", due: "tomorrow", interval: 7 },
+    ];
+    let cursor = 0;
+
+    const render = () => {
+      if (!list || !dueCount) return;
+      list.innerHTML = items
+        .map((item, index) => `
+          <article class="review-row ${index === cursor ? "active" : ""}">
+            <div>
+              <strong>${item.title}</strong>
+              <span>${item.tag} / interval ${item.interval}d</span>
+            </div>
+            <em>${item.due}</em>
+          </article>
+        `)
+        .join("");
+      dueCount.textContent = `${items.filter((item) => item.due !== "later").length} due`;
+    };
+
+    root.querySelectorAll("[data-review-action]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const active = items[cursor];
+        if (!active) return;
+        if (button.dataset.reviewAction === "solved") {
+          active.interval = Math.min(active.interval * 2, 30);
+          active.due = "later";
+        } else {
+          active.interval = 1;
+          active.due = "now";
+        }
+        cursor = (cursor + 1) % items.length;
+        render();
+      });
+    });
+
+    render();
+  })();
+</script>

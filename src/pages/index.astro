@@ -1,0 +1,66 @@
+---
+import ProjectCard from "../components/ProjectCard.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { projects } from "../data/projects";
+
+const featured = projects.slice(0, 4);
+---
+
+<BaseLayout>
+  <section class="hero-section">
+    <div class="hero-copy">
+      <p class="eyebrow">Penn CIS + Robotics</p>
+      <h1>Darren Wang</h1>
+      <p class="hero-lede">
+        I study computer science at Penn and am pursuing an accelerated master's in robotics. This site collects the public work I would actually want to talk through: computational biology research, ML/data projects, systems code, and a few web apps.
+      </p>
+      <div class="action-row">
+        <a class="button primary" href="/projects/">View projects</a>
+        <a class="button" href="/about/">About</a>
+        <a class="button" href="/resume.pdf">Resume</a>
+        <a class="button ghost" href="mailto:darrenwa@upenn.edu">Contact</a>
+      </div>
+    </div>
+    <aside class="hero-instrument" aria-label="Portfolio status panel">
+      <div class="headshot-frame">
+        <img src="/img/headshot-primary.jpg" alt="Portrait of Darren Wang" />
+      </div>
+      <div class="console-card">
+        <span class="console-dot"></span>
+        <pre><code>$ focus --current
+research: protein modeling
+systems: PennOS
+apps: LeetLoop, Spark
+site: public repos only</code></pre>
+      </div>
+    </aside>
+  </section>
+
+  <section class="at-a-glance" aria-label="Portfolio summary">
+    <h2>At a glance</h2>
+    <ul>
+      <li>
+        <span>Research</span>
+        <p>Published protein-peptide docking work at Pitt, plus newer Boltz-2 affinity embedding experiments.</p>
+      </li>
+      <li>
+        <span>Systems</span>
+        <p>PennOS, a small Unix-like OS project with a shell, scheduler, job control, and custom file system.</p>
+      </li>
+      <li>
+        <span>Applications</span>
+        <p>LeetLoop, Spark, and other web projects that are included when there is something concrete to show.</p>
+      </li>
+    </ul>
+  </section>
+
+  <section class="section-heading">
+    <p class="eyebrow">Selected work</p>
+    <h2>Projects worth opening.</h2>
+    <a href="/projects/">All projects</a>
+  </section>
+
+  <section class="project-grid">
+    {featured.map((project) => <ProjectCard project={project} />)}
+  </section>
+</BaseLayout>
