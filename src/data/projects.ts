@@ -246,24 +246,30 @@ export const projects: Project[] = [
     year: "2026",
     status: "NexHacks build",
     summary:
-      "A mobile-first hiring app for screening startup applicants with AI resume parsing and a swipe review interface.",
+      "A hiring tool for screening startup applicants with AI resume parsing, swipe review, and personalized candidate outreach.",
     problem:
-      "Early-stage teams need to triage candidates quickly, but resume review is slow and usually detached from the role criteria that matter most.",
+      "Early-stage teams need to triage candidates quickly, but resume review is slow, repetitive, and usually disconnected from follow-up outreach.",
     approach:
-      "We built a Next.js app with structured job setup, AI resume parsing, batch candidate processing, ATS webhook support, swipe decisions, and a dashboard for follow-up.",
+      "We built a Next.js app with structured job setup, token-compressed resume parsing through The Token Company, batch candidate processing, swipe decisions, dashboard review, and an LLM email agent.",
     result:
-      "The prototype supports demo candidates, parsed resume summaries, interested/pass/starred states, dashboard review, and webhook ingestion from external applicant systems.",
-    stack: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "Zustand", "Cerebras AI"],
+      "The deployed prototype supports candidate profiles, AI summaries, interested/pass/starred states, dashboard review, and customized emails that reference profile-specific details.",
+    stack: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "Zustand", "Cerebras AI", "The Token Company"],
     highlights: [
       "Swipe interface for fast candidate decisions",
+      "Token compression to reduce resume-parsing input size and improve performance",
       "AI-generated resume summaries and skill extraction",
-      "Batch processing for multiple resumes",
-      "ATS webhook endpoint for Workday, Greenhouse, Lever, or custom sources",
+      "LLM agent for customized candidate emails",
+      "Dashboard for interested, starred, and passed candidates",
     ],
-    metrics: ["Mobile-first review flow", "Webhook API", "20 mock candidate demo set"],
-    links: [{ label: "GitHub", href: "https://github.com/DPnimo11/nexhacks" }],
+    metrics: ["Live deployment", "Token-compressed parsing", "Profile-aware outreach"],
+    links: [
+      { label: "Live site", href: "https://swipehire.online" },
+      { label: "Devpost", href: "https://devpost.com/software/swipehire-pz06i5" },
+      { label: "GitHub", href: "https://github.com/DPnimo11/nexhacks" },
+    ],
     demo: "hiring",
     visual: "queue",
+    image: "/img/swipehire.jpg",
   },
   {
     slug: "cis2450-sentiment-finance",
