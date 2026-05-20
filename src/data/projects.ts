@@ -24,6 +24,7 @@ export type Project = {
     | "hiring";
   visual: string;
   image?: string;
+  thumbnailFrameBackground?: string;
 };
 
 export const projects: Project[] = [
@@ -51,7 +52,9 @@ export const projects: Project[] = [
     metrics: ["Client-first data model", "Template-backed problem sets", "Unit-tested date helpers"],
     links: [{ label: "GitHub", href: "https://github.com/DPnimo11/leetloop" }],
     demo: "leetloop",
-    visual: "queue",
+    visual: "screenshot",
+    image: "/img/leetloop.png",
+    thumbnailFrameBackground: "#f1f7fb",
   },
   {
     slug: "boltz2-affinity",
@@ -105,6 +108,7 @@ export const projects: Project[] = [
     demo: "paper",
     visual: "paper",
     image: "/img/research-pitt.jpg",
+    thumbnailFrameBackground: "#fff",
   },
   {
     slug: "pepdock",
@@ -130,7 +134,9 @@ export const projects: Project[] = [
     metrics: ["Median DockQ above 0.85 baseline", "Mutation and ligand-swapping tests", "May 2026 writeup"],
     links: [{ label: "GitHub", href: "https://github.com/DPnimo11/pepdock" }],
     demo: "charts",
-    visual: "chart",
+    visual: "screenshot",
+    image: "/img/pepdock.png",
+    thumbnailFrameBackground: "#fff",
   },
   {
     slug: "pennos",
@@ -182,7 +188,9 @@ export const projects: Project[] = [
     metrics: ["Two-image input", "Four-stage pipeline", "Local-first architecture"],
     links: [{ label: "GitHub", href: "https://github.com/DPnimo11/cis-5810-final-project" }],
     demo: "pipeline",
-    visual: "pipeline",
+    visual: "screenshot",
+    image: "/img/collision.jpg",
+    thumbnailFrameBackground: "#111613",
   },
   {
     slug: "spark-social-map",
@@ -270,6 +278,7 @@ export const projects: Project[] = [
     demo: "hiring",
     visual: "logo",
     image: "/img/swipehire.jpg",
+    thumbnailFrameBackground: "#fff",
   },
   {
     slug: "cis2450-sentiment-finance",
@@ -347,7 +356,9 @@ export const projects: Project[] = [
     metrics: ["Vanilla JS", "Interactive browser UI", "Earlier frontend build"],
     links: [{ label: "GitHub", href: "https://github.com/DPnimo11/paint" }],
     demo: "charts",
-    visual: "queue",
+    visual: "screenshot",
+    image: "/img/paint.png",
+    thumbnailFrameBackground: "#c3d3e4",
   },
   {
     slug: "chess",

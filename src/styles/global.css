@@ -254,6 +254,10 @@ h3 {
   pointer-events: none;
 }
 
+.project-visual.has-image::before {
+  content: none;
+}
+
 .headshot-frame img {
   width: 100%;
   height: 100%;
@@ -427,6 +431,48 @@ h3 {
   filter: saturate(0.85) contrast(1.05);
 }
 
+.project-card .project-visual.has-image {
+  display: grid;
+  place-items: center;
+  padding: 10px;
+  background: transparent;
+}
+
+.project-card .project-visual.has-image > img,
+.project-card .project-image-frame {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.project-card .project-visual.has-image > img {
+  border: 0;
+  background: transparent;
+  object-fit: contain;
+  filter: saturate(0.9) contrast(1.02);
+}
+
+.project-card .project-image-frame {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(22, 24, 23, 0.22);
+  background: var(--frame-bg, #fff);
+}
+
+.project-card .project-image-frame img {
+  min-height: 0;
+  border: 0;
+  background: transparent;
+  object-fit: contain;
+  filter: saturate(0.9) contrast(1.02);
+}
+
+.project-card .project-visual.has-frame:not(.visual-logo) .project-image-frame img {
+  width: 100%;
+  height: 100%;
+}
+
 .visual-fallback {
   display: grid;
   min-height: 210px;
@@ -493,6 +539,27 @@ h3 {
   max-height: 130px;
   object-fit: contain;
   filter: saturate(0.95) contrast(1.03);
+}
+
+.visual-screenshot {
+  display: grid;
+  place-items: center;
+  padding: 10px;
+  background:
+    linear-gradient(rgba(22, 24, 23, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(22, 24, 23, 0.055) 1px, transparent 1px),
+    #efe6d7;
+  background-size: 20px 20px;
+}
+
+.visual-screenshot img {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border: 1px solid rgba(22, 24, 23, 0.22);
+  background: var(--panel);
+  object-fit: contain;
+  filter: saturate(0.9) contrast(1.02);
 }
 
 .visual-map {
@@ -719,7 +786,7 @@ h3 {
   box-shadow: var(--shadow);
 }
 
-.detail-hero .project-visual:not(.visual-logo) img,
+.detail-hero .project-visual:not(.visual-logo):not(.visual-screenshot) img,
 .detail-hero .visual-fallback {
   min-height: 360px;
 }
@@ -736,6 +803,19 @@ h3 {
   height: 100%;
   max-width: 360px;
   max-height: 120px;
+  min-height: 0;
+  object-fit: contain;
+}
+
+.detail-hero .project-visual.visual-screenshot {
+  height: clamp(260px, 30vw, 360px);
+  min-height: 0;
+  padding: 16px;
+}
+
+.detail-hero .project-visual.visual-screenshot img {
+  width: 100%;
+  height: 100%;
   min-height: 0;
   object-fit: contain;
 }

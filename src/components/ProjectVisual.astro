@@ -2,15 +2,22 @@
 interface Props {
   variant: string;
   image?: string;
+  frameBackground?: string;
+  slug?: string;
   title: string;
 }
 
-const { variant, image, title } = Astro.props;
+const { variant, image, frameBackground, slug, title } = Astro.props;
+const frameStyle = frameBackground ? `--frame-bg: ${frameBackground}` : undefined;
 ---
 
-<div class:list={["project-visual", `visual-${variant}`]}>
+<div class:list={["project-visual", `visual-${variant}`, image && "has-image", frameBackground && "has-frame", slug && `project-${slug}`]}>
   {
-    image ? (
+    image && frameBackground ? (
+      <span class="project-image-frame" style={frameStyle}>
+        <img src={image} alt="" loading="lazy" />
+      </span>
+    ) : image ? (
       <img src={image} alt="" loading="lazy" />
     ) : (
       <div class="visual-fallback" aria-hidden="true">

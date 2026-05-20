@@ -12,7 +12,13 @@ const { project, compact = false } = Astro.props;
 
 <article class:list={["project-card", compact && "compact"]}>
   <a href={`/projects/${project.slug}/`} aria-label={`Read ${project.title} case study`}>
-    <ProjectVisual variant={project.visual} image={project.image} title={project.title} />
+    <ProjectVisual
+      variant={project.visual}
+      image={project.image}
+      frameBackground={project.thumbnailFrameBackground}
+      slug={project.slug}
+      title={project.title}
+    />
     <div class="project-card-body">
       <div class="project-meta">
         <span>{project.kicker}</span>
