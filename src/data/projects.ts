@@ -268,7 +268,7 @@ export const projects: Project[] = [
       { label: "GitHub", href: "https://github.com/DPnimo11/nexhacks" },
     ],
     demo: "hiring",
-    visual: "queue",
+    visual: "logo",
     image: "/img/swipehire.jpg",
   },
   {
