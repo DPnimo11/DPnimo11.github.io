@@ -233,8 +233,7 @@ h3 {
 .console-card,
 .project-card,
 .demo-panel,
-.fact-panel,
-.archive-card {
+.fact-panel {
   border: 1px solid var(--line-strong);
   background: var(--panel);
   box-shadow: var(--shadow);
@@ -343,7 +342,6 @@ h3 {
 
 .at-a-glance p,
 .project-card p,
-.archive-card p,
 .detail-copy p,
 .fact-panel li,
 .pipeline-steps p {
@@ -527,34 +525,6 @@ h3 {
 
 .page-title h1 {
   margin-bottom: 20px;
-}
-
-.archive-section {
-  margin: 88px 0;
-}
-
-.archive-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.archive-card {
-  display: flex;
-  min-height: 220px;
-  flex-direction: column;
-  padding: 18px;
-  transition:
-    transform 160ms ease,
-    box-shadow 160ms ease;
-}
-
-.archive-card:hover {
-  transform: translateY(-2px);
-}
-
-.archive-card p {
-  flex: 1;
 }
 
 .about-hero {
@@ -1052,7 +1022,6 @@ h3 {
 
   .project-grid,
   .project-grid.wide,
-  .archive-grid,
   .about-notes {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1135,7 +1104,6 @@ h3 {
 
   .project-grid,
   .project-grid.wide,
-  .archive-grid,
   .about-notes,
   .photo-ledger,
   .pipeline-steps,

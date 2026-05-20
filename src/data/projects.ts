@@ -317,43 +317,56 @@ export const projects: Project[] = [
     demo: "charts",
     visual: "chart",
   },
-];
-
-export const archiveProjects = [
   {
+    slug: "paint",
     title: "Paint",
-    note: "Vanilla JavaScript drawing grid with color, rainbow, gradient, eraser, reset, and resize controls.",
-    href: "https://github.com/DPnimo11/paint",
-    tags: ["JavaScript", "HTML", "CSS"],
+    kicker: "Frontend exercise",
+    year: "2025",
+    status: "Earlier build",
+    summary:
+      "A vanilla JavaScript drawing grid with color, rainbow, gradient, eraser, reset, and resize controls.",
+    problem:
+      "The goal was to build a small browser interaction from scratch: grid generation, brush state, pointer events, and reset/resize behavior.",
+    approach:
+      "I wrote the drawing board in plain HTML, CSS, and JavaScript, with scoped state for brush mode, color, opacity, and board size.",
+    result:
+      "The project works as a compact drawing toy and became the first interactive artifact embedded in this portfolio.",
+    stack: ["JavaScript", "HTML", "CSS", "DOM events"],
+    highlights: [
+      "Dynamic drawing grid",
+      "Color, rainbow, gradient, and eraser modes",
+      "Reset and board resize controls",
+      "No framework or drawing library",
+    ],
+    metrics: ["Vanilla JS", "Interactive browser UI", "Earlier frontend build"],
+    links: [{ label: "GitHub", href: "https://github.com/DPnimo11/paint" }],
+    demo: "charts",
+    visual: "queue",
   },
   {
-    title: "Calculator",
-    note: "Browser calculator from an earlier frontend practice arc.",
-    href: "https://github.com/DPnimo11/calculator",
-    tags: ["JavaScript", "UI"],
-  },
-  {
-    title: "Rock Paper Scissors",
-    note: "Small interaction exercise from early web foundations work.",
-    href: "https://github.com/DPnimo11/rock-paper-scissors",
-    tags: ["HTML", "CSS"],
-  },
-  {
-    title: "STWing Website",
-    note: "React/Vite website for a student organization surface.",
-    href: "https://github.com/DPnimo11/stwing_website",
-    tags: ["React", "Vite"],
-  },
-  {
-    title: "Spotify Data Engine",
-    note: "React, Express, PostgreSQL music data app with table and chart surfaces.",
-    href: "https://github.com/DPnimo11/Spotify-Data-Engine",
-    tags: ["React", "Express", "Postgres"],
-  },
-  {
+    slug: "chess",
     title: "Chess",
-    note: "Java chess implementation with piece logic and tests.",
-    href: "https://github.com/DPnimo11/chess",
-    tags: ["Java", "Game logic"],
+    kicker: "Game logic",
+    year: "2025",
+    status: "Course project",
+    summary:
+      "A Java chess implementation with piece movement logic, board state, and tests.",
+    problem:
+      "Chess is a useful test of object modeling because each piece has different legal moves while sharing one board and game state.",
+    approach:
+      "I modeled pieces, positions, moves, board behavior, and game flow in Java, with tests covering core rules and compilation.",
+    result:
+      "The repo contains the implementation and test structure for a playable chess project.",
+    stack: ["Java", "JUnit", "Maven", "Game logic"],
+    highlights: [
+      "Piece-specific move logic",
+      "Board and position modeling",
+      "Game flow classes",
+      "Test coverage for core behavior",
+    ],
+    metrics: ["Java implementation", "Piece hierarchy", "Tested rules"],
+    links: [{ label: "GitHub", href: "https://github.com/DPnimo11/chess" }],
+    demo: "terminal",
+    visual: "terminal",
   },
 ];
