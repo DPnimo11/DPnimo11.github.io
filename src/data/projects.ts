@@ -12,7 +12,16 @@ export type Project = {
   highlights: string[];
   metrics: string[];
   links: { label: string; href: string }[];
-  demo: "leetloop" | "affinity" | "paper" | "terminal" | "pipeline" | "map" | "charts";
+  demo:
+    | "leetloop"
+    | "affinity"
+    | "paper"
+    | "terminal"
+    | "pipeline"
+    | "map"
+    | "charts"
+    | "translator"
+    | "hiring";
   visual: string;
   image?: string;
 };
@@ -98,6 +107,32 @@ export const projects: Project[] = [
     image: "/img/research-pitt.jpg",
   },
   {
+    slug: "pepdock",
+    title: "PepDock",
+    kicker: "Computational biology",
+    year: "2026",
+    status: "Research repo",
+    summary:
+      "A systematic evaluation of AlphaFold 3 for protein-peptide structure prediction.",
+    problem:
+      "AlphaFold 3 can produce strong-looking peptide-protein complexes, but its reliability for therapeutic peptide docking needs to be tested across structure, mutation, and affinity settings.",
+    approach:
+      "I evaluated AF3 across baseline docking accuracy, sequence perturbations, out-of-distribution targets, ligand-swapping controls, and confidence-metric correlation with experimental binding affinity.",
+    result:
+      "The repo documents strong median baseline DockQ performance alongside limits in sequence sensitivity, physical specificity, and using pLDDT or PAE as affinity proxies.",
+    stack: ["AlphaFold 3", "Python", "Jupyter", "DockQ", "SKEMPI", "PepPCBench"],
+    highlights: [
+      "Benchmarks structural sensitivity to single and double mutations",
+      "Tests generalization on unseen protein-peptide targets",
+      "Compares confidence metrics against experimental binding-affinity changes",
+      "Includes processed data, notebooks, results, figures, and example outputs",
+    ],
+    metrics: ["Median DockQ above 0.85 baseline", "Mutation and ligand-swapping tests", "May 2026 writeup"],
+    links: [{ label: "GitHub", href: "https://github.com/DPnimo11/pepdock" }],
+    demo: "charts",
+    visual: "chart",
+  },
+  {
     slug: "pennos",
     title: "PennOS",
     kicker: "Systems",
@@ -177,6 +212,58 @@ export const projects: Project[] = [
     ],
     demo: "map",
     visual: "map",
+  },
+  {
+    slug: "manga-translator",
+    title: "Manga Translator",
+    kicker: "Hackathon app",
+    year: "2025",
+    status: "PennApps build",
+    summary:
+      "A Chrome extension and FastAPI backend that translate manga pages and overlay English text back onto the page.",
+    problem:
+      "Reading untranslated manga in-browser usually means leaving the page, running separate OCR or translation tools, and losing the layout context.",
+    approach:
+      "We built a Manifest V3 extension that finds large page images and sends them to a FastAPI backend for OCR, text grouping, translation, and overlay rendering.",
+    result:
+      "The MVP runs locally, supports optional Google Cloud Vision, Cerebras, or Gemini integrations, and falls back gracefully when external services are unavailable.",
+    stack: ["Python", "FastAPI", "Chrome extension", "OCR", "Gemini", "Cerebras"],
+    highlights: [
+      "Chrome extension discovers manga page images",
+      "Backend groups detected text regions before translation",
+      "Translated text overlays render back on the source page",
+      "Built in 36 hours at PennApps 2025",
+    ],
+    metrics: ["36-hour hackathon build", "Manifest V3 extension", "Local FastAPI backend"],
+    links: [{ label: "GitHub", href: "https://github.com/MoodyMarshmallow/manga-translator" }],
+    demo: "translator",
+    visual: "pipeline",
+  },
+  {
+    slug: "nexhacks-swipehire",
+    title: "SwipeHire",
+    kicker: "AI product prototype",
+    year: "2026",
+    status: "NexHacks build",
+    summary:
+      "A mobile-first hiring app for screening startup applicants with AI resume parsing and a swipe review interface.",
+    problem:
+      "Early-stage teams need to triage candidates quickly, but resume review is slow and usually detached from the role criteria that matter most.",
+    approach:
+      "We built a Next.js app with structured job setup, AI resume parsing, batch candidate processing, ATS webhook support, swipe decisions, and a dashboard for follow-up.",
+    result:
+      "The prototype supports demo candidates, parsed resume summaries, interested/pass/starred states, dashboard review, and webhook ingestion from external applicant systems.",
+    stack: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "Zustand", "Cerebras AI"],
+    highlights: [
+      "Swipe interface for fast candidate decisions",
+      "AI-generated resume summaries and skill extraction",
+      "Batch processing for multiple resumes",
+      "ATS webhook endpoint for Workday, Greenhouse, Lever, or custom sources",
+    ],
+    metrics: ["Mobile-first review flow", "Webhook API", "20 mock candidate demo set"],
+    links: [{ label: "GitHub", href: "https://github.com/DPnimo11/nexhacks" }],
+    demo: "hiring",
+    visual: "queue",
   },
   {
     slug: "cis2450-sentiment-finance",
