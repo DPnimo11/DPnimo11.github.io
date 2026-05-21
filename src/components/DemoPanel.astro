@@ -364,22 +364,10 @@ pennos&gt; fg 1</code></pre>
           xrayPeptide.setStyle({}, { stick: { color: colors.xrayPeptide, radius: 0.25 } });
           predictedPeptide.setStyle({}, { stick: { color: colors.predictedPeptide, radius: 0.25 } });
         } else {
-          xrayReceptor.setStyle({}, {
-            cartoon: { color: colors.xrayReceptor, opacity: 1 },
-            line: { color: colors.xrayReceptor, linewidth: 1 },
-          });
-          predictedReceptor.setStyle({}, {
-            cartoon: { color: colors.predictedReceptor, opacity: 0.9 },
-            line: { color: colors.predictedReceptor, linewidth: 1 },
-          });
-          xrayPeptide.setStyle({}, {
-            cartoon: { color: colors.xrayPeptide },
-            stick: { color: colors.xrayPeptide, radius: 0.16 },
-          });
-          predictedPeptide.setStyle({}, {
-            cartoon: { color: colors.predictedPeptide },
-            stick: { color: colors.predictedPeptide, radius: 0.16 },
-          });
+          xrayReceptor.setStyle({}, { cartoon: { color: colors.xrayReceptor, opacity: 1 } });
+          predictedReceptor.setStyle({}, { cartoon: { color: colors.predictedReceptor, opacity: 0.9 } });
+          xrayPeptide.setStyle({}, { cartoon: { color: colors.xrayPeptide } });
+          predictedPeptide.setStyle({}, { cartoon: { color: colors.predictedPeptide } });
         }
 
         viewer.render();
