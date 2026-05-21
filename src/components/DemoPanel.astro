@@ -219,7 +219,29 @@ pennos&gt; fg 1</code></pre>
           <button type="button" data-chess-puzzle="hard">Hard</button>
         </div>
         <div class="chess-trainer-grid">
-          <div class="chess-board" data-chess-board aria-label="Interactive chess tactics board"></div>
+          <div class="chess-board-frame">
+            <div class="chess-rank-labels" aria-hidden="true">
+              <span>8</span>
+              <span>7</span>
+              <span>6</span>
+              <span>5</span>
+              <span>4</span>
+              <span>3</span>
+              <span>2</span>
+              <span>1</span>
+            </div>
+            <div class="chess-board" data-chess-board aria-label="Interactive chess tactics board"></div>
+            <div class="chess-file-labels" aria-hidden="true">
+              <span>a</span>
+              <span>b</span>
+              <span>c</span>
+              <span>d</span>
+              <span>e</span>
+              <span>f</span>
+              <span>g</span>
+              <span>h</span>
+            </div>
+          </div>
           <aside class="chess-logic" aria-live="polite">
             <p class="eyebrow" data-chess-difficulty>Easy / mate in one</p>
             <h3 data-chess-title>Corner net</h3>
@@ -599,7 +621,6 @@ pennos&gt; fg 1</code></pre>
     let waitingForAuto = false;
     let waitingForReset = false;
     let autoTimer = null;
-    let resetTimer = null;
 
     const isWhitePiece = (piece) => piece && piece === piece.toUpperCase();
     const isBlackPiece = (piece) => piece && piece === piece.toLowerCase();
@@ -740,10 +761,6 @@ pennos&gt; fg 1</code></pre>
         window.clearTimeout(autoTimer);
         autoTimer = null;
       }
-      if (resetTimer) {
-        window.clearTimeout(resetTimer);
-        resetTimer = null;
-      }
     };
 
     const applyMove = (move) => {
@@ -805,11 +822,7 @@ pennos&gt; fg 1</code></pre>
       waitingForReset = true;
       updateMeta();
       renderBoard();
-      setStatus("Incorrect. Resetting puzzle...");
-      resetTimer = window.setTimeout(() => {
-        resetTimer = null;
-        loadPuzzle(activePuzzle, "Incorrect. Puzzle reset.");
-      }, 700);
+      setStatus("Incorrect. Press reset to try again.");
     };
 
     const handleSquareClick = (square) => {

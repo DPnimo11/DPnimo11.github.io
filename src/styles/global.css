@@ -1099,13 +1099,49 @@ h3 {
   align-items: stretch;
 }
 
+.chess-board-frame {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 440px);
+  grid-template-rows: minmax(0, 1fr) 24px;
+  width: min(100%, 464px);
+  align-self: start;
+  justify-self: center;
+}
+
+.chess-rank-labels,
+.chess-file-labels {
+  display: grid;
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.chess-rank-labels {
+  grid-row: 1;
+  grid-column: 1;
+  grid-template-rows: repeat(8, 1fr);
+  align-items: center;
+  justify-items: start;
+}
+
+.chess-file-labels {
+  grid-row: 2;
+  grid-column: 2;
+  grid-template-columns: repeat(8, 1fr);
+  align-items: end;
+  justify-items: center;
+}
+
 .chess-board {
+  grid-row: 1;
+  grid-column: 2;
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   overflow: hidden;
-  width: min(100%, 440px);
-  align-self: start;
-  justify-self: center;
+  width: 100%;
   border: 1px solid var(--line-strong);
   background: var(--panel);
 }
