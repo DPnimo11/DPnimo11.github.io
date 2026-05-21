@@ -296,6 +296,7 @@ h3 {
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr);
   gap: 30px;
+  align-items: center;
   margin: 46px 0 68px;
   border-top: 1px solid var(--line-strong);
   border-bottom: 1px solid var(--line-strong);
@@ -319,6 +320,7 @@ h3 {
   display: grid;
   grid-template-columns: 150px minmax(0, 1fr);
   gap: 18px;
+  align-items: center;
   border-top: 1px solid var(--line);
   padding: 14px 0;
 }
