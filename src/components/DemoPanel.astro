@@ -159,7 +159,8 @@ pennos&gt; fg 1</code></pre>
               </div>
             </dl>
             <div class="structure-controls" aria-label="Viewer controls">
-              <button class="active" type="button" data-structure-style="cartoon">Cartoon</button>
+              <button class="active" type="button" data-structure-style="pretty">Pretty</button>
+              <button type="button" data-structure-style="cartoon">Cartoon</button>
               <button type="button" data-structure-style="sticks">Sticks</button>
               <button type="button" data-structure-style="surface">Surface</button>
               <button type="button" data-structure-action="focus">Peptides</button>
@@ -276,8 +277,16 @@ pennos&gt; fg 1</code></pre>
       const caseButtons = structureRoot.querySelectorAll("[data-structure-case]");
       const styleButtons = structureRoot.querySelectorAll("[data-structure-style]");
       const actionButtons = structureRoot.querySelectorAll("[data-structure-action]");
+      const viewerBackground = "#334049";
+      const colors = {
+        xrayReceptor: 0xd6c978,
+        predictedReceptor: 0x69b9de,
+        xrayPeptide: 0x39c97b,
+        predictedPeptide: 0xf06a4d,
+        surface: 0x7fdbff,
+      };
       let viewer;
-      let activeStyle = "cartoon";
+      let activeStyle = "pretty";
       let activeCase = "6n3e";
       let models = [];
 
@@ -338,27 +347,39 @@ pennos&gt; fg 1</code></pre>
         viewer.removeAllSurfaces();
         models.forEach((model) => model.setStyle({}, {}));
 
-        if (activeStyle === "surface") {
-          xrayReceptor.setStyle({}, { cartoon: { color: "lightgray", opacity: 0.24 } });
-          predictedReceptor.setStyle({}, { line: { color: "#5d91ad", opacity: 0.28 } });
-          xrayPeptide.setStyle({}, { stick: { color: "#2c6e49", radius: 0.24 } });
-          predictedPeptide.setStyle({}, { stick: { color: "#b54a35", radius: 0.24 } });
-          viewer.addSurface(window.$3Dmol.SurfaceType.VDW, { color: "white", opacity: 0.16 }, { model: 0 });
-        } else if (activeStyle === "sticks") {
-          xrayReceptor.setStyle({}, { line: { color: "lightgray", opacity: 0.28 } });
-          predictedReceptor.setStyle({}, { line: { color: "#5d91ad", opacity: 0.32 } });
-          xrayPeptide.setStyle({}, { stick: { color: "#2c6e49", radius: 0.25 } });
-          predictedPeptide.setStyle({}, { stick: { color: "#b54a35", radius: 0.25 } });
-        } else {
-          xrayReceptor.setStyle({}, { cartoon: { color: "lightgray", opacity: 0.42 } });
-          predictedReceptor.setStyle({}, { cartoon: { color: "#5d91ad", opacity: 0.18 } });
+        if (activeStyle === "pretty") {
+          xrayReceptor.setStyle({}, { cartoon: { color: colors.xrayReceptor, opacity: 0.72 } });
+          predictedReceptor.setStyle({}, { cartoon: { color: colors.predictedReceptor, opacity: 0.28 } });
           xrayPeptide.setStyle({}, {
-            cartoon: { color: "#2c6e49" },
-            stick: { color: "#2c6e49", radius: 0.16 },
+            cartoon: { color: colors.xrayPeptide },
+            stick: { color: colors.xrayPeptide, radius: 0.2 },
           });
           predictedPeptide.setStyle({}, {
-            cartoon: { color: "#b54a35" },
-            stick: { color: "#b54a35", radius: 0.16 },
+            cartoon: { color: colors.predictedPeptide },
+            stick: { color: colors.predictedPeptide, radius: 0.2 },
+          });
+          viewer.addSurface(window.$3Dmol.SurfaceType.VDW, { color: colors.surface, opacity: 0.12 }, { model: 0 });
+        } else if (activeStyle === "surface") {
+          xrayReceptor.setStyle({}, { cartoon: { color: colors.xrayReceptor, opacity: 0.3 } });
+          predictedReceptor.setStyle({}, { line: { color: colors.predictedReceptor, opacity: 0.45 } });
+          xrayPeptide.setStyle({}, { stick: { color: colors.xrayPeptide, radius: 0.24 } });
+          predictedPeptide.setStyle({}, { stick: { color: colors.predictedPeptide, radius: 0.24 } });
+          viewer.addSurface(window.$3Dmol.SurfaceType.VDW, { color: colors.surface, opacity: 0.28 }, { model: 0 });
+        } else if (activeStyle === "sticks") {
+          xrayReceptor.setStyle({}, { line: { color: colors.xrayReceptor, opacity: 0.58 } });
+          predictedReceptor.setStyle({}, { line: { color: colors.predictedReceptor, opacity: 0.5 } });
+          xrayPeptide.setStyle({}, { stick: { color: colors.xrayPeptide, radius: 0.25 } });
+          predictedPeptide.setStyle({}, { stick: { color: colors.predictedPeptide, radius: 0.25 } });
+        } else {
+          xrayReceptor.setStyle({}, { cartoon: { color: colors.xrayReceptor, opacity: 0.82 } });
+          predictedReceptor.setStyle({}, { cartoon: { color: colors.predictedReceptor, opacity: 0.34 } });
+          xrayPeptide.setStyle({}, {
+            cartoon: { color: colors.xrayPeptide },
+            stick: { color: colors.xrayPeptide, radius: 0.16 },
+          });
+          predictedPeptide.setStyle({}, {
+            cartoon: { color: colors.predictedPeptide },
+            stick: { color: colors.predictedPeptide, radius: 0.16 },
           });
         }
 
@@ -375,7 +396,7 @@ pennos&gt; fg 1</code></pre>
         try {
           const threeDmol = await load3Dmol();
           if (!viewer) {
-            viewer = threeDmol.createViewer(viewerNode, { backgroundColor: "#111613" });
+            viewer = threeDmol.createViewer(viewerNode, { backgroundColor: viewerBackground });
           }
 
           const [xrayReceptor, xrayPeptide, predictedReceptor, predictedPeptide] = await Promise.all([
