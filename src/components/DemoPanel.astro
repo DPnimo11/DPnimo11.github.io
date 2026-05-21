@@ -209,27 +209,34 @@ pennos&gt; fg 1</code></pre>
   project.demo === "chess" && (
     <section class="demo-panel chess-panel" aria-labelledby="demo-title">
       <div class="panel-heading">
-        <p class="eyebrow">Rule sketch</p>
-        <h2 id="demo-title">Knight move validation</h2>
+        <p class="eyebrow">Interactive artifact</p>
+        <h2 id="demo-title">Tactics trainer</h2>
       </div>
-      <div class="chess-demo">
-        <div class="chess-board" aria-label="Chessboard showing knight legal moves">
-          <span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span>
-          <span class="dark"></span><span class="light"></span><span class="dark legal">x</span><span class="light"></span><span class="dark legal">x</span><span class="light"></span><span class="dark"></span><span class="light"></span>
-          <span class="light"></span><span class="dark legal">x</span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark legal">x</span><span class="light"></span><span class="dark"></span>
-          <span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light piece">N</span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span>
-          <span class="light"></span><span class="dark legal">x</span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark legal">x</span><span class="light"></span><span class="dark"></span>
-          <span class="dark"></span><span class="light"></span><span class="dark legal">x</span><span class="light"></span><span class="dark legal">x</span><span class="light"></span><span class="dark"></span><span class="light"></span>
-          <span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span>
-          <span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span>
+      <div class="chess-demo" data-chess-demo>
+        <div class="chess-level-tabs" role="tablist" aria-label="Chess puzzle difficulty">
+          <button class="active" type="button" data-chess-puzzle="easy">Easy</button>
+          <button type="button" data-chess-puzzle="medium">Medium</button>
+          <button type="button" data-chess-puzzle="hard">Hard</button>
         </div>
-        <div class="chess-logic">
-          <p class="eyebrow">Engine checks</p>
-          <ol>
-            <li><span>01</span><strong>Generate</strong><p>Piece classes propose candidate moves from board coordinates.</p></li>
-            <li><span>02</span><strong>Filter</strong><p>Board state removes off-board moves and friendly-piece captures.</p></li>
-            <li><span>03</span><strong>Apply</strong><p>Game flow updates positions, captures, and turn state.</p></li>
-          </ol>
+        <div class="chess-trainer-grid">
+          <div class="chess-board" data-chess-board aria-label="Interactive chess tactics board"></div>
+          <aside class="chess-logic" aria-live="polite">
+            <p class="eyebrow" data-chess-difficulty>Easy / mate in one</p>
+            <h3 data-chess-title>Corner net</h3>
+            <p data-chess-goal>White to move. Find the mate.</p>
+            <dl class="chess-progress">
+              <div>
+                <dt>Progress</dt>
+                <dd data-chess-progress>0 / 1</dd>
+              </div>
+              <div>
+                <dt>Last move</dt>
+                <dd data-chess-last>None</dd>
+              </div>
+            </dl>
+            <p class="chess-status" data-chess-status>Select a white piece.</p>
+            <button class="chess-reset" type="button" data-chess-reset>Reset puzzle</button>
+          </aside>
         </div>
       </div>
     </section>
@@ -497,6 +504,228 @@ pennos&gt; fg 1</code></pre>
 
       renderCase(activeCase);
     }
+  })();
+
+  (() => {
+    const root = document.querySelector("[data-chess-demo]");
+    if (!root) return;
+
+    const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
+    const ranks = [8, 7, 6, 5, 4, 3, 2, 1];
+    const boardNode = root.querySelector("[data-chess-board]");
+    const puzzleButtons = root.querySelectorAll("[data-chess-puzzle]");
+    const difficultyNode = root.querySelector("[data-chess-difficulty]");
+    const titleNode = root.querySelector("[data-chess-title]");
+    const goalNode = root.querySelector("[data-chess-goal]");
+    const progressNode = root.querySelector("[data-chess-progress]");
+    const lastNode = root.querySelector("[data-chess-last]");
+    const statusNode = root.querySelector("[data-chess-status]");
+    const resetButton = root.querySelector("[data-chess-reset]");
+    const puzzles = {
+      easy: {
+        difficulty: "Easy / mate in one",
+        title: "Corner net",
+        goal: "White to move. Find the mate.",
+        board: { g6: "K", g7: "Q", h8: "k", h7: "p" },
+        line: [{ actor: "user", from: "g7", to: "f8", label: "Qf8#" }],
+      },
+      medium: {
+        difficulty: "Medium / two moves",
+        title: "Back-rank pull",
+        goal: "White starts, black has one forced king move, then finish the line.",
+        board: { g1: "K", h5: "Q", e1: "R", c4: "B", g5: "N", g8: "k", e8: "r", f7: "p", g7: "p", h7: "p" },
+        line: [
+          { actor: "user", from: "h5", to: "f7", label: "Qf7+" },
+          { actor: "auto", from: "g8", to: "h8", label: "...Kh8" },
+          { actor: "user", from: "e1", to: "e8", label: "Rxe8#" },
+        ],
+      },
+      hard: {
+        difficulty: "Hard / Legal Trap",
+        title: "Queen sacrifice line",
+        goal: "White to move. Give up the queen, then finish with the knight.",
+        board: {
+          a1: "R", c1: "B", d1: "Q", e1: "K", h1: "R",
+          a2: "P", b2: "P", c2: "P", d2: "P", e4: "P", f2: "P", g2: "P", h2: "P",
+          c3: "N", c4: "B", f3: "N",
+          a8: "r", b8: "n", d8: "q", e8: "k", f8: "b", g8: "n", h8: "r",
+          a7: "p", b7: "p", c7: "p", d6: "p", e5: "p", f7: "p", g7: "p", h7: "p",
+          g4: "b",
+        },
+        line: [
+          { actor: "user", from: "f3", to: "e5", label: "Nxe5" },
+          { actor: "auto", from: "g4", to: "d1", label: "...Bxd1" },
+          { actor: "user", from: "c4", to: "f7", label: "Bxf7+" },
+          { actor: "auto", from: "e8", to: "e7", label: "...Ke7" },
+          { actor: "user", from: "c3", to: "d5", label: "Nd5#" },
+        ],
+      },
+    };
+
+    let activePuzzle = "easy";
+    let board = {};
+    let selectedSquare = null;
+    let stepIndex = 0;
+    let lastMove = "None";
+    let waitingForAuto = false;
+
+    const isWhitePiece = (piece) => piece && piece === piece.toUpperCase();
+    const userMoveCount = (puzzle) => puzzle.line.filter((step) => step.actor === "user").length;
+    const completedUserMoves = () => puzzles[activePuzzle].line.slice(0, stepIndex).filter((step) => step.actor === "user").length;
+
+    const setStatus = (message) => {
+      if (statusNode) statusNode.textContent = message;
+    };
+
+    const currentStep = () => puzzles[activePuzzle].line[stepIndex];
+
+    const updateMeta = () => {
+      const puzzle = puzzles[activePuzzle];
+      if (difficultyNode) difficultyNode.textContent = puzzle.difficulty;
+      if (titleNode) titleNode.textContent = puzzle.title;
+      if (goalNode) goalNode.textContent = puzzle.goal;
+      if (progressNode) progressNode.textContent = `${completedUserMoves()} / ${userMoveCount(puzzle)}`;
+      if (lastNode) lastNode.textContent = lastMove;
+    };
+
+    const applyMove = (move) => {
+      const piece = board[move.from];
+      if (!piece) return;
+      delete board[move.from];
+      board[move.to] = piece;
+      lastMove = move.label;
+    };
+
+    const finishIfSolved = () => {
+      if (stepIndex >= puzzles[activePuzzle].line.length) {
+        selectedSquare = null;
+        updateMeta();
+        renderBoard();
+        setStatus("Solved. Nice line.");
+        return true;
+      }
+      return false;
+    };
+
+    const playAutoMoves = () => {
+      const step = currentStep();
+      if (!step || step.actor !== "auto") {
+        waitingForAuto = false;
+        finishIfSolved();
+        return;
+      }
+
+      waitingForAuto = true;
+      setStatus("Black replies...");
+      window.setTimeout(() => {
+        applyMove(step);
+        stepIndex += 1;
+        waitingForAuto = false;
+        selectedSquare = null;
+        updateMeta();
+        renderBoard();
+        if (!finishIfSolved()) setStatus("Your move.");
+        if (currentStep()?.actor === "auto") playAutoMoves();
+      }, 420);
+    };
+
+    const handleSquareClick = (square) => {
+      if (waitingForAuto) return;
+      const step = currentStep();
+      if (!step) return;
+      const piece = board[square];
+
+      if (!selectedSquare) {
+        if (!isWhitePiece(piece)) {
+          setStatus("Choose a white piece.");
+          return;
+        }
+        selectedSquare = square;
+        setStatus(square === step.from ? "Now choose the tactic square." : "That piece is not part of the tactic.");
+        renderBoard();
+        return;
+      }
+
+      if (selectedSquare === square) {
+        selectedSquare = null;
+        setStatus("Selection cleared.");
+        renderBoard();
+        return;
+      }
+
+      if (isWhitePiece(piece)) {
+        selectedSquare = square;
+        setStatus(square === step.from ? "Now choose the tactic square." : "That piece is not part of the tactic.");
+        renderBoard();
+        return;
+      }
+
+      if (selectedSquare === step.from && square === step.to) {
+        applyMove(step);
+        stepIndex += 1;
+        selectedSquare = null;
+        updateMeta();
+        renderBoard();
+        if (!finishIfSolved()) playAutoMoves();
+        return;
+      }
+
+      setStatus("Not the tactic. Try another move.");
+    };
+
+    const renderBoard = () => {
+      if (!boardNode) return;
+      const expected = currentStep();
+      boardNode.replaceChildren();
+      ranks.forEach((rank, rankIndex) => {
+        files.forEach((file, fileIndex) => {
+          const square = `${file}${rank}`;
+          const piece = board[square];
+          const cell = document.createElement("button");
+          cell.type = "button";
+          cell.className = (rankIndex + fileIndex) % 2 === 0 ? "light" : "dark";
+          cell.dataset.square = square;
+          cell.setAttribute("aria-label", piece ? `${piece} on ${square}` : `Empty ${square}`);
+          if (square === selectedSquare) cell.classList.add("selected");
+          if (selectedSquare === expected?.from && square === expected.to) cell.classList.add("target");
+          if (piece) {
+            const pieceNode = document.createElement("strong");
+            pieceNode.className = isWhitePiece(piece) ? "white-piece" : "black-piece";
+            pieceNode.textContent = piece.toUpperCase();
+            cell.appendChild(pieceNode);
+          }
+          cell.addEventListener("click", () => handleSquareClick(square));
+          boardNode.appendChild(cell);
+        });
+      });
+    };
+
+    const loadPuzzle = (id) => {
+      const puzzle = puzzles[id];
+      if (!puzzle) return;
+      activePuzzle = id;
+      board = { ...puzzle.board };
+      selectedSquare = null;
+      stepIndex = 0;
+      lastMove = "None";
+      waitingForAuto = false;
+      puzzleButtons.forEach((button) => {
+        const isActive = button.dataset.chessPuzzle === id;
+        button.classList.toggle("active", isActive);
+        button.setAttribute("aria-selected", String(isActive));
+      });
+      updateMeta();
+      renderBoard();
+      setStatus("Select a white piece.");
+    };
+
+    puzzleButtons.forEach((button) => {
+      button.addEventListener("click", () => loadPuzzle(button.dataset.chessPuzzle || "easy"));
+    });
+
+    resetButton?.addEventListener("click", () => loadPuzzle(activePuzzle));
+
+    loadPuzzle(activePuzzle);
   })();
 
   (() => {
