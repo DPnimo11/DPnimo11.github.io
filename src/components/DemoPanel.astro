@@ -481,6 +481,7 @@ pennos&gt; fg 1</code></pre>
     let size = Number(sizeInput?.value || 20);
     let hue = 0;
     let drawing = false;
+    let lastPaintedCell = null;
 
     const paintCell = (cell) => {
       if (!cell?.matches?.("[data-paint-cell]")) return;
@@ -501,7 +502,9 @@ pennos&gt; fg 1</code></pre>
     const paintFromPointer = (event) => {
       const target = document.elementFromPoint(event.clientX, event.clientY);
       const cell = target?.closest?.("[data-paint-cell]");
-      if (cell && board?.contains(cell)) paintCell(cell);
+      if (!cell || !board?.contains(cell) || cell === lastPaintedCell) return;
+      lastPaintedCell = cell;
+      paintCell(cell);
     };
 
     const renderBoard = () => {
@@ -541,6 +544,7 @@ pennos&gt; fg 1</code></pre>
 
     board?.addEventListener("pointerdown", (event) => {
       drawing = true;
+      lastPaintedCell = null;
       paintFromPointer(event);
       event.preventDefault();
     });
@@ -553,6 +557,7 @@ pennos&gt; fg 1</code></pre>
 
     window.addEventListener("pointerup", () => {
       drawing = false;
+      lastPaintedCell = null;
     });
 
     renderBoard();
