@@ -1045,6 +1045,7 @@ h3 {
   grid-template-columns: repeat(var(--paint-size), minmax(0, 1fr));
   overflow: hidden;
   width: min(100%, 640px);
+  justify-self: center;
   aspect-ratio: 1;
   border: 1px solid var(--line-strong);
   background: var(--panel);
