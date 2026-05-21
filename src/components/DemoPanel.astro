@@ -521,12 +521,40 @@ pennos&gt; fg 1</code></pre>
     const lastNode = root.querySelector("[data-chess-last]");
     const statusNode = root.querySelector("[data-chess-status]");
     const resetButton = root.querySelector("[data-chess-reset]");
+    const pieceAssets = {
+      K: "wking.png",
+      Q: "wqueen.png",
+      R: "wrook.png",
+      B: "wbishop.png",
+      N: "wknight.png",
+      P: "wpawn.png",
+      k: "bking.png",
+      q: "bqueen.png",
+      r: "brook.png",
+      b: "bbishop.png",
+      n: "bknight.png",
+      p: "bpawn.png",
+    };
+    const pieceNames = {
+      K: "White king",
+      Q: "White queen",
+      R: "White rook",
+      B: "White bishop",
+      N: "White knight",
+      P: "White pawn",
+      k: "Black king",
+      q: "Black queen",
+      r: "Black rook",
+      b: "Black bishop",
+      n: "Black knight",
+      p: "Black pawn",
+    };
     const puzzles = {
       easy: {
         difficulty: "Easy / mate in one",
         title: "Corner net",
         goal: "White to move. Find the mate.",
-        board: { g6: "K", g7: "Q", h8: "k", h7: "p" },
+        board: { g6: "K", g7: "Q", h8: "k", h7: "r", h1: "q" },
         line: [{ actor: "user", from: "g7", to: "f8", label: "Qf8#" }],
       },
       medium: {
@@ -565,19 +593,30 @@ pennos&gt; fg 1</code></pre>
     let activePuzzle = "easy";
     let board = {};
     let selectedSquare = null;
+    let legalTargets = new Set();
     let stepIndex = 0;
     let lastMove = "None";
     let waitingForAuto = false;
+    let waitingForReset = false;
+    let autoTimer = null;
+    let resetTimer = null;
 
     const isWhitePiece = (piece) => piece && piece === piece.toUpperCase();
+    const isBlackPiece = (piece) => piece && piece === piece.toLowerCase();
+    const pieceColor = (piece) => (isWhitePiece(piece) ? "white" : "black");
+    const isOwnPiece = (piece, color) => piece && pieceColor(piece) === color;
+    const isEnemyPiece = (piece, color) => piece && pieceColor(piece) !== color;
+    const isCapturable = (piece, color) => isEnemyPiece(piece, color) && piece.toLowerCase() !== "k";
+    const inBounds = (fileIndex, rank) => fileIndex >= 0 && fileIndex < 8 && rank >= 1 && rank <= 8;
+    const makeSquare = (fileIndex, rank) => (inBounds(fileIndex, rank) ? `${files[fileIndex]}${rank}` : null);
+    const parseSquare = (square) => ({ fileIndex: files.indexOf(square[0]), rank: Number(square.slice(1)) });
+    const currentStep = () => puzzles[activePuzzle].line[stepIndex];
     const userMoveCount = (puzzle) => puzzle.line.filter((step) => step.actor === "user").length;
     const completedUserMoves = () => puzzles[activePuzzle].line.slice(0, stepIndex).filter((step) => step.actor === "user").length;
 
     const setStatus = (message) => {
       if (statusNode) statusNode.textContent = message;
     };
-
-    const currentStep = () => puzzles[activePuzzle].line[stepIndex];
 
     const updateMeta = () => {
       const puzzle = puzzles[activePuzzle];
@@ -588,17 +627,145 @@ pennos&gt; fg 1</code></pre>
       if (lastNode) lastNode.textContent = lastMove;
     };
 
+    const formatMove = (piece, from, to, captured) => {
+      const label = piece.toUpperCase() === "P" ? "P" : piece.toUpperCase();
+      return `${label}${from}${captured ? "x" : "-"}${to}`;
+    };
+
+    const findKing = (color, state) => {
+      const king = color === "white" ? "K" : "k";
+      return Object.keys(state).find((square) => state[square] === king);
+    };
+
+    const slideMoves = (square, state, directions, color, attacksOnly = false) => {
+      const moves = [];
+      const origin = parseSquare(square);
+      directions.forEach(([df, dr]) => {
+        let fileIndex = origin.fileIndex + df;
+        let rank = origin.rank + dr;
+        while (inBounds(fileIndex, rank)) {
+          const target = makeSquare(fileIndex, rank);
+          const occupant = state[target];
+          if (!occupant) {
+            moves.push(target);
+          } else {
+            if (attacksOnly || isCapturable(occupant, color)) moves.push(target);
+            break;
+          }
+          fileIndex += df;
+          rank += dr;
+        }
+      });
+      return moves;
+    };
+
+    const pseudoMoves = (square, state = board, attacksOnly = false) => {
+      const piece = state[square];
+      if (!piece) return [];
+      const color = pieceColor(piece);
+      const type = piece.toLowerCase();
+      const { fileIndex, rank } = parseSquare(square);
+      const moves = [];
+      const addStep = (df, dr) => {
+        const target = makeSquare(fileIndex + df, rank + dr);
+        if (!target) return;
+        const occupant = state[target];
+        if (attacksOnly || !isOwnPiece(occupant, color)) {
+          if (attacksOnly || !occupant || isCapturable(occupant, color)) moves.push(target);
+        }
+      };
+
+      if (type === "p") {
+        const direction = color === "white" ? 1 : -1;
+        [-1, 1].forEach((df) => {
+          const target = makeSquare(fileIndex + df, rank + direction);
+          if (!target) return;
+          const occupant = state[target];
+          if (attacksOnly || isCapturable(occupant, color)) moves.push(target);
+        });
+
+        if (!attacksOnly) {
+          const oneStep = makeSquare(fileIndex, rank + direction);
+          const twoStep = makeSquare(fileIndex, rank + direction * 2);
+          const startRank = color === "white" ? 2 : 7;
+          if (oneStep && !state[oneStep]) moves.push(oneStep);
+          if (rank === startRank && oneStep && twoStep && !state[oneStep] && !state[twoStep]) moves.push(twoStep);
+        }
+        return moves;
+      }
+
+      if (type === "n") {
+        [[1, 2], [2, 1], [2, -1], [1, -2], [-1, -2], [-2, -1], [-2, 1], [-1, 2]].forEach(([df, dr]) => addStep(df, dr));
+        return moves;
+      }
+
+      if (type === "k") {
+        [[1, 1], [1, 0], [1, -1], [0, 1], [0, -1], [-1, 1], [-1, 0], [-1, -1]].forEach(([df, dr]) => addStep(df, dr));
+        return moves;
+      }
+
+      if (type === "b") return slideMoves(square, state, [[1, 1], [1, -1], [-1, 1], [-1, -1]], color, attacksOnly);
+      if (type === "r") return slideMoves(square, state, [[1, 0], [-1, 0], [0, 1], [0, -1]], color, attacksOnly);
+      if (type === "q") {
+        return slideMoves(square, state, [[1, 1], [1, -1], [-1, 1], [-1, -1], [1, 0], [-1, 0], [0, 1], [0, -1]], color, attacksOnly);
+      }
+      return moves;
+    };
+
+    const isSquareAttacked = (square, color, state) =>
+      Object.keys(state).some((origin) => {
+        const piece = state[origin];
+        if (!piece || pieceColor(piece) === color) return false;
+        return pseudoMoves(origin, state, true).includes(square);
+      });
+
+    const keepsKingSafe = (from, to, state, color) => {
+      const next = { ...state };
+      const piece = next[from];
+      if (!piece) return false;
+      delete next[from];
+      next[to] = piece;
+      const kingSquare = piece.toLowerCase() === "k" ? to : findKing(color, next);
+      return kingSquare ? !isSquareAttacked(kingSquare, color, next) : true;
+    };
+
+    const legalMovesFor = (square) => {
+      const piece = board[square];
+      if (!isWhitePiece(piece)) return [];
+      return pseudoMoves(square, board, false).filter((target) => keepsKingSafe(square, target, board, "white"));
+    };
+
+    const clearTimers = () => {
+      if (autoTimer) {
+        window.clearTimeout(autoTimer);
+        autoTimer = null;
+      }
+      if (resetTimer) {
+        window.clearTimeout(resetTimer);
+        resetTimer = null;
+      }
+    };
+
     const applyMove = (move) => {
       const piece = board[move.from];
       if (!piece) return;
+      const captured = Boolean(board[move.to]);
       delete board[move.from];
       board[move.to] = piece;
-      lastMove = move.label;
+      lastMove = move.label || formatMove(piece, move.from, move.to, captured);
+    };
+
+    const chooseSquare = (square) => {
+      selectedSquare = square;
+      legalTargets = new Set(legalMovesFor(square));
+      setStatus(legalTargets.size ? "Choose a highlighted move." : "That piece has no legal moves.");
+      renderBoard();
     };
 
     const finishIfSolved = () => {
       if (stepIndex >= puzzles[activePuzzle].line.length) {
         selectedSquare = null;
+        legalTargets = new Set();
         updateMeta();
         renderBoard();
         setStatus("Solved. Nice line.");
@@ -617,11 +784,13 @@ pennos&gt; fg 1</code></pre>
 
       waitingForAuto = true;
       setStatus("Black replies...");
-      window.setTimeout(() => {
+      autoTimer = window.setTimeout(() => {
+        autoTimer = null;
         applyMove(step);
         stepIndex += 1;
         waitingForAuto = false;
         selectedSquare = null;
+        legalTargets = new Set();
         updateMeta();
         renderBoard();
         if (!finishIfSolved()) setStatus("Your move.");
@@ -629,8 +798,22 @@ pennos&gt; fg 1</code></pre>
       }, 420);
     };
 
+    const resetAfterIncorrectMove = (from, to) => {
+      applyMove({ from, to });
+      selectedSquare = null;
+      legalTargets = new Set();
+      waitingForReset = true;
+      updateMeta();
+      renderBoard();
+      setStatus("Incorrect. Resetting puzzle...");
+      resetTimer = window.setTimeout(() => {
+        resetTimer = null;
+        loadPuzzle(activePuzzle, "Incorrect. Puzzle reset.");
+      }, 700);
+    };
+
     const handleSquareClick = (square) => {
-      if (waitingForAuto) return;
+      if (waitingForAuto || waitingForReset) return;
       const step = currentStep();
       if (!step) return;
       const piece = board[square];
@@ -640,23 +823,25 @@ pennos&gt; fg 1</code></pre>
           setStatus("Choose a white piece.");
           return;
         }
-        selectedSquare = square;
-        setStatus(square === step.from ? "Now choose the tactic square." : "That piece is not part of the tactic.");
-        renderBoard();
+        chooseSquare(square);
         return;
       }
 
       if (selectedSquare === square) {
         selectedSquare = null;
+        legalTargets = new Set();
         setStatus("Selection cleared.");
         renderBoard();
         return;
       }
 
       if (isWhitePiece(piece)) {
-        selectedSquare = square;
-        setStatus(square === step.from ? "Now choose the tactic square." : "That piece is not part of the tactic.");
-        renderBoard();
+        chooseSquare(square);
+        return;
+      }
+
+      if (!legalTargets.has(square)) {
+        setStatus("That square is not legal for the selected piece.");
         return;
       }
 
@@ -664,35 +849,43 @@ pennos&gt; fg 1</code></pre>
         applyMove(step);
         stepIndex += 1;
         selectedSquare = null;
+        legalTargets = new Set();
         updateMeta();
         renderBoard();
         if (!finishIfSolved()) playAutoMoves();
         return;
       }
 
-      setStatus("Not the tactic. Try another move.");
+      resetAfterIncorrectMove(selectedSquare, square);
     };
 
     const renderBoard = () => {
       if (!boardNode) return;
-      const expected = currentStep();
       boardNode.replaceChildren();
       ranks.forEach((rank, rankIndex) => {
         files.forEach((file, fileIndex) => {
           const square = `${file}${rank}`;
           const piece = board[square];
+          const isLegalTarget = legalTargets.has(square);
           const cell = document.createElement("button");
           cell.type = "button";
           cell.className = (rankIndex + fileIndex) % 2 === 0 ? "light" : "dark";
           cell.dataset.square = square;
-          cell.setAttribute("aria-label", piece ? `${piece} on ${square}` : `Empty ${square}`);
+          cell.setAttribute("aria-label", piece ? `${pieceNames[piece]} on ${square}` : `Empty ${square}`);
           if (square === selectedSquare) cell.classList.add("selected");
-          if (selectedSquare === expected?.from && square === expected.to) cell.classList.add("target");
+          if (isLegalTarget) cell.classList.add("legal-move");
+          if (isLegalTarget && piece) cell.classList.add(isBlackPiece(piece) ? "legal-capture" : "legal-blocked");
           if (piece) {
-            const pieceNode = document.createElement("strong");
-            pieceNode.className = isWhitePiece(piece) ? "white-piece" : "black-piece";
-            pieceNode.textContent = piece.toUpperCase();
+            const pieceNode = document.createElement("img");
+            pieceNode.src = `/img/chess-pieces/${pieceAssets[piece]}`;
+            pieceNode.alt = pieceNames[piece] || "";
+            pieceNode.draggable = false;
             cell.appendChild(pieceNode);
+          }
+          if (isLegalTarget) {
+            const dot = document.createElement("span");
+            dot.className = "legal-dot";
+            cell.appendChild(dot);
           }
           cell.addEventListener("click", () => handleSquareClick(square));
           boardNode.appendChild(cell);
@@ -700,15 +893,18 @@ pennos&gt; fg 1</code></pre>
       });
     };
 
-    const loadPuzzle = (id) => {
+    const loadPuzzle = (id, message = "Select a white piece.") => {
       const puzzle = puzzles[id];
       if (!puzzle) return;
+      clearTimers();
       activePuzzle = id;
       board = { ...puzzle.board };
       selectedSquare = null;
+      legalTargets = new Set();
       stepIndex = 0;
       lastMove = "None";
       waitingForAuto = false;
+      waitingForReset = false;
       puzzleButtons.forEach((button) => {
         const isActive = button.dataset.chessPuzzle === id;
         button.classList.toggle("active", isActive);
@@ -716,7 +912,7 @@ pennos&gt; fg 1</code></pre>
       });
       updateMeta();
       renderBoard();
-      setStatus("Select a white piece.");
+      setStatus(message);
     };
 
     puzzleButtons.forEach((button) => {
