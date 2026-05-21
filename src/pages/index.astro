@@ -3,7 +3,18 @@ import ProjectCard from "../components/ProjectCard.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { projects } from "../data/projects";
 
-const featured = projects.slice(0, 4);
+const featuredSlugs = [
+  "boltz2-affinity",
+  "pennos",
+  "cis5810-collision-demo",
+  "nexhacks-swipehire",
+];
+
+const featured = featuredSlugs.map((slug) => {
+  const project = projects.find((item) => item.slug === slug);
+  if (!project) throw new Error(`Missing featured project: ${slug}`);
+  return project;
+});
 ---
 
 <BaseLayout>
