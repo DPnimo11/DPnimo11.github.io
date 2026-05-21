@@ -1061,6 +1061,87 @@ h3 {
   background: transparent;
 }
 
+.chess-demo {
+  display: grid;
+  grid-template-columns: minmax(280px, 420px) minmax(0, 1fr);
+  gap: 22px;
+  align-items: stretch;
+}
+
+.chess-board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  overflow: hidden;
+  width: min(100%, 420px);
+  align-self: start;
+  border: 1px solid var(--line-strong);
+  background: var(--panel);
+}
+
+.chess-board span {
+  display: grid;
+  aspect-ratio: 1;
+  place-items: center;
+  color: var(--ink);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: clamp(1rem, 3vw, 1.5rem);
+  font-weight: 900;
+}
+
+.chess-board .light {
+  background: #f4ead7;
+}
+
+.chess-board .dark {
+  background: #5e6f67;
+}
+
+.chess-board .legal {
+  color: #fffaf0;
+  background: #2c6e49;
+}
+
+.chess-board .piece {
+  border: 2px solid var(--ink);
+  background: #c7852b;
+  color: var(--ink);
+}
+
+.chess-logic {
+  border-left: 1px solid var(--line);
+  padding-left: 18px;
+}
+
+.chess-logic ol {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chess-logic li {
+  border: 1px solid var(--line);
+  padding: 14px;
+}
+
+.chess-logic span {
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.chess-logic strong {
+  display: block;
+  margin: 8px 0 4px;
+}
+
+.chess-logic p {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
 .structure-demo {
   display: grid;
   gap: 16px;
@@ -1419,6 +1500,17 @@ h3 {
 
   .structure-viewer-grid {
     grid-template-columns: 1fr;
+  }
+
+  .chess-demo {
+    grid-template-columns: 1fr;
+  }
+
+  .chess-logic {
+    border-top: 1px solid var(--line);
+    border-left: 0;
+    padding-top: 18px;
+    padding-left: 0;
   }
 
   .structure-sidebar {

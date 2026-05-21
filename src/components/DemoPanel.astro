@@ -206,6 +206,37 @@ pennos&gt; fg 1</code></pre>
 }
 
 {
+  project.demo === "chess" && (
+    <section class="demo-panel chess-panel" aria-labelledby="demo-title">
+      <div class="panel-heading">
+        <p class="eyebrow">Rule sketch</p>
+        <h2 id="demo-title">Knight move validation</h2>
+      </div>
+      <div class="chess-demo">
+        <div class="chess-board" aria-label="Chessboard showing knight legal moves">
+          <span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span>
+          <span class="dark"></span><span class="light"></span><span class="dark legal">x</span><span class="light"></span><span class="dark legal">x</span><span class="light"></span><span class="dark"></span><span class="light"></span>
+          <span class="light"></span><span class="dark legal">x</span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark legal">x</span><span class="light"></span><span class="dark"></span>
+          <span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light piece">N</span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span>
+          <span class="light"></span><span class="dark legal">x</span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark legal">x</span><span class="light"></span><span class="dark"></span>
+          <span class="dark"></span><span class="light"></span><span class="dark legal">x</span><span class="light"></span><span class="dark legal">x</span><span class="light"></span><span class="dark"></span><span class="light"></span>
+          <span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span>
+          <span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span>
+        </div>
+        <div class="chess-logic">
+          <p class="eyebrow">Engine checks</p>
+          <ol>
+            <li><span>01</span><strong>Generate</strong><p>Piece classes propose candidate moves from board coordinates.</p></li>
+            <li><span>02</span><strong>Filter</strong><p>Board state removes off-board moves and friendly-piece captures.</p></li>
+            <li><span>03</span><strong>Apply</strong><p>Game flow updates positions, captures, and turn state.</p></li>
+          </ol>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+{
   project.demo === "charts" && (
     <section class="demo-panel chart-panel" aria-labelledby="demo-title">
       <div class="panel-heading">

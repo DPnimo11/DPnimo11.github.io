@@ -20,6 +20,7 @@ export type Project = {
     | "pipeline"
     | "structures"
     | "paint"
+    | "chess"
     | "map"
     | "charts"
     | "translator"
@@ -385,7 +386,9 @@ export const projects: Project[] = [
     ],
     metrics: ["Java implementation", "Piece hierarchy", "Tested rules"],
     links: [{ label: "GitHub", href: "https://github.com/DPnimo11/chess" }],
-    demo: "terminal",
-    visual: "terminal",
+    demo: "chess",
+    visual: "screenshot",
+    image: "/img/chess.png",
+    thumbnailFrameBackground: "#111613",
   },
 ];
