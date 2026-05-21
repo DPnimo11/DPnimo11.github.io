@@ -558,14 +558,14 @@ pennos&gt; fg 1</code></pre>
         line: [{ actor: "user", from: "g7", to: "f8", label: "Qf8#" }],
       },
       medium: {
-        difficulty: "Medium / two moves",
-        title: "Back-rank pull",
-        goal: "White starts, black has one forced king move, then finish the line.",
-        board: { g1: "K", h5: "Q", e1: "R", c4: "B", g5: "N", g8: "k", e8: "r", f7: "p", g7: "p", h7: "p" },
+        difficulty: "Medium / queen sacrifice",
+        title: "Elegant knight move",
+        goal: "Sac the queen, force the rook recapture, then finish with the knight.",
+        board: { g1: "K", c4: "Q", h6: "N", h8: "k", f8: "r", g7: "p", h7: "p" },
         line: [
-          { actor: "user", from: "h5", to: "f7", label: "Qf7+" },
-          { actor: "auto", from: "g8", to: "h8", label: "...Kh8" },
-          { actor: "user", from: "e1", to: "e8", label: "Rxe8#" },
+          { actor: "user", from: "c4", to: "g8", label: "Qg8+" },
+          { actor: "auto", from: "f8", to: "g8", label: "...Rxg8" },
+          { actor: "user", from: "h6", to: "f7", label: "Nf7#" },
         ],
       },
       hard: {
