@@ -1026,7 +1026,7 @@ h3 {
   overflow: hidden;
   min-height: 460px;
   border: 1px solid var(--line-strong);
-  background: #334049;
+  background: #9aa6a3;
 }
 
 .protein-viewer canvas {
@@ -1039,7 +1039,7 @@ h3 {
   display: grid;
   place-items: center;
   padding: 24px;
-  color: #edf4ef;
+  color: #111613;
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 0.84rem;
   text-align: center;
@@ -1122,19 +1122,19 @@ h3 {
 }
 
 .legend-xray-rec {
-  background: #d6c978;
+  background: #ffd34d;
 }
 
 .legend-pred-rec {
-  background: #69b9de;
+  background: #1a7cff;
 }
 
 .legend-xray-pep {
-  background: #39c97b;
+  background: #19a45b;
 }
 
 .legend-pred-pep {
-  background: #f06a4d;
+  background: #d4311f;
 }
 
 .map-sketch,

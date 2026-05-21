@@ -159,8 +159,7 @@ pennos&gt; fg 1</code></pre>
               </div>
             </dl>
             <div class="structure-controls" aria-label="Viewer controls">
-              <button class="active" type="button" data-structure-style="pretty">Pretty</button>
-              <button type="button" data-structure-style="cartoon">Cartoon</button>
+              <button class="active" type="button" data-structure-style="cartoon">Cartoon</button>
               <button type="button" data-structure-style="sticks">Sticks</button>
               <button type="button" data-structure-style="surface">Surface</button>
               <button type="button" data-structure-action="focus">Peptides</button>
@@ -277,16 +276,15 @@ pennos&gt; fg 1</code></pre>
       const caseButtons = structureRoot.querySelectorAll("[data-structure-case]");
       const styleButtons = structureRoot.querySelectorAll("[data-structure-style]");
       const actionButtons = structureRoot.querySelectorAll("[data-structure-action]");
-      const viewerBackground = "#334049";
+      const viewerBackground = "#9aa6a3";
       const colors = {
-        xrayReceptor: 0xd6c978,
-        predictedReceptor: 0x69b9de,
-        xrayPeptide: 0x39c97b,
-        predictedPeptide: 0xf06a4d,
-        surface: 0x7fdbff,
+        xrayReceptor: 0xffd34d,
+        predictedReceptor: 0x1a7cff,
+        xrayPeptide: 0x19a45b,
+        predictedPeptide: 0xd4311f,
       };
       let viewer;
-      let activeStyle = "pretty";
+      let activeStyle = "cartoon";
       let activeCase = "6n3e";
       let models = [];
 
@@ -347,32 +345,33 @@ pennos&gt; fg 1</code></pre>
         viewer.removeAllSurfaces();
         models.forEach((model) => model.setStyle({}, {}));
 
-        if (activeStyle === "pretty") {
-          xrayReceptor.setStyle({}, { cartoon: { color: colors.xrayReceptor, opacity: 0.72 } });
-          predictedReceptor.setStyle({}, { cartoon: { color: colors.predictedReceptor, opacity: 0.28 } });
-          xrayPeptide.setStyle({}, {
-            cartoon: { color: colors.xrayPeptide },
-            stick: { color: colors.xrayPeptide, radius: 0.2 },
+        if (activeStyle === "surface") {
+          xrayReceptor.setStyle({}, {
+            cartoon: { color: colors.xrayReceptor, opacity: 0.25 },
+            line: { color: colors.xrayReceptor, linewidth: 1 },
           });
-          predictedPeptide.setStyle({}, {
-            cartoon: { color: colors.predictedPeptide },
-            stick: { color: colors.predictedPeptide, radius: 0.2 },
+          predictedReceptor.setStyle({}, {
+            cartoon: { color: colors.predictedReceptor, opacity: 0.2 },
+            line: { color: colors.predictedReceptor, linewidth: 1 },
           });
-          viewer.addSurface(window.$3Dmol.SurfaceType.VDW, { color: colors.surface, opacity: 0.12 }, { model: 0 });
-        } else if (activeStyle === "surface") {
-          xrayReceptor.setStyle({}, { cartoon: { color: colors.xrayReceptor, opacity: 0.3 } });
-          predictedReceptor.setStyle({}, { line: { color: colors.predictedReceptor, opacity: 0.45 } });
           xrayPeptide.setStyle({}, { stick: { color: colors.xrayPeptide, radius: 0.24 } });
           predictedPeptide.setStyle({}, { stick: { color: colors.predictedPeptide, radius: 0.24 } });
-          viewer.addSurface(window.$3Dmol.SurfaceType.VDW, { color: colors.surface, opacity: 0.28 }, { model: 0 });
+          viewer.addSurface(window.$3Dmol.SurfaceType.VDW, { color: colors.xrayReceptor, opacity: 0.75 }, { model: 0 });
+          viewer.addSurface(window.$3Dmol.SurfaceType.VDW, { color: colors.predictedReceptor, opacity: 0.55 }, { model: 1 });
         } else if (activeStyle === "sticks") {
-          xrayReceptor.setStyle({}, { line: { color: colors.xrayReceptor, opacity: 0.58 } });
-          predictedReceptor.setStyle({}, { line: { color: colors.predictedReceptor, opacity: 0.5 } });
+          xrayReceptor.setStyle({}, { stick: { color: colors.xrayReceptor, radius: 0.045 } });
+          predictedReceptor.setStyle({}, { stick: { color: colors.predictedReceptor, radius: 0.045 } });
           xrayPeptide.setStyle({}, { stick: { color: colors.xrayPeptide, radius: 0.25 } });
           predictedPeptide.setStyle({}, { stick: { color: colors.predictedPeptide, radius: 0.25 } });
         } else {
-          xrayReceptor.setStyle({}, { cartoon: { color: colors.xrayReceptor, opacity: 0.82 } });
-          predictedReceptor.setStyle({}, { cartoon: { color: colors.predictedReceptor, opacity: 0.34 } });
+          xrayReceptor.setStyle({}, {
+            cartoon: { color: colors.xrayReceptor, opacity: 1 },
+            line: { color: colors.xrayReceptor, linewidth: 1 },
+          });
+          predictedReceptor.setStyle({}, {
+            cartoon: { color: colors.predictedReceptor, opacity: 0.9 },
+            line: { color: colors.predictedReceptor, linewidth: 1 },
+          });
           xrayPeptide.setStyle({}, {
             cartoon: { color: colors.xrayPeptide },
             stick: { color: colors.xrayPeptide, radius: 0.16 },
