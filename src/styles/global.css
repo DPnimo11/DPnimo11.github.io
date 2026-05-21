@@ -979,6 +979,351 @@ h3 {
   background: #111613;
 }
 
+.azure-panel {
+  background: #f8fbff;
+}
+
+.azure-demo {
+  display: grid;
+  gap: 16px;
+}
+
+.azure-pipeline-strip {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.azure-pipeline-strip li {
+  min-height: 132px;
+  border: 1px solid rgba(22, 24, 23, 0.18);
+  background: rgba(255, 250, 240, 0.72);
+  padding: 12px;
+}
+
+.azure-pipeline-strip span,
+.azure-case-list span,
+.azure-score-label,
+.azure-threshold-control span,
+.azure-confusion dt,
+.azure-pr-metrics dt,
+.azure-signals-heading span {
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.azure-pipeline-strip strong {
+  display: block;
+  margin: 10px 0 4px;
+  line-height: 1.2;
+}
+
+.azure-pipeline-strip p {
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.azure-console-grid {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.72fr) minmax(280px, 1.22fr) minmax(250px, 0.86fr);
+  gap: 14px;
+  align-items: stretch;
+}
+
+.azure-case-list {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.azure-case-list button {
+  min-height: 76px;
+  border: 1px solid rgba(22, 24, 23, 0.28);
+  background: rgba(255, 250, 240, 0.82);
+  padding: 12px;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+}
+
+.azure-case-list button.active {
+  border-color: #111613;
+  background: #111613;
+  color: #f8fbff;
+  box-shadow: inset 4px 0 0 #26a0d8;
+}
+
+.azure-case-list strong,
+.azure-case-list span {
+  display: block;
+}
+
+.azure-case-list span {
+  margin-top: 3px;
+  line-height: 1.35;
+}
+
+.azure-case-list button.active span {
+  color: #b7d9e7;
+}
+
+.azure-score-card,
+.azure-metrics-card,
+.azure-signals {
+  border: 1px solid rgba(22, 24, 23, 0.24);
+  background: rgba(255, 250, 240, 0.88);
+  padding: 16px;
+}
+
+.azure-score-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  background: #111613;
+  color: #f8fbff;
+}
+
+.azure-score-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.azure-score-top h3 {
+  margin: 4px 0 0;
+  font-size: 1.08rem;
+}
+
+.azure-score-top > strong {
+  flex: 0 0 auto;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 0.95;
+}
+
+.azure-score-label {
+  color: #95cbe4;
+}
+
+.azure-gauge {
+  position: relative;
+  overflow: hidden;
+  height: 18px;
+  margin: 24px 0 16px;
+  border: 1px solid rgba(248, 251, 255, 0.28);
+  background: rgba(248, 251, 255, 0.12);
+}
+
+.azure-gauge span {
+  display: block;
+  width: 36%;
+  height: 100%;
+  background: linear-gradient(90deg, #41c28d, #e2ba54 58%, #cf4f42);
+  transition: width 180ms ease;
+}
+
+.azure-gauge i {
+  position: absolute;
+  top: -7px;
+  bottom: -7px;
+  left: 55%;
+  width: 2px;
+  background: #f8fbff;
+  box-shadow: 0 0 0 2px rgba(17, 22, 19, 0.8);
+  transition: left 180ms ease;
+}
+
+.azure-score-card p {
+  color: #d9e6e1;
+}
+
+.azure-threshold-control {
+  display: grid;
+  gap: 8px;
+  margin-top: auto;
+  border-top: 1px solid rgba(248, 251, 255, 0.18);
+  padding-top: 14px;
+}
+
+.azure-threshold-control span {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #b7d9e7;
+}
+
+.azure-threshold-control strong {
+  color: #f8fbff;
+}
+
+.azure-threshold-control input {
+  width: 100%;
+  accent-color: #26a0d8;
+}
+
+.azure-decision {
+  margin-top: 12px;
+  border: 1px solid rgba(248, 251, 255, 0.24);
+  background: rgba(65, 194, 141, 0.16);
+  padding: 10px 12px;
+  color: #dff7e9;
+  font-weight: 800;
+}
+
+.azure-decision.critical {
+  background: rgba(207, 79, 66, 0.2);
+  color: #ffd8d0;
+}
+
+.azure-metrics-card {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.azure-confusion,
+.azure-pr-metrics {
+  margin: 0;
+}
+
+.azure-confusion {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid rgba(22, 24, 23, 0.18);
+}
+
+.azure-confusion div {
+  min-height: 92px;
+  padding: 12px;
+}
+
+.azure-confusion div:nth-child(1) {
+  background: rgba(44, 110, 73, 0.14);
+}
+
+.azure-confusion div:nth-child(2) {
+  background: rgba(199, 133, 43, 0.16);
+}
+
+.azure-confusion div:nth-child(3) {
+  background: rgba(181, 74, 53, 0.16);
+}
+
+.azure-confusion div:nth-child(4) {
+  background: rgba(36, 92, 115, 0.14);
+}
+
+.azure-confusion div:nth-child(2n) {
+  border-left: 1px solid rgba(22, 24, 23, 0.16);
+}
+
+.azure-confusion div:nth-child(n + 3) {
+  border-top: 1px solid rgba(22, 24, 23, 0.16);
+}
+
+.azure-confusion dd {
+  margin: 8px 0 0;
+  font-size: 1.8rem;
+  font-weight: 850;
+  line-height: 1;
+}
+
+.azure-pr-metrics {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid rgba(22, 24, 23, 0.18);
+}
+
+.azure-pr-metrics div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid rgba(22, 24, 23, 0.18);
+  padding: 10px 0;
+}
+
+.azure-pr-metrics dd {
+  margin: 0;
+  font-weight: 850;
+}
+
+.azure-signals {
+  display: grid;
+  gap: 12px;
+}
+
+.azure-signals-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.azure-signals-heading strong {
+  font-size: 0.96rem;
+}
+
+.azure-signal-list {
+  display: grid;
+  gap: 9px;
+}
+
+.azure-signal {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.6fr) minmax(160px, 1fr) 44px;
+  gap: 12px;
+  align-items: center;
+}
+
+.azure-signal-meta {
+  display: grid;
+  gap: 2px;
+}
+
+.azure-signal-meta span {
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.azure-signal-meta em {
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-style: normal;
+  line-height: 1.25;
+}
+
+.azure-signal-track {
+  overflow: hidden;
+  height: 12px;
+  border: 1px solid rgba(22, 24, 23, 0.18);
+  background: rgba(22, 24, 23, 0.07);
+}
+
+.azure-signal-track i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #c7852b, #b54a35);
+}
+
+.azure-signal.lowers .azure-signal-track i {
+  background: linear-gradient(90deg, #2c6e49, #41c28d);
+}
+
+.azure-signal > strong {
+  justify-self: end;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.86rem;
+}
+
 .paint-demo {
   display: grid;
   gap: 16px;
@@ -1618,6 +1963,15 @@ h3 {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .azure-console-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .azure-pipeline-strip,
+  .azure-case-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .structure-viewer-grid {
     grid-template-columns: 1fr;
   }
@@ -1707,8 +2061,28 @@ h3 {
   .about-notes,
   .photo-ledger,
   .pipeline-steps,
+  .azure-pipeline-strip,
+  .azure-case-list,
   .paper-figure {
     grid-template-columns: 1fr;
+  }
+
+  .azure-score-top,
+  .azure-signals-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .azure-score-top > strong {
+    font-size: 2.4rem;
+  }
+
+  .azure-signal {
+    grid-template-columns: minmax(0, 1fr) 44px;
+  }
+
+  .azure-signal-track {
+    grid-column: 1 / -1;
   }
 
   .protein-viewer {

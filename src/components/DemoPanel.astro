@@ -284,6 +284,92 @@ pennos&gt; fg 1</code></pre>
 }
 
 {
+  project.demo === "azure-criticality" && (
+    <section class="demo-panel azure-panel" aria-labelledby="demo-title">
+      <div class="panel-heading">
+        <p class="eyebrow">Interactive ML demo</p>
+        <h2 id="demo-title">Azure Criticality Console</h2>
+      </div>
+      <div class="azure-demo" data-azure-criticality-demo>
+        <ol class="azure-pipeline-strip" aria-label="Request-time prediction pipeline">
+          <li><span>01</span><strong>Raw request</strong><p>Tenant, VM shape, cores, memory, region, and request time.</p></li>
+          <li><span>02</span><strong>Request features</strong><p>Capacity-heavy fields are frozen at provisioning time.</p></li>
+          <li><span>03</span><strong>Tenant window</strong><p>Historical behavior summarizes the prior fleet only.</p></li>
+          <li><span>04</span><strong>Time split</strong><p>Training and validation stay chronological.</p></li>
+          <li><span>05</span><strong>Criticality label</strong><p>Future behavior labels offline evaluation, not live inputs.</p></li>
+        </ol>
+
+        <div class="azure-console-grid">
+          <aside class="azure-case-list" aria-label="VM request examples">
+            <button class="active" type="button" data-azure-case="baseline" aria-pressed="true">
+              <strong>Baseline</strong>
+              <span>Steady tenant / medium VM</span>
+            </button>
+            <button type="button" data-azure-case="spiky" aria-pressed="false">
+              <strong>CPU-spiky tenant</strong>
+              <span>Burst-heavy recent history</span>
+            </button>
+            <button type="button" data-azure-case="large" aria-pressed="false">
+              <strong>Large request</strong>
+              <span>Many cores in a loaded region</span>
+            </button>
+            <button type="button" data-azure-case="lowHistory" aria-pressed="false">
+              <strong>Low-history tenant</strong>
+              <span>Sparse fleet observations</span>
+            </button>
+          </aside>
+
+          <section class="azure-score-card" aria-live="polite">
+            <div class="azure-score-top">
+              <div>
+                <span class="azure-score-label" data-azure-case-kind>Baseline tenant</span>
+                <h3 data-azure-case-title>Medium request with stable history</h3>
+              </div>
+              <strong data-azure-score>36%</strong>
+            </div>
+            <div class="azure-gauge" aria-hidden="true">
+              <span data-azure-gauge></span>
+              <i data-azure-threshold-marker></i>
+            </div>
+            <p data-azure-case-note>
+              Looks like ordinary provisioning: modest footprint, normal CPU history, and a familiar tenant profile.
+            </p>
+            <label class="azure-threshold-control">
+              <span>Decision threshold <strong data-azure-threshold>55%</strong></span>
+              <input type="range" min="20" max="85" step="5" value="55" data-azure-threshold-input />
+            </label>
+            <div class="azure-decision" data-azure-decision>Route to standard provisioning queue</div>
+          </section>
+
+          <aside class="azure-metrics-card">
+            <dl class="azure-confusion" aria-label="Confusion matrix at selected threshold">
+              <div><dt>TP</dt><dd data-azure-tp>0</dd></div>
+              <div><dt>FP</dt><dd data-azure-fp>0</dd></div>
+              <div><dt>FN</dt><dd data-azure-fn>0</dd></div>
+              <div><dt>TN</dt><dd data-azure-tn>0</dd></div>
+            </dl>
+            <dl class="azure-pr-metrics">
+              <div><dt>Precision</dt><dd data-azure-precision>0%</dd></div>
+              <div><dt>Recall</dt><dd data-azure-recall>0%</dd></div>
+              <div><dt>F1</dt><dd data-azure-f1>0%</dd></div>
+              <div><dt>Review rate</dt><dd data-azure-review-rate>0%</dd></div>
+            </dl>
+          </aside>
+        </div>
+
+        <section class="azure-signals" aria-label="Top model signals">
+          <div class="azure-signals-heading">
+            <span>Top signals</span>
+            <strong data-azure-signal-summary>Representative feature contributions</strong>
+          </div>
+          <div class="azure-signal-list" data-azure-signals></div>
+        </section>
+      </div>
+    </section>
+  )
+}
+
+{
   project.demo === "paper" && (
     <section class="demo-panel paper-panel" aria-labelledby="demo-title">
       <div class="panel-heading">
@@ -1073,6 +1159,217 @@ pennos&gt; fg 1</code></pre>
     });
 
     renderBoard();
+  })();
+
+  (() => {
+    const root = document.querySelector("[data-azure-criticality-demo]");
+    if (!root) return;
+
+    const cases = {
+      baseline: {
+        title: "Medium request with stable history",
+        kind: "Baseline tenant",
+        score: 36,
+        note: "Looks like ordinary provisioning: modest footprint, normal CPU history, and a familiar tenant profile.",
+        summary: "Stable profile dampens the score.",
+        signals: [
+          { label: "Tenant history", value: -32, detail: "steady prior fleet" },
+          { label: "Requested cores", value: 28, detail: "moderate footprint" },
+          { label: "CPU behavior", value: -18, detail: "low burst pattern" },
+          { label: "VM size", value: 22, detail: "general purpose tier" },
+          { label: "Region load", value: 16, detail: "normal placement pressure" },
+        ],
+      },
+      spiky: {
+        title: "Burst-heavy tenant requesting another VM",
+        kind: "CPU-spiky tenant",
+        score: 72,
+        note: "Recent tenant history contains high variance CPU behavior, so the same request moves into the review band.",
+        summary: "CPU volatility drives review.",
+        signals: [
+          { label: "CPU behavior", value: 84, detail: "repeated burst windows" },
+          { label: "Tenant history", value: 61, detail: "higher critical ratio" },
+          { label: "Requested cores", value: 34, detail: "medium footprint" },
+          { label: "VM size", value: 31, detail: "compute leaning SKU" },
+          { label: "Region load", value: 22, detail: "manageable demand" },
+        ],
+      },
+      large: {
+        title: "Large VM shape in a busy region",
+        kind: "Large request",
+        score: 83,
+        note: "The request is capacity-heavy before any future utilization is known, so triage would protect scarce placement options.",
+        summary: "Capacity pressure dominates.",
+        signals: [
+          { label: "Requested cores", value: 88, detail: "large allocation" },
+          { label: "VM size", value: 74, detail: "memory-heavy family" },
+          { label: "Region load", value: 59, detail: "busy cluster" },
+          { label: "Tenant history", value: 42, detail: "mixed prior fleet" },
+          { label: "CPU behavior", value: 26, detail: "average burst risk" },
+        ],
+      },
+      lowHistory: {
+        title: "Sparse tenant history with uncertain behavior",
+        kind: "Low-history tenant",
+        score: 58,
+        note: "The model has enough signal to watch the request, but the uncertainty is exactly where threshold choice matters.",
+        summary: "Threshold choice matters most here.",
+        signals: [
+          { label: "Tenant history", value: 69, detail: "sparse observations" },
+          { label: "Requested cores", value: 43, detail: "above median" },
+          { label: "CPU behavior", value: 38, detail: "limited recent trace" },
+          { label: "Region load", value: 36, detail: "warm placement zone" },
+          { label: "VM size", value: -14, detail: "common shape" },
+        ],
+      },
+    };
+
+    const validationSet = [
+      { score: 94, critical: true },
+      { score: 89, critical: true },
+      { score: 83, critical: true },
+      { score: 79, critical: false },
+      { score: 74, critical: true },
+      { score: 69, critical: true },
+      { score: 64, critical: false },
+      { score: 61, critical: true },
+      { score: 57, critical: false },
+      { score: 52, critical: true },
+      { score: 48, critical: false },
+      { score: 43, critical: false },
+      { score: 39, critical: true },
+      { score: 34, critical: false },
+      { score: 29, critical: false },
+      { score: 24, critical: false },
+    ];
+
+    const caseButtons = root.querySelectorAll("[data-azure-case]");
+    const thresholdInput = root.querySelector("[data-azure-threshold-input]");
+    const thresholdNode = root.querySelector("[data-azure-threshold]");
+    const scoreNode = root.querySelector("[data-azure-score]");
+    const gaugeNode = root.querySelector("[data-azure-gauge]");
+    const thresholdMarker = root.querySelector("[data-azure-threshold-marker]");
+    const decisionNode = root.querySelector("[data-azure-decision]");
+    const kindNode = root.querySelector("[data-azure-case-kind]");
+    const titleNode = root.querySelector("[data-azure-case-title]");
+    const noteNode = root.querySelector("[data-azure-case-note]");
+    const signalsNode = root.querySelector("[data-azure-signals]");
+    const signalSummaryNode = root.querySelector("[data-azure-signal-summary]");
+    const metricNodes = {
+      tp: root.querySelector("[data-azure-tp]"),
+      fp: root.querySelector("[data-azure-fp]"),
+      fn: root.querySelector("[data-azure-fn]"),
+      tn: root.querySelector("[data-azure-tn]"),
+      precision: root.querySelector("[data-azure-precision]"),
+      recall: root.querySelector("[data-azure-recall]"),
+      f1: root.querySelector("[data-azure-f1]"),
+      reviewRate: root.querySelector("[data-azure-review-rate]"),
+    };
+
+    let activeCase = "baseline";
+
+    const formatPercent = (value) => `${Math.round(value)}%`;
+    const formatRatio = (value) => `${Math.round(value * 100)}%`;
+
+    const metricsForThreshold = (threshold) => {
+      const counts = validationSet.reduce(
+        (acc, item) => {
+          const predicted = item.score >= threshold;
+          if (predicted && item.critical) acc.tp += 1;
+          if (predicted && !item.critical) acc.fp += 1;
+          if (!predicted && item.critical) acc.fn += 1;
+          if (!predicted && !item.critical) acc.tn += 1;
+          return acc;
+        },
+        { tp: 0, fp: 0, fn: 0, tn: 0 },
+      );
+      const precision = counts.tp + counts.fp ? counts.tp / (counts.tp + counts.fp) : 0;
+      const recall = counts.tp + counts.fn ? counts.tp / (counts.tp + counts.fn) : 0;
+      const f1 = precision + recall ? (2 * precision * recall) / (precision + recall) : 0;
+      const reviewRate = (counts.tp + counts.fp) / validationSet.length;
+      return { ...counts, precision, recall, f1, reviewRate };
+    };
+
+    const renderSignals = (signals) => {
+      if (!signalsNode) return;
+      const fragment = document.createDocumentFragment();
+
+      signals.forEach((signal) => {
+        const row = document.createElement("div");
+        const meta = document.createElement("div");
+        const label = document.createElement("span");
+        const detail = document.createElement("em");
+        const track = document.createElement("div");
+        const fill = document.createElement("i");
+        const value = document.createElement("strong");
+
+        row.className = `azure-signal ${signal.value < 0 ? "lowers" : "raises"}`;
+        meta.className = "azure-signal-meta";
+        track.className = "azure-signal-track";
+
+        label.textContent = signal.label;
+        detail.textContent = signal.detail;
+        fill.style.width = `${Math.min(Math.abs(signal.value), 100)}%`;
+        value.textContent = `${signal.value > 0 ? "+" : ""}${signal.value}`;
+
+        meta.append(label, detail);
+        track.append(fill);
+        row.append(meta, track, value);
+        fragment.append(row);
+      });
+
+      signalsNode.replaceChildren(fragment);
+    };
+
+    const render = () => {
+      const item = cases[activeCase] || cases.baseline;
+      const threshold = Number(thresholdInput?.value || 55);
+      const isCritical = item.score >= threshold;
+      const metrics = metricsForThreshold(threshold);
+
+      if (kindNode) kindNode.textContent = item.kind;
+      if (titleNode) titleNode.textContent = item.title;
+      if (scoreNode) scoreNode.textContent = formatPercent(item.score);
+      if (noteNode) noteNode.textContent = item.note;
+      if (thresholdNode) thresholdNode.textContent = formatPercent(threshold);
+      if (gaugeNode) gaugeNode.style.width = formatPercent(item.score);
+      if (thresholdMarker) thresholdMarker.style.left = formatPercent(threshold);
+      if (decisionNode) {
+        decisionNode.textContent = isCritical
+          ? "Escalate to criticality triage"
+          : "Route to standard provisioning queue";
+        decisionNode.classList.toggle("critical", isCritical);
+      }
+      if (signalSummaryNode) signalSummaryNode.textContent = item.summary;
+
+      metricNodes.tp && (metricNodes.tp.textContent = String(metrics.tp));
+      metricNodes.fp && (metricNodes.fp.textContent = String(metrics.fp));
+      metricNodes.fn && (metricNodes.fn.textContent = String(metrics.fn));
+      metricNodes.tn && (metricNodes.tn.textContent = String(metrics.tn));
+      metricNodes.precision && (metricNodes.precision.textContent = formatRatio(metrics.precision));
+      metricNodes.recall && (metricNodes.recall.textContent = formatRatio(metrics.recall));
+      metricNodes.f1 && (metricNodes.f1.textContent = formatRatio(metrics.f1));
+      metricNodes.reviewRate && (metricNodes.reviewRate.textContent = formatRatio(metrics.reviewRate));
+
+      caseButtons.forEach((button) => {
+        const isActive = button.dataset.azureCase === activeCase;
+        button.classList.toggle("active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+      });
+
+      renderSignals(item.signals);
+    };
+
+    caseButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        activeCase = button.dataset.azureCase || "baseline";
+        render();
+      });
+    });
+
+    thresholdInput?.addEventListener("input", render);
+
+    render();
   })();
 
   (() => {

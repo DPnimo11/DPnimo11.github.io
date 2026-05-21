@@ -23,6 +23,7 @@ export type Project = {
     | "chess"
     | "map"
     | "charts"
+    | "azure-criticality"
     | "translator"
     | "hiring";
   visual: string;
@@ -332,7 +333,7 @@ export const projects: Project[] = [
     ],
     metrics: ["70-column ML table", "30-day window", "Multiple model families"],
     links: [{ label: "GitHub", href: "https://github.com/DPnimo11/CIS-5200-Final-Project" }],
-    demo: "charts",
+    demo: "azure-criticality",
     visual: "chart",
   },
   {
