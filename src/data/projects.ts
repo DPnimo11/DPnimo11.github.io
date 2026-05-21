@@ -18,6 +18,7 @@ export type Project = {
     | "paper"
     | "terminal"
     | "pipeline"
+    | "structures"
     | "map"
     | "charts"
     | "translator"
@@ -133,7 +134,7 @@ export const projects: Project[] = [
     ],
     metrics: ["Median DockQ above 0.85 baseline", "Mutation and ligand-swapping tests", "May 2026 writeup"],
     links: [{ label: "GitHub", href: "https://github.com/DPnimo11/pepdock" }],
-    demo: "charts",
+    demo: "structures",
     visual: "screenshot",
     image: "/img/pepdock.png",
     thumbnailFrameBackground: "#fff",
