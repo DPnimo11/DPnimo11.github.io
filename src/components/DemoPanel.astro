@@ -179,6 +179,33 @@ pennos&gt; fg 1</code></pre>
 }
 
 {
+  project.demo === "paint" && (
+    <section class="demo-panel paint-panel" aria-labelledby="demo-title">
+      <div class="panel-heading">
+        <p class="eyebrow">Interactive artifact</p>
+        <h2 id="demo-title">Pixel sketch grid</h2>
+      </div>
+      <div class="paint-demo" data-paint-demo>
+        <div class="paint-toolbar" aria-label="Paint controls">
+          <div class="paint-tool-group" aria-label="Brush modes">
+            <button class="active" type="button" data-paint-mode="black" aria-pressed="true">Black</button>
+            <button type="button" data-paint-mode="rainbow" aria-pressed="false">Rainbow</button>
+            <button type="button" data-paint-mode="eraser" aria-pressed="false">Eraser</button>
+          </div>
+          <label class="paint-size-control">
+            <span>Size</span>
+            <input type="range" min="12" max="36" value="20" step="2" data-paint-size />
+            <strong data-paint-size-label>20</strong>
+          </label>
+          <button class="paint-clear" type="button" data-paint-clear>Clear</button>
+        </div>
+        <div class="paint-board" data-paint-board aria-label="Drawing grid"></div>
+      </div>
+    </section>
+  )
+}
+
+{
   project.demo === "charts" && (
     <section class="demo-panel chart-panel" aria-labelledby="demo-title">
       <div class="panel-heading">
@@ -439,6 +466,96 @@ pennos&gt; fg 1</code></pre>
 
       renderCase(activeCase);
     }
+  })();
+
+  (() => {
+    const root = document.querySelector("[data-paint-demo]");
+    if (!root) return;
+
+    const board = root.querySelector("[data-paint-board]");
+    const sizeInput = root.querySelector("[data-paint-size]");
+    const sizeLabel = root.querySelector("[data-paint-size-label]");
+    const modeButtons = root.querySelectorAll("[data-paint-mode]");
+    const clearButton = root.querySelector("[data-paint-clear]");
+    let mode = "black";
+    let size = Number(sizeInput?.value || 20);
+    let hue = 0;
+    let drawing = false;
+
+    const paintCell = (cell) => {
+      if (!cell?.matches?.("[data-paint-cell]")) return;
+      if (mode === "eraser") {
+        cell.style.backgroundColor = "";
+        return;
+      }
+
+      if (mode === "rainbow") {
+        hue = (hue + 23) % 360;
+        cell.style.backgroundColor = `hsl(${hue} 82% 48%)`;
+        return;
+      }
+
+      cell.style.backgroundColor = "#161817";
+    };
+
+    const paintFromPointer = (event) => {
+      const target = document.elementFromPoint(event.clientX, event.clientY);
+      const cell = target?.closest?.("[data-paint-cell]");
+      if (cell && board?.contains(cell)) paintCell(cell);
+    };
+
+    const renderBoard = () => {
+      if (!board) return;
+      board.style.setProperty("--paint-size", String(size));
+      const fragment = document.createDocumentFragment();
+      for (let index = 0; index < size * size; index += 1) {
+        const cell = document.createElement("span");
+        cell.dataset.paintCell = "true";
+        fragment.appendChild(cell);
+      }
+      board.replaceChildren(fragment);
+      if (sizeLabel) sizeLabel.textContent = String(size);
+    };
+
+    modeButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        mode = button.dataset.paintMode || "black";
+        modeButtons.forEach((item) => {
+          const isActive = item === button;
+          item.classList.toggle("active", isActive);
+          item.setAttribute("aria-pressed", String(isActive));
+        });
+      });
+    });
+
+    sizeInput?.addEventListener("input", () => {
+      size = Number(sizeInput.value);
+      renderBoard();
+    });
+
+    clearButton?.addEventListener("click", () => {
+      board?.querySelectorAll("[data-paint-cell]").forEach((cell) => {
+        cell.style.backgroundColor = "";
+      });
+    });
+
+    board?.addEventListener("pointerdown", (event) => {
+      drawing = true;
+      paintFromPointer(event);
+      event.preventDefault();
+    });
+
+    board?.addEventListener("pointermove", (event) => {
+      if (!drawing) return;
+      paintFromPointer(event);
+      event.preventDefault();
+    });
+
+    window.addEventListener("pointerup", () => {
+      drawing = false;
+    });
+
+    renderBoard();
   })();
 
   (() => {

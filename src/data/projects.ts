@@ -19,6 +19,7 @@ export type Project = {
     | "terminal"
     | "pipeline"
     | "structures"
+    | "paint"
     | "map"
     | "charts"
     | "translator"
@@ -356,7 +357,7 @@ export const projects: Project[] = [
     ],
     metrics: ["Vanilla JS", "Interactive browser UI", "Earlier frontend build"],
     links: [{ label: "GitHub", href: "https://github.com/DPnimo11/paint" }],
-    demo: "charts",
+    demo: "paint",
     visual: "screenshot",
     image: "/img/paint.png",
     thumbnailFrameBackground: "#c3d3e4",
