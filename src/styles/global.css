@@ -1172,10 +1172,6 @@ h3 {
   box-shadow: inset 0 0 0 4px var(--amber);
 }
 
-.chess-board .legal-move {
-  box-shadow: inset 0 0 0 3px rgba(22, 24, 23, 0.26);
-}
-
 .chess-board img {
   width: 78%;
   height: 78%;
@@ -1186,11 +1182,17 @@ h3 {
 
 .chess-board .legal-dot {
   position: absolute;
+  display: none;
   width: 17%;
   height: 17%;
   border-radius: 50%;
   background: rgba(22, 24, 23, 0.52);
   pointer-events: none;
+}
+
+.chess-board .legal-open .legal-dot,
+.chess-board .legal-capture .legal-dot {
+  display: block;
 }
 
 .chess-board .legal-capture .legal-dot {

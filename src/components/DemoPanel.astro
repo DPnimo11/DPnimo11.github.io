@@ -210,7 +210,7 @@ pennos&gt; fg 1</code></pre>
     <section class="demo-panel chess-panel" aria-labelledby="demo-title">
       <div class="panel-heading">
         <p class="eyebrow">Interactive artifact</p>
-        <h2 id="demo-title">Tactics trainer</h2>
+        <h2 id="demo-title">Puzzles</h2>
       </div>
       <div class="chess-demo" data-chess-demo>
         <div class="chess-level-tabs" role="tablist" aria-label="Chess puzzle difficulty">
@@ -573,16 +573,16 @@ pennos&gt; fg 1</code></pre>
     };
     const puzzles = {
       easy: {
-        difficulty: "Easy / mate in one",
+        difficulty: "Easy",
         title: "Corner net",
         goal: "White to move. Find the mate.",
         board: { g6: "K", f7: "Q", h8: "k", h7: "r", g7: "b", h1: "q" },
         line: [{ actor: "user", from: "f7", to: "e8", label: "Qe8#" }],
       },
       medium: {
-        difficulty: "Medium / queen sacrifice",
-        title: "Elegant knight move",
-        goal: "Sac the queen, force the rook recapture, then finish with the knight.",
+        difficulty: "Medium",
+        title: "Suffocating Knight",
+        goal: "White to move. Mate in 2.",
         board: { g1: "K", c4: "Q", h6: "N", h8: "k", f8: "r", g7: "p", h7: "p" },
         line: [
           { actor: "user", from: "c4", to: "g8", label: "Qg8+" },
@@ -591,7 +591,7 @@ pennos&gt; fg 1</code></pre>
         ],
       },
       hard: {
-        difficulty: "Hard / Legal Trap",
+        difficulty: "Hard",
         title: "Queen sacrifice line",
         goal: "White to move. Give up the queen, then finish with the knight.",
         board: {
@@ -621,6 +621,12 @@ pennos&gt; fg 1</code></pre>
     let waitingForAuto = false;
     let waitingForReset = false;
     let autoTimer = null;
+    const boardCells = new Map();
+
+    Object.values(pieceAssets).forEach((file) => {
+      const image = new Image();
+      image.src = `/img/chess-pieces/${file}`;
+    });
 
     const isWhitePiece = (piece) => piece && piece === piece.toUpperCase();
     const isBlackPiece = (piece) => piece && piece === piece.toLowerCase();
@@ -872,37 +878,73 @@ pennos&gt; fg 1</code></pre>
       resetAfterIncorrectMove(selectedSquare, square);
     };
 
-    const renderBoard = () => {
+    const createPieceNode = (piece) => {
+      const pieceNode = document.createElement("img");
+      pieceNode.src = `/img/chess-pieces/${pieceAssets[piece]}`;
+      pieceNode.alt = pieceNames[piece] || "";
+      pieceNode.draggable = false;
+      return pieceNode;
+    };
+
+    const createBoardCells = (force = false) => {
       if (!boardNode) return;
-      boardNode.replaceChildren();
+      if (force) {
+        boardNode.replaceChildren();
+        boardCells.clear();
+      }
+      if (boardCells.size) return;
+
       ranks.forEach((rank, rankIndex) => {
         files.forEach((file, fileIndex) => {
           const square = `${file}${rank}`;
-          const piece = board[square];
-          const isLegalTarget = legalTargets.has(square);
           const cell = document.createElement("button");
+          const dot = document.createElement("span");
+
           cell.type = "button";
           cell.className = (rankIndex + fileIndex) % 2 === 0 ? "light" : "dark";
           cell.dataset.square = square;
-          cell.setAttribute("aria-label", piece ? `${pieceNames[piece]} on ${square}` : `Empty ${square}`);
-          if (square === selectedSquare) cell.classList.add("selected");
-          if (isLegalTarget) cell.classList.add("legal-move");
-          if (isLegalTarget && piece) cell.classList.add(isBlackPiece(piece) ? "legal-capture" : "legal-blocked");
-          if (piece) {
-            const pieceNode = document.createElement("img");
-            pieceNode.src = `/img/chess-pieces/${pieceAssets[piece]}`;
-            pieceNode.alt = pieceNames[piece] || "";
-            pieceNode.draggable = false;
-            cell.appendChild(pieceNode);
-          }
-          if (isLegalTarget) {
-            const dot = document.createElement("span");
-            dot.className = "legal-dot";
-            cell.appendChild(dot);
-          }
+
+          dot.className = "legal-dot";
+
+          cell.appendChild(dot);
           cell.addEventListener("click", () => handleSquareClick(square));
           boardNode.appendChild(cell);
+          boardCells.set(square, { cell, pieceNode: null, piece: null, dot });
         });
+      });
+    };
+
+    const renderBoard = () => {
+      if (!boardNode) return;
+      createBoardCells();
+
+      boardCells.forEach((entry, square) => {
+        const { cell } = entry;
+        const piece = board[square];
+        const isLegalTarget = legalTargets.has(square);
+        const isCapture = isLegalTarget && Boolean(piece) && isBlackPiece(piece);
+        const isOpenMove = isLegalTarget && !piece;
+
+        cell.setAttribute("aria-label", piece ? `${pieceNames[piece]} on ${square}` : `Empty ${square}`);
+        cell.classList.toggle("selected", square === selectedSquare);
+        cell.classList.toggle("legal-move", isLegalTarget);
+        cell.classList.toggle("legal-open", isOpenMove);
+        cell.classList.toggle("legal-capture", isCapture);
+
+        if (piece) {
+          if (!entry.pieceNode) {
+            entry.pieceNode = createPieceNode(piece);
+            cell.insertBefore(entry.pieceNode, entry.dot);
+          } else if (entry.piece !== piece) {
+            entry.pieceNode.src = `/img/chess-pieces/${pieceAssets[piece]}`;
+            entry.pieceNode.alt = pieceNames[piece] || "";
+          }
+          entry.piece = piece;
+        } else if (entry.pieceNode) {
+          entry.pieceNode.remove();
+          entry.pieceNode = null;
+          entry.piece = null;
+        }
       });
     };
 
@@ -923,6 +965,7 @@ pennos&gt; fg 1</code></pre>
         button.classList.toggle("active", isActive);
         button.setAttribute("aria-selected", String(isActive));
       });
+      createBoardCells(true);
       updateMeta();
       renderBoard();
       setStatus(message);
