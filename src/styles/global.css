@@ -965,6 +965,20 @@ h3 {
   margin: 12px 0 4px;
 }
 
+.collision-video-frame {
+  overflow: hidden;
+  margin-bottom: 14px;
+  border: 1px solid var(--line-strong);
+  background: #111613;
+}
+
+.collision-video-frame video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #111613;
+}
+
 .map-sketch,
 .bar-chart,
 .paper-figure,
