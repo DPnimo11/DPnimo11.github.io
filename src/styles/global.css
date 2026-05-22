@@ -1005,11 +1005,10 @@ h3 {
 }
 
 .azure-pipeline-strip span,
-.azure-case-list span,
+.azure-model-list span,
 .azure-score-label,
 .azure-threshold-control span,
-.azure-confusion dt,
-.azure-pr-metrics dt,
+.azure-kpi-grid dt,
 .azure-signals-heading span {
   color: var(--muted);
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
@@ -1038,14 +1037,14 @@ h3 {
   align-items: stretch;
 }
 
-.azure-case-list {
+.azure-model-list {
   display: grid;
   gap: 8px;
   align-content: start;
 }
 
-.azure-case-list button {
-  min-height: 76px;
+.azure-model-list button {
+  min-height: 112px;
   border: 1px solid rgba(22, 24, 23, 0.28);
   background: rgba(255, 250, 240, 0.82);
   padding: 12px;
@@ -1054,24 +1053,24 @@ h3 {
   text-align: left;
 }
 
-.azure-case-list button.active {
+.azure-model-list button.active {
   border-color: #111613;
   background: #111613;
   color: #f8fbff;
   box-shadow: inset 4px 0 0 #26a0d8;
 }
 
-.azure-case-list strong,
-.azure-case-list span {
+.azure-model-list strong,
+.azure-model-list span {
   display: block;
 }
 
-.azure-case-list span {
+.azure-model-list span {
   margin-top: 3px;
   line-height: 1.35;
 }
 
-.azure-case-list button.active span {
+.azure-model-list button.active span {
   color: #b7d9e7;
 }
 
@@ -1235,6 +1234,44 @@ h3 {
   background: rgba(38, 160, 216, 0.24);
 }
 
+.azure-cascade-flow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22px minmax(0, 1fr);
+  gap: 10px;
+  align-items: stretch;
+  margin-top: 12px;
+}
+
+.azure-cascade-flow div {
+  border: 1px solid rgba(248, 251, 255, 0.22);
+  background: rgba(248, 251, 255, 0.08);
+  padding: 10px;
+}
+
+.azure-cascade-flow span {
+  display: block;
+  color: #b7d9e7;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.azure-cascade-flow strong {
+  display: block;
+  margin-top: 6px;
+  color: #f8fbff;
+  font-size: 0.86rem;
+  line-height: 1.28;
+}
+
+.azure-cascade-flow i {
+  align-self: center;
+  height: 2px;
+  background: #95cbe4;
+}
+
 .azure-decision {
   margin-top: 12px;
   border: 1px solid rgba(248, 251, 255, 0.24);
@@ -1255,70 +1292,65 @@ h3 {
   align-content: start;
 }
 
-.azure-confusion,
-.azure-pr-metrics {
+.azure-kpi-grid {
   margin: 0;
 }
 
-.azure-confusion {
+.azure-kpi-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   border: 1px solid rgba(22, 24, 23, 0.18);
 }
 
-.azure-confusion div {
+.azure-kpi-grid div {
   min-height: 92px;
   padding: 12px;
 }
 
-.azure-confusion div:nth-child(1) {
+.azure-kpi-grid div:nth-child(1) {
   background: rgba(44, 110, 73, 0.14);
 }
 
-.azure-confusion div:nth-child(2) {
+.azure-kpi-grid div:nth-child(2) {
   background: rgba(199, 133, 43, 0.16);
 }
 
-.azure-confusion div:nth-child(3) {
+.azure-kpi-grid div:nth-child(3) {
   background: rgba(181, 74, 53, 0.16);
 }
 
-.azure-confusion div:nth-child(4) {
+.azure-kpi-grid div:nth-child(4) {
   background: rgba(36, 92, 115, 0.14);
 }
 
-.azure-confusion div:nth-child(2n) {
+.azure-kpi-grid div:nth-child(5) {
+  background: rgba(44, 110, 73, 0.1);
+}
+
+.azure-kpi-grid div:nth-child(6) {
+  background: rgba(36, 92, 115, 0.1);
+}
+
+.azure-kpi-grid div:nth-child(2n) {
   border-left: 1px solid rgba(22, 24, 23, 0.16);
 }
 
-.azure-confusion div:nth-child(n + 3) {
+.azure-kpi-grid div:nth-child(n + 3) {
   border-top: 1px solid rgba(22, 24, 23, 0.16);
 }
 
-.azure-confusion dd {
+.azure-kpi-grid dd {
   margin: 8px 0 0;
   font-size: 1.8rem;
   font-weight: 850;
   line-height: 1;
 }
 
-.azure-pr-metrics {
-  display: grid;
-  gap: 0;
-  border-top: 1px solid rgba(22, 24, 23, 0.18);
-}
-
-.azure-pr-metrics div {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  border-bottom: 1px solid rgba(22, 24, 23, 0.18);
-  padding: 10px 0;
-}
-
-.azure-pr-metrics dd {
+.azure-metric-note {
   margin: 0;
-  font-weight: 850;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
 }
 
 .azure-signals {
@@ -2033,7 +2065,7 @@ h3 {
   }
 
   .azure-pipeline-strip,
-  .azure-case-list {
+  .azure-model-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -2127,9 +2159,19 @@ h3 {
   .photo-ledger,
   .pipeline-steps,
   .azure-pipeline-strip,
-  .azure-case-list,
+  .azure-model-list,
   .paper-figure {
     grid-template-columns: 1fr;
+  }
+
+  .azure-cascade-flow {
+    grid-template-columns: 1fr;
+  }
+
+  .azure-cascade-flow i {
+    width: 2px;
+    height: 18px;
+    justify-self: center;
   }
 
   .azure-score-top,
