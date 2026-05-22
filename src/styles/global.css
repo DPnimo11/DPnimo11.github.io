@@ -1105,9 +1105,12 @@ h3 {
 
 .azure-score-top > strong {
   flex: 0 0 auto;
+  max-width: 180px;
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  font-size: clamp(2rem, 5vw, 3.4rem);
-  line-height: 0.95;
+  font-size: clamp(1.25rem, 3vw, 2.1rem);
+  line-height: 1.05;
+  text-align: right;
+  overflow-wrap: anywhere;
 }
 
 .azure-score-label {
@@ -1146,12 +1149,52 @@ h3 {
   color: #d9e6e1;
 }
 
+.azure-performance-bars {
+  display: grid;
+  gap: 10px;
+  margin: 22px 0 16px;
+}
+
+.azure-performance-bars div {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+}
+
+.azure-performance-bars span {
+  color: #b7d9e7;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.azure-performance-bars i {
+  overflow: hidden;
+  height: 12px;
+  border: 1px solid rgba(248, 251, 255, 0.24);
+  background: rgba(248, 251, 255, 0.1);
+}
+
+.azure-performance-bars b {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #26a0d8, #41c28d);
+  transition: width 180ms ease;
+}
+
 .azure-threshold-control {
   display: grid;
   gap: 8px;
   margin-top: auto;
   border-top: 1px solid rgba(248, 251, 255, 0.18);
   padding-top: 14px;
+}
+
+.azure-split-control {
+  margin-top: 0;
 }
 
 .azure-threshold-control span {
@@ -1168,6 +1211,28 @@ h3 {
 .azure-threshold-control input {
   width: 100%;
   accent-color: #26a0d8;
+}
+
+.azure-option-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.azure-option-row button {
+  min-height: 36px;
+  border: 1px solid rgba(248, 251, 255, 0.3);
+  background: rgba(248, 251, 255, 0.08);
+  padding: 8px 10px;
+  color: #f8fbff;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.azure-option-row button.active {
+  border-color: #95cbe4;
+  background: rgba(38, 160, 216, 0.24);
 }
 
 .azure-decision {
@@ -2074,7 +2139,9 @@ h3 {
   }
 
   .azure-score-top > strong {
-    font-size: 2.4rem;
+    max-width: none;
+    font-size: 1.6rem;
+    text-align: left;
   }
 
   .azure-signal {

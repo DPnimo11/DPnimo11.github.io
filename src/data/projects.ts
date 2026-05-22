@@ -323,7 +323,7 @@ export const projects: Project[] = [
     approach:
       "The pipeline builds request-level tables, tenant history features, time-based splits, and model notebooks for classical and neural methods.",
     result:
-      "The repository documents a 70-column final dataset and multiple model families for evaluating critical VM prediction.",
+      "The repository documents a 70+ column request-level dataset and multiple model families for evaluating critical VM prediction.",
     stack: ["Python", "Jupyter", "LightGBM", "CatBoost", "MLP"],
     highlights: [
       "Request-time feature construction",
@@ -331,7 +331,7 @@ export const projects: Project[] = [
       "Time-based train, validation, and test split",
       "Classical ML and neural model notebooks",
     ],
-    metrics: ["70-column ML table", "30-day window", "Multiple model families"],
+    metrics: ["70+ column request table", "30-day window", "Multiple model families"],
     links: [{ label: "GitHub", href: "https://github.com/DPnimo11/CIS-5200-Final-Project" }],
     demo: "azure-criticality",
     visual: "chart",
