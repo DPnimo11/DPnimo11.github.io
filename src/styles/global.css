@@ -788,6 +788,32 @@ h3 {
   box-shadow: var(--shadow);
 }
 
+.detail-visual-stack {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.image-attribution {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.image-attribution a {
+  border-bottom: 1px solid var(--line);
+  font-weight: 700;
+}
+
+.image-attribution a:hover {
+  border-color: var(--line-strong);
+}
+
+.project-anime-analytics img {
+  filter: none !important;
+}
+
 .detail-hero .project-visual:not(.visual-logo):not(.visual-screenshot) img,
 .detail-hero .visual-fallback {
   min-height: 360px;

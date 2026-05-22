@@ -30,6 +30,14 @@ export type Project = {
   visual: string;
   image?: string;
   thumbnailFrameBackground?: string;
+  imageAttribution?: {
+    title: string;
+    creator: string;
+    creatorHref: string;
+    sourceHref: string;
+    license: string;
+    licenseHref: string;
+  };
 };
 
 export const projects: Project[] = [
@@ -193,7 +201,17 @@ export const projects: Project[] = [
     metrics: ["6,600+ anime", "100k+ users", "12 API routes", "99.77 percent backend line coverage"],
     links: [{ label: "GitHub", href: "https://github.com/laytcai/cis450-final-proj" }],
     demo: "database",
-    visual: "chart",
+    visual: "screenshot",
+    image: "/img/naruto.jpg",
+    thumbnailFrameBackground: "#BE644A",
+    imageAttribution: {
+      title: "Naruto Minimalist Wallpaper",
+      creator: "greenmapple17",
+      creatorHref: "https://www.deviantart.com/greenmapple17",
+      sourceHref: "https://www.deviantart.com/greenmapple17/art/Naruto-Minimalist-Wallpaper-546005960",
+      license: "CC BY-NC-ND 3.0",
+      licenseHref: "https://creativecommons.org/licenses/by-nc-nd/3.0/",
+    },
   },
   {
     slug: "cis5810-collision-demo",

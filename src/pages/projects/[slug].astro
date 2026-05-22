@@ -26,7 +26,28 @@ const { project } = Astro.props;
           {project.links.map((link) => <a class="button" href={link.href} target="_blank" rel="noreferrer">{link.label}</a>)}
         </div>
       </div>
-      <ProjectVisual variant={project.visual} image={project.image} slug={project.slug} title={project.title} />
+      <div class="detail-visual-stack">
+        <ProjectVisual variant={project.visual} image={project.image} slug={project.slug} title={project.title} />
+        {
+          project.imageAttribution && (
+            <p class="image-attribution">
+              Thumbnail artwork:{" "}
+              <a href={project.imageAttribution.sourceHref} target="_blank" rel="noreferrer">
+                {project.imageAttribution.title}
+              </a>{" "}
+              by{" "}
+              <a href={project.imageAttribution.creatorHref} target="_blank" rel="noreferrer">
+                {project.imageAttribution.creator}
+              </a>
+              , licensed under{" "}
+              <a href={project.imageAttribution.licenseHref} target="_blank" rel="noreferrer">
+                {project.imageAttribution.license}
+              </a>
+              . Displayed unmodified and scaled for layout.
+            </p>
+          )
+        }
+      </div>
     </header>
 
     <DemoPanel project={project} />
