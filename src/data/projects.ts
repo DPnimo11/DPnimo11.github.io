@@ -175,7 +175,9 @@ export const projects: Project[] = [
     metrics: ["Public binaries only", "Academic integrity-safe repo", "Two-person build"],
     links: [{ label: "GitHub", href: "https://github.com/DPnimo11/PennOS" }],
     demo: "terminal",
-    visual: "terminal",
+    visual: "screenshot",
+    image: "/img/pennos.jpg",
+    thumbnailFrameBackground: "#fff",
   },
   {
     slug: "anime-analytics",
@@ -353,7 +355,9 @@ export const projects: Project[] = [
     metrics: ["Three-stage notebook workflow", "Train-only scaling", "Resampling comparisons"],
     links: [{ label: "GitHub", href: "https://github.com/DPnimo11/cis-2450-final-proj" }],
     demo: "charts",
-    visual: "chart",
+    visual: "screenshot",
+    image: "/img/bluesky.jpg",
+    thumbnailFrameBackground: "#fff",
   },
   {
     slug: "cis5200-azure-criticality",
