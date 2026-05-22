@@ -127,6 +127,23 @@ pennos&gt; fg 1</code></pre>
 }
 
 {
+  project.demo === "database" && (
+    <section class="demo-panel database-panel" aria-labelledby="demo-title">
+      <div class="panel-heading">
+        <p class="eyebrow">System artifact</p>
+        <h2 id="demo-title">ETL to analytics UI</h2>
+      </div>
+      <ol class="pipeline-steps">
+        <li><span>01</span><strong>Load</strong><p>Python ETL creates the PostgreSQL schema and bulk-loads cleaned MyAnimeList tables.</p></li>
+        <li><span>02</span><strong>Model</strong><p>SQL normalizes dimensions, tokenizes genres and studios, and prepares indexed query paths.</p></li>
+        <li><span>03</span><strong>Serve</strong><p>Express routes call parameterized SQL for browse, detail, recommendations, compatibility, trends, and studios.</p></li>
+        <li><span>04</span><strong>Explore</strong><p>React pages render search, profiles, comparisons, trend charts, and studio quality views.</p></li>
+      </ol>
+    </section>
+  )
+}
+
+{
   project.demo === "structures" && (
     <section class="demo-panel structure-panel" aria-labelledby="demo-title">
       <div class="panel-heading">

@@ -19,6 +19,7 @@ export type Project = {
     | "terminal"
     | "pipeline"
     | "structures"
+    | "database"
     | "paint"
     | "chess"
     | "map"
@@ -167,6 +168,32 @@ export const projects: Project[] = [
     links: [{ label: "GitHub", href: "https://github.com/DPnimo11/PennOS" }],
     demo: "terminal",
     visual: "terminal",
+  },
+  {
+    slug: "anime-analytics",
+    title: "Anime Analytics",
+    kicker: "Database systems",
+    year: "2026",
+    status: "Final project",
+    summary:
+      "A full-stack analytics app over MyAnimeList data with PostgreSQL ETL, Express APIs, and React dashboards.",
+    problem:
+      "Anime recommendation and comparison questions need joins across anime metadata, users, lists, genres, studios, and ratings without turning the frontend into a query layer.",
+    approach:
+      "We built a normalized PostgreSQL 16 schema on AWS RDS, Python ETL scripts for cleaned MyAnimeList CSVs, an Express backend with one parameterized SQL file per route, and a Vite/React frontend for browse, detail, profile, compare, trends, and studio views.",
+    result:
+      "The repo documents the full setup path, 12 backend routes, smoke tests, API docs, and a backend Vitest/Supertest suite with enforced coverage above 80 percent.",
+    stack: ["PostgreSQL", "AWS RDS", "Express", "React", "Vite", "Python ETL", "Vitest"],
+    highlights: [
+      "Normalized schema and idempotent ETL for anime, users, and user-anime lists",
+      "Parameterized SQL endpoints for browsing, recommendations, compatibility, trends, and studio quality",
+      "React pages for home, browse, anime detail, user profile, compare, trends, and studios",
+      "Backend route tests with a mocked database layer and coverage threshold",
+    ],
+    metrics: ["6,600+ anime", "100k+ users", "12 API routes", "99.77 percent backend line coverage"],
+    links: [{ label: "GitHub", href: "https://github.com/laytcai/cis450-final-proj" }],
+    demo: "database",
+    visual: "chart",
   },
   {
     slug: "cis5810-collision-demo",
