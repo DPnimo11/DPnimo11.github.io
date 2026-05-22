@@ -832,6 +832,10 @@ h3 {
   filter: none !important;
 }
 
+.project-boltz2-affinity img {
+  filter: none !important;
+}
+
 .detail-hero .project-visual:not(.visual-logo):not(.visual-screenshot) img,
 .detail-hero .visual-fallback {
   min-height: 360px;
