@@ -788,6 +788,24 @@ h3 {
   box-shadow: var(--shadow);
 }
 
+.detail-hero .project-image-frame {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(22, 24, 23, 0.22);
+  background: var(--frame-bg, var(--panel));
+}
+
+.detail-hero .project-image-frame img {
+  min-height: 0;
+  border: 0;
+  background: transparent;
+  object-fit: contain;
+}
+
 .detail-visual-stack {
   display: grid;
   gap: 10px;

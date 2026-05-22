@@ -27,7 +27,13 @@ const { project } = Astro.props;
         </div>
       </div>
       <div class="detail-visual-stack">
-        <ProjectVisual variant={project.visual} image={project.image} slug={project.slug} title={project.title} />
+        <ProjectVisual
+          variant={project.visual}
+          image={project.image}
+          frameBackground={project.thumbnailFrameBackground}
+          slug={project.slug}
+          title={project.title}
+        />
         {
           project.imageAttribution && (
             <p class="image-attribution">
