@@ -1213,7 +1213,7 @@ pennos&gt; fg 1</code></pre>
       cascade: {
         kind: "Two-stage safety model",
         title: "Criticality Cascade",
-        threshold: "t1=0.296 / t2=0.425",
+        threshold: "t1=0.296\nt2=0.425",
         note: "Stage 1 is a recall-constrained Logistic Regression filter; Stage 2 is a Random Forest run only on candidates to recover precision.",
         decision: "Designed for scheduling safety: missing a critical VM is worse than sending extra candidates to protected placement.",
         stageOneLabel: "Stage 1 / Logistic Regression",
