@@ -7,9 +7,87 @@ interface Props {
 
 const { project } = Astro.props;
 const mapboxToken = import.meta.env.PUBLIC_MAPBOX_TOKEN ?? "";
+const sparkMap = {
+  center: { lng: -75.1963, lat: 39.9534 },
+  zoom: 14.15,
+  width: 1080,
+  height: 720,
+  style: "streets-v12",
+};
 const sparkStaticMapUrl = mapboxToken
-  ? `https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/-75.1963,39.9534,14.15,0/1200x640@2x?access_token=${mapboxToken}`
+  ? `https://api.mapbox.com/styles/v1/mapbox/${sparkMap.style}/static/${sparkMap.center.lng},${sparkMap.center.lat},${sparkMap.zoom},0/${sparkMap.width}x${sparkMap.height}@2x?access_token=${mapboxToken}`
   : "";
+
+const projectSparkPoint = (lng: number, lat: number) => {
+  const toRadians = (value: number) => (value * Math.PI) / 180;
+  const worldSize = 512 * 2 ** sparkMap.zoom;
+  const mercatorX = (value: number) => ((value + 180) / 360) * worldSize;
+  const mercatorY = (value: number) => {
+    const sin = Math.sin(toRadians(value));
+    return (0.5 - Math.log((1 + sin) / (1 - sin)) / (4 * Math.PI)) * worldSize;
+  };
+
+  const centerX = mercatorX(sparkMap.center.lng);
+  const centerY = mercatorY(sparkMap.center.lat);
+  const x = sparkMap.width / 2 + mercatorX(lng) - centerX;
+  const y = sparkMap.height / 2 + mercatorY(lat) - centerY;
+
+  return {
+    x: (x / sparkMap.width) * 100,
+    y: (y / sparkMap.height) * 100,
+  };
+};
+
+const sparkPosts = [
+  {
+    id: "rodin",
+    location: "Rodin College House",
+    message: "who set off the fire alarm again?",
+    kind: "text",
+    lng: -75.200577,
+    lat: 39.952769,
+  },
+  {
+    id: "amy-gutmann",
+    location: "Amy Gutmann Hall",
+    message: "why is literally every study room booked?",
+    kind: "text",
+    lng: -75.190232,
+    lat: 39.954149,
+  },
+  {
+    id: "locust-compass",
+    location: "Locust Walk Compass",
+    message: "locust at night",
+    kind: "photo",
+    lng: -75.19755,
+    lat: 39.95292,
+    photoBase: "locust",
+  },
+  {
+    id: "pho-saigon",
+    location: "Pho & Cafe Saigon",
+    message: "this pineapple fried rice is actually so gas",
+    kind: "text",
+    lng: -75.20912,
+    lat: 39.952279,
+  },
+  {
+    id: "kcech",
+    location: "KCECH",
+    message: "snow!",
+    kind: "photo",
+    lng: -75.19595,
+    lat: 39.95455,
+    photoBase: "kcech",
+  },
+].map((post) => {
+  const position = projectSparkPoint(post.lng, post.lat);
+  return {
+    ...post,
+    markerStyle: `--marker-x: ${position.x.toFixed(2)}%; --marker-y: ${position.y.toFixed(2)}%;`,
+  };
+});
 ---
 
 {
@@ -86,10 +164,40 @@ pennos&gt; fg 1</code></pre>
         <p class="eyebrow">Product surface</p>
         <h2 id="demo-title">Location posts and network filters</h2>
       </div>
-      <div class={`map-sketch spark-map-shell${sparkStaticMapUrl ? "" : " map-fallback"}`} role="img" aria-label="Static map of University City, Philadelphia" data-spark-static-map>
+      <div class={`map-sketch spark-map-shell${sparkStaticMapUrl ? "" : " map-fallback"}`} role="group" aria-label="Static map of University City, Philadelphia with sample Spark posts" data-spark-static-map>
         {sparkStaticMapUrl && (
           <img class="spark-map-image" src={sparkStaticMapUrl} alt="" loading="eager" fetchpriority="high" data-spark-static-map-image />
         )}
+        <div class="spark-map-markers" aria-label="Sample Spark posts">
+          {sparkPosts.map((post) => (
+            <button
+              class={`spark-map-marker spark-marker-${post.kind}`}
+              type="button"
+              style={post.markerStyle}
+              data-spark-post-marker
+              data-post-id={post.id}
+              data-post-location={post.location}
+              data-post-message={post.message}
+              data-post-kind={post.kind}
+              data-post-photo-base={post.photoBase ?? ""}
+              aria-label={`Open post at ${post.location}`}
+            >
+              <span class="spark-marker-pin" aria-hidden="true"><span></span></span>
+            </button>
+          ))}
+        </div>
+        <article class="spark-post-card" data-spark-post-card hidden aria-live="polite">
+          <div class="spark-post-top">
+            <div>
+              <p class="spark-post-location" data-spark-post-location></p>
+              <p class="spark-post-message" data-spark-post-message></p>
+            </div>
+            <button class="spark-post-close" type="button" data-spark-post-close aria-label="Close post preview"></button>
+          </div>
+          <figure class="spark-post-photo" data-spark-post-photo-wrap hidden>
+            <img src="" alt="" loading="lazy" data-spark-post-photo />
+          </figure>
+        </article>
         <div class="spark-map-fallback" data-spark-static-map-fallback>
           <span>{sparkStaticMapUrl ? "Map preview unavailable" : "Set PUBLIC_MAPBOX_TOKEN to load the map preview"}</span>
         </div>
@@ -443,10 +551,75 @@ pennos&gt; fg 1</code></pre>
 
     const image = root.querySelector("[data-spark-static-map-image]");
     const fallback = root.querySelector("[data-spark-static-map-fallback]");
+    const markers = Array.from(root.querySelectorAll("[data-spark-post-marker]"));
+    const postCard = root.querySelector("[data-spark-post-card]");
+    const postLocation = root.querySelector("[data-spark-post-location]");
+    const postMessage = root.querySelector("[data-spark-post-message]");
+    const postPhotoWrap = root.querySelector("[data-spark-post-photo-wrap]");
+    const postPhoto = root.querySelector("[data-spark-post-photo]");
+    const closeButton = root.querySelector("[data-spark-post-close]");
+    const photoExtensions = ["jpg", "jpeg", "png", "webp"];
+    let photoRequestId = 0;
 
     const showFallback = (message) => {
       if (fallback && message) fallback.querySelector("span").textContent = message;
       root.classList.add("map-fallback");
+    };
+
+    const closePost = () => {
+      postCard?.setAttribute("hidden", "");
+      markers.forEach((marker) => marker.classList.remove("active"));
+    };
+
+    const clearPhoto = () => {
+      if (!postPhoto || !postPhotoWrap) return;
+      postPhoto.removeAttribute("src");
+      postPhoto.alt = "";
+      postPhotoWrap.setAttribute("hidden", "");
+    };
+
+    const loadPostPhoto = (base, location) => {
+      if (!postPhoto || !postPhotoWrap || !base) {
+        clearPhoto();
+        return;
+      }
+
+      const requestId = ++photoRequestId;
+      const candidates = [...photoExtensions.map((extension) => `/img/${base}.${extension}`), `/img/${base}`];
+      let index = 0;
+
+      const tryNext = () => {
+        if (requestId !== photoRequestId) return;
+        if (index >= candidates.length) {
+          clearPhoto();
+          return;
+        }
+
+        postPhoto.src = candidates[index];
+        postPhoto.alt = `${location} post photo`;
+        index += 1;
+      };
+
+      postPhoto.onload = () => {
+        if (requestId !== photoRequestId) return;
+        postPhotoWrap.removeAttribute("hidden");
+      };
+      postPhoto.onerror = tryNext;
+      postPhotoWrap.setAttribute("hidden", "");
+      tryNext();
+    };
+
+    const openPost = (marker) => {
+      if (!postCard || !postLocation || !postMessage) return;
+      const location = marker.dataset.postLocation || "";
+      const message = marker.dataset.postMessage || "";
+      const photoBase = marker.dataset.postPhotoBase || "";
+
+      markers.forEach((item) => item.classList.toggle("active", item === marker));
+      postLocation.textContent = location;
+      postMessage.textContent = message;
+      postCard.removeAttribute("hidden");
+      loadPostPhoto(photoBase, location);
     };
 
     if (!image) return;
@@ -459,6 +632,14 @@ pennos&gt; fg 1</code></pre>
     window.setTimeout(() => {
       if (!image.complete || image.naturalWidth === 0) showFallback("Map preview unavailable");
     }, 8000);
+
+    markers.forEach((marker) => {
+      marker.addEventListener("click", () => openPost(marker));
+    });
+    closeButton?.addEventListener("click", closePost);
+    root.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closePost();
+    });
   })();
 
   (() => {
