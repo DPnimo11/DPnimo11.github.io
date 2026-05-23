@@ -1928,265 +1928,43 @@ h3 {
   overflow: hidden;
 }
 
-.ucity-map {
+.spark-map-shell {
   min-height: 430px;
-  isolation: isolate;
+  border-color: var(--line-strong);
+  background: #dfe8e5;
+}
+
+.spark-map-image,
+.spark-map-fallback {
+  position: absolute;
+  inset: 0;
+}
+
+.spark-map-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.spark-map-fallback {
+  display: none;
+  place-items: center;
+  padding: 24px;
   background:
-    linear-gradient(rgba(22, 24, 23, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(22, 24, 23, 0.045) 1px, transparent 1px),
+    linear-gradient(rgba(22, 24, 23, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(22, 24, 23, 0.06) 1px, transparent 1px),
     #edf3f0;
   background-size: 24px 24px;
-}
-
-.ucity-river {
-  position: absolute;
-  top: -12%;
-  right: -7%;
-  bottom: -14%;
-  width: 24%;
-  border-left: 1px solid rgba(36, 92, 115, 0.45);
-  background:
-    linear-gradient(90deg, rgba(36, 92, 115, 0.22), rgba(36, 92, 115, 0.08)),
-    repeating-linear-gradient(-18deg, rgba(255, 250, 240, 0.28) 0 2px, transparent 2px 14px);
-  transform: rotate(5deg);
-  transform-origin: center;
-  z-index: 0;
-}
-
-.ucity-river span {
-  position: absolute;
-  top: 46%;
-  left: 14px;
-  color: rgba(36, 92, 115, 0.72);
+  color: var(--muted);
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   font-weight: 800;
   text-transform: uppercase;
-  transform: rotate(-85deg);
 }
 
-.ucity-line {
-  position: absolute;
-  z-index: 1;
-  background: rgba(22, 24, 23, 0.28);
-}
-
-.ucity-line.h {
-  left: 7%;
-  right: 16%;
-  height: 1px;
-}
-
-.ucity-line.v {
-  top: 10%;
-  bottom: 9%;
-  width: 1px;
-}
-
-.h-market {
-  top: 18%;
-}
-
-.h-chestnut {
-  top: 30%;
-}
-
-.h-walnut {
-  top: 42%;
-}
-
-.h-locust {
-  top: 54%;
-  background: rgba(44, 110, 73, 0.56);
-}
-
-.h-spruce {
-  top: 66%;
-}
-
-.h-baltimore {
-  top: 80%;
-}
-
-.v-30 {
-  left: 20%;
-}
-
-.v-34 {
-  left: 43%;
-}
-
-.v-36 {
-  left: 54%;
-}
-
-.v-38 {
-  left: 65%;
-}
-
-.v-40 {
-  left: 76%;
-}
-
-.ucity-district {
-  position: absolute;
-  z-index: 2;
+.spark-map-shell.map-fallback .spark-map-fallback {
   display: grid;
-  place-items: end start;
-  border: 1px solid rgba(22, 24, 23, 0.24);
-  background: rgba(255, 250, 240, 0.42);
-  padding: 10px;
-  color: rgba(22, 24, 23, 0.62);
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  font-size: 0.72rem;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.district-drexel {
-  top: 18%;
-  left: 11%;
-  width: 24%;
-  height: 30%;
-  background: rgba(36, 92, 115, 0.1);
-}
-
-.district-penn {
-  top: 42%;
-  left: 35%;
-  width: 33%;
-  height: 30%;
-  background: rgba(44, 110, 73, 0.12);
-}
-
-.district-hospital {
-  top: 64%;
-  left: 45%;
-  width: 28%;
-  height: 22%;
-  background: rgba(181, 74, 53, 0.1);
-}
-
-.ucity-street,
-.ucity-avenue {
-  position: absolute;
-  z-index: 3;
-  color: rgba(22, 24, 23, 0.58);
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  font-size: 0.68rem;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.ucity-street {
-  left: 8%;
-}
-
-.label-market {
-  top: calc(18% - 22px);
-}
-
-.label-walnut {
-  top: calc(42% - 22px);
-}
-
-.label-locust {
-  top: calc(54% - 22px);
-  color: var(--green);
-}
-
-.label-spruce {
-  top: calc(66% - 22px);
-}
-
-.ucity-avenue {
-  top: 6%;
-  transform: translateX(-50%);
-}
-
-.label-30 {
-  left: 20%;
-}
-
-.label-34 {
-  left: 43%;
-}
-
-.label-38 {
-  left: 65%;
-}
-
-.label-40 {
-  left: 76%;
-}
-
-.map-post-marker {
-  position: absolute;
-  left: var(--x);
-  top: var(--y);
-  z-index: 5;
-  display: grid;
-  width: 28px;
-  height: 28px;
-  place-items: center;
-  border: 1px solid var(--line-strong);
-  border-radius: 50% 50% 50% 0;
-  background: var(--marker-bg, var(--red));
-  box-shadow: 3px 3px 0 rgba(22, 24, 23, 0.18);
-  cursor: pointer;
-  transform: translate(-50%, -50%) rotate(-45deg);
-}
-
-.map-post-marker::after {
-  width: 8px;
-  height: 8px;
-  border: 1px solid rgba(22, 24, 23, 0.5);
-  border-radius: 50%;
-  background: var(--panel);
-  content: "";
-}
-
-.map-post-marker span {
-  position: absolute;
-  top: 31px;
-  left: 50%;
-  border: 1px solid rgba(22, 24, 23, 0.28);
-  background: rgba(255, 250, 240, 0.92);
-  padding: 3px 6px;
-  color: var(--ink);
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  font-size: 0.64rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  transform: translateX(-50%) rotate(45deg);
-  white-space: nowrap;
-}
-
-.map-post-marker:hover,
-.map-post-marker:focus-visible {
-  box-shadow: 5px 5px 0 rgba(22, 24, 23, 0.24);
-  outline: 2px solid var(--ink);
-  outline-offset: 3px;
-}
-
-.marker-food {
-  --marker-bg: var(--amber);
-}
-
-.marker-study {
-  --marker-bg: var(--green);
-}
-
-.marker-media {
-  --marker-bg: var(--blue);
-}
-
-.marker-event {
-  --marker-bg: var(--red);
-}
-
-.marker-following {
-  --marker-bg: #7f8d5a;
 }
 
 .bar-chart {
@@ -2491,19 +2269,8 @@ h3 {
     width: auto;
   }
 
-  .ucity-map {
+  .spark-map-shell {
     min-height: 360px;
-  }
-
-  .ucity-street,
-  .ucity-avenue,
-  .ucity-district,
-  .ucity-river span {
-    font-size: 0.6rem;
-  }
-
-  .map-post-marker span {
-    display: none;
   }
 
   .about-notes div,
