@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Reenie+Beanie&display=swap");
+
 :root {
   --paper: #f6f1e8;
   --paper-2: #ebe2d4;
@@ -2219,11 +2221,12 @@ h3 {
 .spark-post-location {
   margin-bottom: 5px;
   color: var(--ink);
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  font-size: 0.66rem;
-  font-weight: 900;
+  font-family: "Reenie Beanie", "Ink Free", "Segoe Script", "Lucida Handwriting", "Bradley Hand", cursive;
+  font-size: 1.1rem;
+  font-weight: 700;
   letter-spacing: 0;
-  text-transform: uppercase;
+  line-height: 1.1;
+  text-transform: none;
 }
 
 .spark-post-stamp {
@@ -2256,15 +2259,25 @@ h3 {
 }
 
 .spark-post-message {
+  --spark-note-line-height: 1.55rem;
   position: relative;
   z-index: 1;
+  min-height: calc(var(--spark-note-line-height) * 2);
+  padding-top: 1px;
   margin-bottom: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(var(--spark-note-line-height) - 1px),
+    rgba(36, 92, 115, 0.28) calc(var(--spark-note-line-height) - 1px),
+    rgba(36, 92, 115, 0.28) var(--spark-note-line-height)
+  );
   color: var(--ink);
-  font-family: "Segoe Print", "Bradley Hand", "Comic Sans MS", "Marker Felt", cursive;
-  font-size: 0.94rem;
+  font-family: "Reenie Beanie", "Ink Free", "Segoe Script", "Lucida Handwriting", "Bradley Hand", cursive;
+  font-size: 1.08rem;
   font-weight: 400;
   letter-spacing: 0;
-  line-height: 1.48;
+  line-height: var(--spark-note-line-height);
 }
 
 .spark-post-close {
@@ -2317,35 +2330,14 @@ h3 {
   object-fit: cover;
 }
 
-.spark-post-lines {
-  display: none;
-  gap: 11px;
-  margin-top: 8px;
-}
-
-.spark-post-lines span {
-  height: 1px;
-  background: rgba(22, 24, 23, 0.28);
-}
-
 .postcard-text .spark-post-body {
-  min-height: 132px;
+  min-height: 112px;
   padding-right: 0;
 }
 
 .postcard-text .spark-post-message {
-  min-height: 92px;
-  padding-top: 1px;
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent 0,
-    transparent calc(1.55rem - 1px),
-    rgba(36, 92, 115, 0.28) calc(1.55rem - 1px),
-    rgba(36, 92, 115, 0.28) 1.55rem
-  );
-  font-size: 0.82rem;
+  font-size: 1rem;
   font-weight: 400;
-  line-height: 1.55rem;
 }
 
 .postcard-photo .spark-post-body {
@@ -2357,9 +2349,8 @@ h3 {
 }
 
 .postcard-photo .spark-post-message {
-  font-size: 0.88rem;
+  font-size: 1.02rem;
   font-weight: 400;
-  line-height: 1.38;
 }
 
 .bar-chart {
