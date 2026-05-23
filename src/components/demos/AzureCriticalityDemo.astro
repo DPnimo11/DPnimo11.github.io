@@ -1,0 +1,309 @@
+    <section class="demo-panel azure-panel" aria-labelledby="demo-title">
+      <div class="panel-heading">
+        <p class="eyebrow">Interactive ML demo</p>
+        <h2 id="demo-title">Azure Criticality Console</h2>
+      </div>
+      <div class="azure-demo" data-azure-criticality-demo>
+        <ol class="azure-pipeline-strip" aria-label="Request-time prediction pipeline">
+          <li><span>01</span><strong>Raw request</strong><p>Tenant, VM category, cores, memory, deployment, and request time.</p></li>
+          <li><span>02</span><strong>Request features</strong><p>Capacity-heavy fields are frozen at provisioning time.</p></li>
+          <li><span>03</span><strong>Tenant window</strong><p>Historical behavior summarizes the prior fleet only.</p></li>
+          <li><span>04</span><strong>Time split</strong><p>Training and validation stay chronological.</p></li>
+          <li><span>05</span><strong>Criticality label</strong><p>Future behavior labels offline evaluation, not live inputs.</p></li>
+        </ol>
+
+        <div class="azure-console-grid">
+          <aside class="azure-model-list" aria-label="Model operating points">
+            <button class="active" type="button" data-azure-model="lightgbm" aria-pressed="true">
+              <strong>LightGBM</strong>
+              <span>Best ranking quality / ROC AUC 0.825</span>
+            </button>
+            <button type="button" data-azure-model="cascade" aria-pressed="false">
+              <strong>Criticality Cascade</strong>
+              <span>Recall-forward two-stage triage</span>
+            </button>
+          </aside>
+
+          <section class="azure-score-card" aria-live="polite">
+            <div class="azure-score-top">
+              <div>
+                <span class="azure-score-label" data-azure-model-kind>Gradient boosting baseline</span>
+                <h3 data-azure-model-title>LightGBM thresholded on validation F1</h3>
+              </div>
+              <strong data-azure-threshold-display>0.488</strong>
+            </div>
+            <div class="azure-performance-bars" aria-label="Selected split model metrics">
+              <div>
+                <span>Precision</span>
+                <i><b data-azure-precision-bar></b></i>
+              </div>
+              <div>
+                <span>Recall</span>
+                <i><b data-azure-recall-bar></b></i>
+              </div>
+              <div>
+                <span>F1</span>
+                <i><b data-azure-f1-bar></b></i>
+              </div>
+            </div>
+            <p data-azure-model-note>
+              Sequential tree boosting gave the strongest ranking quality across thresholds, making it the clean baseline for threshold tradeoffs.
+            </p>
+            <div class="azure-threshold-control">
+              <span>Evaluation split <strong data-azure-split-label>Test</strong></span>
+              <div class="azure-option-row" aria-label="Evaluation split">
+                <button type="button" data-azure-split="validation" aria-pressed="false">Validation</button>
+                <button class="active" type="button" data-azure-split="test" aria-pressed="true">Test</button>
+              </div>
+            </div>
+            <div class="azure-cascade-flow" data-azure-cascade-flow>
+              <div>
+                <span data-azure-stage-one-label>Tree ensemble</span>
+                <strong data-azure-stage-one-value>Threshold 0.488</strong>
+              </div>
+              <i></i>
+              <div>
+                <span data-azure-stage-two-label>Decision</span>
+                <strong data-azure-stage-two-value>Critical if score clears threshold</strong>
+              </div>
+            </div>
+            <div class="azure-decision" data-azure-decision>Best AUC model in the final report; useful when threshold can be tuned for the scheduling policy.</div>
+          </section>
+
+          <aside class="azure-metrics-card">
+            <dl class="azure-kpi-grid" aria-label="Selected model metrics">
+              <div><dt>Accuracy</dt><dd data-azure-accuracy>0.000</dd></div>
+              <div><dt>Precision</dt><dd data-azure-precision>0.000</dd></div>
+              <div><dt>Recall</dt><dd data-azure-recall>0.000</dd></div>
+              <div><dt>F1</dt><dd data-azure-f1>0.000</dd></div>
+              <div><dt>AUC-ROC</dt><dd data-azure-roc-auc>0.000</dd></div>
+              <div><dt>AUC-PR</dt><dd data-azure-pr-auc>n/a</dd></div>
+            </dl>
+            <p class="azure-metric-note" data-azure-metric-note>Positive label is critical. Test metrics come from the final report table.</p>
+          </aside>
+        </div>
+
+        <section class="azure-signals" aria-label="Top model signals">
+          <div class="azure-signals-heading">
+            <span>Top signals</span>
+            <strong data-azure-signal-summary>LightGBM validation permutation importance</strong>
+          </div>
+          <div class="azure-signal-list" data-azure-signals></div>
+        </section>
+      </div>
+    </section>
+  )
+}
+
+<script is:inline>
+  (() => {
+    const root = document.querySelector("[data-azure-criticality-demo]");
+    if (!root) return;
+
+    const modelSummaries = {
+      lightgbm: {
+        kind: "Gradient boosting baseline",
+        title: "LightGBM thresholded on validation F1",
+        threshold: "0.488",
+        note: "Sequential tree boosting gave the strongest ranking quality across thresholds, making it the clean baseline for threshold tradeoffs.",
+        decision: "Best AUC model in the final report; useful when threshold can be tuned for the scheduling policy.",
+        stageOneLabel: "Tree ensemble",
+        stageOneValue: "Threshold 0.488",
+        stageTwoLabel: "Decision",
+        stageTwoValue: "Critical if score clears threshold",
+        splits: {
+          validation: {
+            accuracy: 0.785,
+            precision: 0.627,
+            recall: 0.714,
+            f1: 0.668,
+            rocAuc: 0.8453,
+            prAuc: 0.7554,
+            source: "lightgbm.ipynb validation output",
+          },
+          test: {
+            accuracy: 0.745,
+            precision: 0.586,
+            recall: 0.726,
+            f1: 0.649,
+            rocAuc: 0.825,
+            prAuc: 0.7406,
+            source: "final report table and lightgbm.ipynb",
+          },
+        },
+      },
+      cascade: {
+        kind: "Two-stage safety model",
+        title: "Criticality Cascade",
+        threshold: "t1=0.296\nt2=0.425",
+        note: "Stage 1 is a recall-constrained Logistic Regression filter; Stage 2 is a Random Forest run only on candidates to recover precision.",
+        decision: "Designed for scheduling safety: missing a critical VM is worse than sending extra candidates to protected placement.",
+        stageOneLabel: "Stage 1 / Logistic Regression",
+        stageOneValue: "t1=0.296 keeps validation recall above 0.70",
+        stageTwoLabel: "Stage 2 / Random Forest",
+        stageTwoValue: "t2=0.425 refines Stage 1 candidates",
+        splits: {
+          validation: {
+            accuracy: 0.781,
+            precision: 0.620,
+            recall: 0.718,
+            f1: 0.665,
+            rocAuc: 0.8348,
+            prAuc: 0.7459,
+            source: "criticality_cascade.ipynb joint-search validation output",
+          },
+          test: {
+            accuracy: 0.757,
+            precision: 0.613,
+            recall: 0.676,
+            f1: 0.643,
+            rocAuc: 0.8101,
+            prAuc: 0.7225,
+            source: "criticality_cascade.ipynb joint-search test output",
+          },
+        },
+      },
+    };
+
+    const featureSignals = [
+      { label: "hist_critical_frac", value: 0.281854, detail: "tenant history / prior critical VM fraction" },
+      { label: "vm_virtual_core_count", value: 0.006493, detail: "requested virtual cores" },
+      { label: "vm_category", value: 0.006029, detail: "workload category metadata" },
+      { label: "hour_of_day", value: 0.005091, detail: "request-time hour" },
+      { label: "hist_cpu_mean_mean", value: 0.003697, detail: "prior tenant CPU mean" },
+    ];
+
+    const modelButtons = root.querySelectorAll("[data-azure-model]");
+    const splitButtons = root.querySelectorAll("[data-azure-split]");
+    const thresholdDisplay = root.querySelector("[data-azure-threshold-display]");
+    const splitLabel = root.querySelector("[data-azure-split-label]");
+    const precisionBar = root.querySelector("[data-azure-precision-bar]");
+    const recallBar = root.querySelector("[data-azure-recall-bar]");
+    const f1Bar = root.querySelector("[data-azure-f1-bar]");
+    const decisionNode = root.querySelector("[data-azure-decision]");
+    const kindNode = root.querySelector("[data-azure-model-kind]");
+    const titleNode = root.querySelector("[data-azure-model-title]");
+    const noteNode = root.querySelector("[data-azure-model-note]");
+    const stageOneLabelNode = root.querySelector("[data-azure-stage-one-label]");
+    const stageOneValueNode = root.querySelector("[data-azure-stage-one-value]");
+    const stageTwoLabelNode = root.querySelector("[data-azure-stage-two-label]");
+    const stageTwoValueNode = root.querySelector("[data-azure-stage-two-value]");
+    const metricNoteNode = root.querySelector("[data-azure-metric-note]");
+    const signalsNode = root.querySelector("[data-azure-signals]");
+    const signalSummaryNode = root.querySelector("[data-azure-signal-summary]");
+    const metricNodes = {
+      accuracy: root.querySelector("[data-azure-accuracy]"),
+      precision: root.querySelector("[data-azure-precision]"),
+      recall: root.querySelector("[data-azure-recall]"),
+      f1: root.querySelector("[data-azure-f1]"),
+      prAuc: root.querySelector("[data-azure-pr-auc]"),
+      rocAuc: root.querySelector("[data-azure-roc-auc]"),
+    };
+
+    let activeModel = "lightgbm";
+    let activeSplit = "test";
+
+    const splitNames = {
+      validation: "Validation",
+      test: "Test",
+    };
+    const formatRatio = (value) => `${Math.round(value * 100)}%`;
+    const formatMetric = (value) => (typeof value === "number" ? value.toFixed(3) : "n/a");
+    const formatAuc = (value) => (typeof value === "number" ? value.toFixed(4) : "n/a");
+
+    const renderSignals = (signals) => {
+      if (!signalsNode) return;
+      const fragment = document.createDocumentFragment();
+      const maxValue = Math.max(...signals.map((signal) => signal.value));
+
+      signals.forEach((signal) => {
+        const row = document.createElement("div");
+        const meta = document.createElement("div");
+        const label = document.createElement("span");
+        const detail = document.createElement("em");
+        const track = document.createElement("div");
+        const fill = document.createElement("i");
+        const value = document.createElement("strong");
+
+        row.className = "azure-signal";
+        meta.className = "azure-signal-meta";
+        track.className = "azure-signal-track";
+
+        label.textContent = signal.label;
+        detail.textContent = signal.detail;
+        fill.style.width = `${Math.max(7, (signal.value / maxValue) * 100)}%`;
+        value.textContent = signal.value.toFixed(4);
+
+        meta.append(label, detail);
+        track.append(fill);
+        row.append(meta, track, value);
+        fragment.append(row);
+      });
+
+      signalsNode.replaceChildren(fragment);
+    };
+
+    const render = () => {
+      const model = modelSummaries[activeModel] || modelSummaries.lightgbm;
+      const metrics = model.splits[activeSplit] || model.splits.test;
+
+      if (kindNode) kindNode.textContent = model.kind;
+      if (titleNode) titleNode.textContent = model.title;
+      if (noteNode) noteNode.textContent = model.note;
+      if (thresholdDisplay) thresholdDisplay.textContent = model.threshold;
+      if (splitLabel) splitLabel.textContent = splitNames[activeSplit] || "Validation";
+      if (precisionBar) precisionBar.style.width = formatRatio(metrics.precision);
+      if (recallBar) recallBar.style.width = formatRatio(metrics.recall);
+      if (f1Bar) f1Bar.style.width = formatRatio(metrics.f1);
+      if (stageOneLabelNode) stageOneLabelNode.textContent = model.stageOneLabel;
+      if (stageOneValueNode) stageOneValueNode.textContent = model.stageOneValue;
+      if (stageTwoLabelNode) stageTwoLabelNode.textContent = model.stageTwoLabel;
+      if (stageTwoValueNode) stageTwoValueNode.textContent = model.stageTwoValue;
+      if (decisionNode) {
+        decisionNode.textContent = model.decision;
+        decisionNode.classList.toggle("critical", activeModel === "cascade");
+      }
+      if (metricNoteNode) {
+        metricNoteNode.textContent = `${splitNames[activeSplit] || "Validation"} metrics: ${metrics.source}. Positive label is critical.`;
+      }
+      if (signalSummaryNode) signalSummaryNode.textContent = "Validation AUC drop when shuffled";
+
+      metricNodes.accuracy && (metricNodes.accuracy.textContent = formatMetric(metrics.accuracy));
+      metricNodes.precision && (metricNodes.precision.textContent = formatMetric(metrics.precision));
+      metricNodes.recall && (metricNodes.recall.textContent = formatMetric(metrics.recall));
+      metricNodes.f1 && (metricNodes.f1.textContent = formatMetric(metrics.f1));
+      metricNodes.prAuc && (metricNodes.prAuc.textContent = formatAuc(metrics.prAuc));
+      metricNodes.rocAuc && (metricNodes.rocAuc.textContent = formatAuc(metrics.rocAuc));
+
+      modelButtons.forEach((button) => {
+        const isActive = button.dataset.azureModel === activeModel;
+        button.classList.toggle("active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+      });
+
+      splitButtons.forEach((button) => {
+        const isActive = button.dataset.azureSplit === activeSplit;
+        button.classList.toggle("active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+      });
+
+      renderSignals(featureSignals);
+    };
+
+    modelButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        activeModel = button.dataset.azureModel || "lightgbm";
+        render();
+      });
+    });
+
+    splitButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        activeSplit = button.dataset.azureSplit || "test";
+        render();
+      });
+    });
+
+    render();
+  })();
+</script>

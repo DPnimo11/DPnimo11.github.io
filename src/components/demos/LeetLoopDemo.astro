@@ -1,0 +1,77 @@
+    <section class="demo-panel demo-leetloop" aria-labelledby="demo-title">
+      <div class="panel-heading">
+        <p class="eyebrow">Interactive artifact</p>
+        <h2 id="demo-title">A tiny review queue</h2>
+      </div>
+      <div class="leetloop-demo" data-leetloop-demo>
+        <div class="queue-header">
+          <span>Today</span>
+          <strong data-due-count>3 due</strong>
+        </div>
+        <div class="review-list" data-review-list></div>
+        <div class="review-actions" aria-label="Review actions">
+          <button type="button" data-review-action="again">Again</button>
+          <button type="button" data-review-action="solved">Solved</button>
+        </div>
+      </div>
+    </section>
+  )
+
+<script is:inline>
+  (() => {
+    const root = document.querySelector("[data-leetloop-demo]");
+    if (!root) return;
+
+    const list = root.querySelector("[data-review-list]");
+    const dueCount = root.querySelector("[data-due-count]");
+    const items = [
+      { title: "Binary Search", tag: "arrays", due: "now", interval: 1 },
+      { title: "Course Schedule", tag: "graphs", due: "today", interval: 3 },
+      { title: "LRU Cache", tag: "design", due: "tomorrow", interval: 7 },
+    ];
+    let cursor = 0;
+
+    const render = () => {
+      if (!list || !dueCount) return;
+      const fragment = document.createDocumentFragment();
+
+      items.forEach((item, index) => {
+        const row = document.createElement("article");
+        const body = document.createElement("div");
+        const title = document.createElement("strong");
+        const meta = document.createElement("span");
+        const due = document.createElement("em");
+
+        row.className = `review-row${index === cursor ? " active" : ""}`;
+        title.textContent = item.title;
+        meta.textContent = `${item.tag} / interval ${item.interval}d`;
+        due.textContent = item.due;
+
+        body.append(title, meta);
+        row.append(body, due);
+        fragment.append(row);
+      });
+
+      list.replaceChildren(fragment);
+      dueCount.textContent = `${items.filter((item) => item.due !== "later").length} due`;
+    };
+
+    root.querySelectorAll("[data-review-action]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const active = items[cursor];
+        if (!active) return;
+        if (button.dataset.reviewAction === "solved") {
+          active.interval = Math.min(active.interval * 2, 30);
+          active.due = "later";
+        } else {
+          active.interval = 1;
+          active.due = "now";
+        }
+        cursor = (cursor + 1) % items.length;
+        render();
+      });
+    });
+
+    render();
+  })();
+</script>

@@ -1,0 +1,263 @@
+    <section class="demo-panel structure-panel" aria-labelledby="demo-title">
+      <div class="panel-heading">
+        <p class="eyebrow">Aligned structures</p>
+        <h2 id="demo-title">Predicted peptide vs X-ray pose</h2>
+      </div>
+      <div class="structure-demo" data-pepdock-viewer>
+        <div class="structure-case-tabs" role="tablist" aria-label="PepDock structure cases">
+          <button class="active" type="button" data-structure-case="6n3e">6N3E</button>
+          <button type="button" data-structure-case="8rop">8ROP</button>
+          <button type="button" data-structure-case="4c5a">4C5A</button>
+          <button type="button" data-structure-case="5v2p-i15k">5V2P I15K</button>
+        </div>
+        <div class="structure-viewer-grid">
+          <div class="protein-viewer" data-protein-viewer aria-label="Aligned molecular structure viewer">
+            <span class="viewer-status" data-viewer-status>Loading molecular viewer...</span>
+          </div>
+          <aside class="structure-sidebar" aria-live="polite">
+            <p class="eyebrow" data-structure-kind>Original / high accuracy</p>
+            <h3 data-structure-title>6N3E</h3>
+            <p data-structure-note>AF3 prediction nearly overlaps the X-ray peptide pose.</p>
+            <dl class="structure-metrics">
+              <div>
+                <dt>DockQ</dt>
+                <dd data-structure-dockq>0.989</dd>
+              </div>
+              <div>
+                <dt>RMSD</dt>
+                <dd data-structure-rmsd>0.63 A</dd>
+              </div>
+            </dl>
+            <div class="structure-controls" aria-label="Viewer controls">
+              <button class="active" type="button" data-structure-style="cartoon">Cartoon</button>
+              <button type="button" data-structure-style="sticks">Sticks</button>
+              <button type="button" data-structure-style="surface">Surface</button>
+              <button type="button" data-structure-action="focus">Peptides</button>
+              <button type="button" data-structure-action="reset">Reset</button>
+            </div>
+            <div class="structure-legend" aria-label="Structure color legend">
+              <span><i class="legend-xray-rec"></i>X-ray receptor</span>
+              <span><i class="legend-pred-rec"></i>Predicted receptor</span>
+              <span><i class="legend-xray-pep"></i>X-ray peptide</span>
+              <span><i class="legend-pred-pep"></i>Predicted peptide</span>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  )
+
+<script is:inline>
+  (() => {
+    const structureRoot = document.querySelector("[data-pepdock-viewer]");
+    if (structureRoot) {
+      const cases = {
+        "6n3e": {
+          title: "6N3E",
+          kind: "Original / high accuracy",
+          dockq: "0.989",
+          rmsd: "0.63 A",
+          note: "AF3 prediction nearly overlaps the X-ray peptide pose.",
+          base: "/structures/pepdock/6n3e/",
+        },
+        "8rop": {
+          title: "8ROP",
+          kind: "Original / high accuracy",
+          dockq: "0.985",
+          rmsd: "0.34 A",
+          note: "A second clean original target with tight receptor-frame agreement.",
+          base: "/structures/pepdock/8rop/",
+        },
+        "4c5a": {
+          title: "4C5A",
+          kind: "Original / miss",
+          dockq: "0.014",
+          rmsd: "48.44 A",
+          note: "The predicted peptide lands far from the X-ray binding pose.",
+          base: "/structures/pepdock/4c5a/",
+        },
+        "5v2p-i15k": {
+          title: "5V2P I15K",
+          kind: "Single mutation collapse",
+          dockq: "0.010",
+          rmsd: "53.64 A",
+          note: "One semi-conservative Ile15 to Lys substitution, Grantham 102, drops DockQ from 0.970 to 0.010.",
+          base: "/structures/pepdock/5v2p-i15k/",
+        },
+      };
+
+      const viewerNode = structureRoot.querySelector("[data-protein-viewer]");
+      const statusNode = structureRoot.querySelector("[data-viewer-status]");
+      const titleNode = structureRoot.querySelector("[data-structure-title]");
+      const kindNode = structureRoot.querySelector("[data-structure-kind]");
+      const noteNode = structureRoot.querySelector("[data-structure-note]");
+      const dockqNode = structureRoot.querySelector("[data-structure-dockq]");
+      const rmsdNode = structureRoot.querySelector("[data-structure-rmsd]");
+      const caseButtons = structureRoot.querySelectorAll("[data-structure-case]");
+      const styleButtons = structureRoot.querySelectorAll("[data-structure-style]");
+      const actionButtons = structureRoot.querySelectorAll("[data-structure-action]");
+      const viewerBackground = "#9aa6a3";
+      const colors = {
+        xrayReceptor: 0xffd34d,
+        predictedReceptor: 0x1a7cff,
+        xrayPeptide: 0x19a45b,
+        predictedPeptide: 0xd4311f,
+      };
+      let viewer;
+      let activeStyle = "cartoon";
+      let activeCase = "6n3e";
+      let models = [];
+
+      const setStatus = (message) => {
+        if (!statusNode) return;
+        statusNode.textContent = message;
+        statusNode.hidden = !message;
+      };
+
+      const load3Dmol = () =>
+        new Promise((resolve, reject) => {
+          if (window.$3Dmol) {
+            resolve(window.$3Dmol);
+            return;
+          }
+
+          const existing = document.querySelector("script[data-structure-lib]");
+          if (existing) {
+            existing.addEventListener("load", () => resolve(window.$3Dmol));
+            existing.addEventListener("error", reject);
+            return;
+          }
+
+          const script = document.createElement("script");
+          script.src = "https://3Dmol.org/build/3Dmol-min.js";
+          script.async = true;
+          script.dataset.structureLib = "true";
+          script.addEventListener("load", () => resolve(window.$3Dmol));
+          script.addEventListener("error", reject);
+          document.head.appendChild(script);
+        });
+
+      const loadPdb = async (url) => {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Could not load ${url}`);
+        return response.text();
+      };
+
+      const updateCopy = (id) => {
+        const item = cases[id];
+        if (!item) return;
+        if (titleNode) titleNode.textContent = item.title;
+        if (kindNode) kindNode.textContent = item.kind;
+        if (noteNode) noteNode.textContent = item.note;
+        if (dockqNode) dockqNode.textContent = item.dockq;
+        if (rmsdNode) rmsdNode.textContent = item.rmsd;
+
+        caseButtons.forEach((button) => {
+          const isActive = button.dataset.structureCase === id;
+          button.classList.toggle("active", isActive);
+          button.setAttribute("aria-selected", String(isActive));
+        });
+      };
+
+      const styleModels = () => {
+        if (!viewer || models.length !== 4) return;
+        const [xrayReceptor, predictedReceptor, xrayPeptide, predictedPeptide] = models;
+        viewer.removeAllSurfaces();
+        models.forEach((model) => model.setStyle({}, {}));
+
+        if (activeStyle === "surface") {
+          xrayReceptor.setStyle({}, {
+            cartoon: { color: colors.xrayReceptor, opacity: 0.25 },
+            line: { color: colors.xrayReceptor, linewidth: 1 },
+          });
+          predictedReceptor.setStyle({}, {
+            cartoon: { color: colors.predictedReceptor, opacity: 0.2 },
+            line: { color: colors.predictedReceptor, linewidth: 1 },
+          });
+          xrayPeptide.setStyle({}, { stick: { color: colors.xrayPeptide, radius: 0.24 } });
+          predictedPeptide.setStyle({}, { stick: { color: colors.predictedPeptide, radius: 0.24 } });
+          viewer.addSurface(window.$3Dmol.SurfaceType.VDW, { color: colors.xrayReceptor, opacity: 0.75 }, { model: 0 });
+          viewer.addSurface(window.$3Dmol.SurfaceType.VDW, { color: colors.predictedReceptor, opacity: 0.55 }, { model: 1 });
+        } else if (activeStyle === "sticks") {
+          xrayReceptor.setStyle({}, { stick: { color: colors.xrayReceptor, radius: 0.045 } });
+          predictedReceptor.setStyle({}, { stick: { color: colors.predictedReceptor, radius: 0.045 } });
+          xrayPeptide.setStyle({}, { stick: { color: colors.xrayPeptide, radius: 0.25 } });
+          predictedPeptide.setStyle({}, { stick: { color: colors.predictedPeptide, radius: 0.25 } });
+        } else {
+          xrayReceptor.setStyle({}, { cartoon: { color: colors.xrayReceptor, opacity: 1 } });
+          predictedReceptor.setStyle({}, { cartoon: { color: colors.predictedReceptor, opacity: 0.9 } });
+          xrayPeptide.setStyle({}, { cartoon: { color: colors.xrayPeptide } });
+          predictedPeptide.setStyle({}, { cartoon: { color: colors.predictedPeptide } });
+        }
+
+        viewer.render();
+      };
+
+      const renderCase = async (id) => {
+        const item = cases[id];
+        if (!item || !viewerNode) return;
+        activeCase = id;
+        updateCopy(id);
+        setStatus("Loading structures...");
+
+        try {
+          const threeDmol = await load3Dmol();
+          if (!viewer) {
+            viewer = threeDmol.createViewer(viewerNode, { backgroundColor: viewerBackground });
+          }
+
+          const [xrayReceptor, xrayPeptide, predictedReceptor, predictedPeptide] = await Promise.all([
+            loadPdb(`${item.base}xray-receptor.pdb`),
+            loadPdb(`${item.base}xray-peptide.pdb`),
+            loadPdb(`${item.base}predicted-receptor.pdb`),
+            loadPdb(`${item.base}predicted-peptide.pdb`),
+          ]);
+
+          viewer.clear();
+          models = [
+            viewer.addModel(xrayReceptor, "pdb"),
+            viewer.addModel(predictedReceptor, "pdb"),
+            viewer.addModel(xrayPeptide, "pdb"),
+            viewer.addModel(predictedPeptide, "pdb"),
+          ];
+          styleModels();
+          viewer.zoomTo();
+          viewer.render();
+          setStatus("");
+        } catch (error) {
+          setStatus("Structure viewer could not load.");
+          console.error(error);
+        }
+      };
+
+      caseButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const id = button.dataset.structureCase;
+          if (id && id !== activeCase) renderCase(id);
+        });
+      });
+
+      styleButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          activeStyle = button.dataset.structureStyle || "cartoon";
+          styleButtons.forEach((item) => item.classList.toggle("active", item === button));
+          styleModels();
+        });
+      });
+
+      actionButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          if (!viewer) return;
+          if (button.dataset.structureAction === "focus") {
+            viewer.zoomTo({ model: [2, 3] });
+          } else {
+            viewer.zoomTo();
+          }
+          viewer.render();
+        });
+      });
+
+      renderCase(activeCase);
+    }
+  })();
+</script>

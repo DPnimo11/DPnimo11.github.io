@@ -1,0 +1,157 @@
+.structure-demo {
+  display: grid;
+  gap: 16px;
+}
+
+.structure-case-tabs,
+.structure-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.structure-case-tabs {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 14px;
+}
+
+.structure-case-tabs button,
+.structure-controls button {
+  min-height: 38px;
+  border: 1px solid var(--line-strong);
+  background: rgba(246, 241, 232, 0.72);
+  padding: 8px 11px;
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.structure-case-tabs button.active,
+.structure-controls button.active {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.structure-viewer-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 20px;
+  align-items: stretch;
+}
+
+.protein-viewer {
+  position: relative;
+  overflow: hidden;
+  min-height: 460px;
+  border: 1px solid var(--line-strong);
+  background: #9aa6a3;
+}
+
+.protein-viewer canvas {
+  display: block;
+}
+
+.viewer-status {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  color: #111613;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.84rem;
+  text-align: center;
+}
+
+.viewer-status[hidden] {
+  display: none;
+}
+
+.structure-sidebar {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  border-left: 1px solid var(--line);
+  padding-left: 18px;
+}
+
+.structure-sidebar h3 {
+  margin-bottom: 10px;
+}
+
+.structure-sidebar p:not(.eyebrow) {
+  color: var(--muted);
+}
+
+.structure-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 8px 0 18px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.structure-metrics div {
+  padding: 12px 0;
+}
+
+.structure-metrics div + div {
+  border-left: 1px solid var(--line);
+  padding-left: 14px;
+}
+
+.structure-metrics dt,
+.structure-legend {
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.structure-metrics dd {
+  margin: 4px 0 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.structure-controls {
+  margin-bottom: 20px;
+}
+
+.structure-legend {
+  display: grid;
+  gap: 8px;
+  margin-top: auto;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+
+.structure-legend span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.structure-legend i {
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--line-strong);
+}
+
+.legend-xray-rec {
+  background: #ffd34d;
+}
+
+.legend-pred-rec {
+  background: #1a7cff;
+}
+
+.legend-xray-pep {
+  background: #19a45b;
+}
+
+.legend-pred-pep {
+  background: #d4311f;
+}

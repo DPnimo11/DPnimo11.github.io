@@ -1,0 +1,18 @@
+    <section class="demo-panel terminal-panel" aria-labelledby="demo-title">
+      <div class="panel-heading">
+        <p class="eyebrow">Transcript demo</p>
+        <h2 id="demo-title">PennOS shell sketch</h2>
+      </div>
+      <pre><code>pennfat# mkfs disk.fs 1024 1
+pennfat# mount disk.fs
+pennfat# touch notes.txt
+pennfat# chmod +rw notes.txt
+
+$ ./pennos disk.fs log/scheduler.log
+pennos&gt; nice 1 sleep 8 &
+[job 1] pid 4 running
+pennos&gt; jobs
+1  running  sleep 8
+pennos&gt; fg 1</code></pre>
+    </section>
+  )

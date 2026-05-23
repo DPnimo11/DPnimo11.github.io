@@ -1,0 +1,239 @@
+@media (max-width: 980px) {
+  .hero-section,
+  .about-hero,
+  .detail-hero,
+  .detail-grid,
+  .at-a-glance {
+    grid-template-columns: 1fr;
+  }
+
+  .project-grid,
+  .project-grid.wide,
+  .about-notes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .photo-ledger {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .about-notes div:nth-child(3) {
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+
+  .pipeline-steps,
+  .paper-figure {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .azure-console-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .azure-pipeline-strip,
+  .azure-model-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .structure-viewer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chess-trainer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chess-logic {
+    border-top: 1px solid var(--line);
+    border-left: 0;
+    padding-top: 18px;
+    padding-left: 0;
+  }
+
+  .structure-sidebar {
+    border-top: 1px solid var(--line);
+    border-left: 0;
+    padding-top: 18px;
+    padding-left: 0;
+  }
+
+  .site-footer {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .footer-contact {
+    border-top: 1px solid var(--line);
+    border-left: 0;
+    padding-top: 16px;
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .footer-links {
+    border-top: 1px solid var(--line);
+    border-left: 0;
+    padding-top: 16px;
+    padding-left: 0;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 680px) {
+  .page-shell {
+    width: min(100% - 20px, 1180px);
+  }
+
+  .site-header,
+  .site-footer,
+  .section-heading,
+  .panel-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .site-header {
+    top: 10px;
+    margin-bottom: 34px;
+  }
+
+  .site-header nav {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .site-header nav a,
+  .button {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  h1 {
+    font-size: clamp(2.15rem, 11vw, 3.4rem);
+  }
+
+  .hero-copy,
+  .about-copy,
+  .detail-hero > div:first-child,
+  .detail-copy {
+    padding-left: 16px;
+  }
+
+  .project-grid,
+  .project-grid.wide,
+  .about-notes,
+  .photo-ledger,
+  .pipeline-steps,
+  .azure-pipeline-strip,
+  .azure-model-list,
+  .paper-figure {
+    grid-template-columns: 1fr;
+  }
+
+  .azure-cascade-flow {
+    grid-template-columns: 1fr;
+  }
+
+  .azure-cascade-flow i {
+    width: 2px;
+    height: 18px;
+    justify-self: center;
+  }
+
+  .azure-score-top,
+  .azure-signals-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .azure-score-top > strong {
+    max-width: none;
+    font-size: 1.6rem;
+    text-align: left;
+  }
+
+  .azure-signal {
+    grid-template-columns: minmax(0, 1fr) 44px;
+  }
+
+  .azure-signal-track {
+    grid-column: 1 / -1;
+  }
+
+  .protein-viewer {
+    min-height: 360px;
+  }
+
+  .structure-case-tabs button,
+  .structure-controls button,
+  .chess-level-tabs button,
+  .paint-tool-group button,
+  .paint-clear {
+    flex: 1 1 auto;
+  }
+
+  .paint-toolbar,
+  .paint-size-control {
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .paint-size-control input {
+    flex: 1;
+    width: auto;
+  }
+
+  .spark-map-marker {
+    width: 30px;
+    height: 38px;
+  }
+
+  .spark-marker-pin {
+    width: 30px;
+    height: 30px;
+  }
+
+  .spark-post-card {
+    width: min(300px, calc(100% - 20px));
+    padding: 12px;
+  }
+
+  .about-notes div,
+  .about-notes div:nth-child(3) {
+    min-height: 0;
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+
+  .about-notes div:first-child {
+    border-top: 0;
+  }
+
+  .photo-card.tall,
+  .photo-card.wide {
+    grid-row: auto;
+    grid-column: auto;
+  }
+
+  .photo-card.tall img,
+  .photo-card.wide img,
+  .photo-card img {
+    min-height: 300px;
+    max-height: none;
+  }
+
+  .at-a-glance li {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .project-card-body {
+    min-height: auto;
+  }
+
+  .review-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
