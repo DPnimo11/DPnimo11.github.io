@@ -293,7 +293,7 @@ export const projects: Project[] = [
     demo: "map",
     visual: "screenshot",
     image: "/img/spark.png",
-    thumbnailFrameBackground: "#f8fbfb",
+    thumbnailFrameBackground: "#ffffff",
   },
   {
     slug: "manga-translator",
