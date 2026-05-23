@@ -1166,34 +1166,6 @@ h3 {
   color: #95cbe4;
 }
 
-.azure-gauge {
-  position: relative;
-  overflow: hidden;
-  height: 18px;
-  margin: 24px 0 16px;
-  border: 1px solid rgba(248, 251, 255, 0.28);
-  background: rgba(248, 251, 255, 0.12);
-}
-
-.azure-gauge span {
-  display: block;
-  width: 36%;
-  height: 100%;
-  background: linear-gradient(90deg, #41c28d, #e2ba54 58%, #cf4f42);
-  transition: width 180ms ease;
-}
-
-.azure-gauge i {
-  position: absolute;
-  top: -7px;
-  bottom: -7px;
-  left: 55%;
-  width: 2px;
-  background: #f8fbff;
-  box-shadow: 0 0 0 2px rgba(17, 22, 19, 0.8);
-  transition: left 180ms ease;
-}
-
 .azure-score-card p {
   color: #d9e6e1;
 }
@@ -1240,10 +1212,6 @@ h3 {
   margin-top: auto;
   border-top: 1px solid rgba(248, 251, 255, 0.18);
   padding-top: 14px;
-}
-
-.azure-split-control {
-  margin-top: 0;
 }
 
 .azure-threshold-control span {
@@ -1459,10 +1427,6 @@ h3 {
   display: block;
   height: 100%;
   background: linear-gradient(90deg, #c7852b, #b54a35);
-}
-
-.azure-signal.lowers .azure-signal-track i {
-  background: linear-gradient(90deg, #2c6e49, #41c28d);
 }
 
 .azure-signal > strong {

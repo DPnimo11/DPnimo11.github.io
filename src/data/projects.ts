@@ -1,3 +1,14 @@
+export type ProjectVisualVariant =
+  | "screenshot"
+  | "paper"
+  | "pipeline"
+  | "logo"
+  | "terminal"
+  | "queue"
+  | "map"
+  | "chart"
+  | "matrix";
+
 export type Project = {
   slug: string;
   title: string;
@@ -27,7 +38,7 @@ export type Project = {
     | "azure-criticality"
     | "translator"
     | "hiring";
-  visual: string;
+  visual: ProjectVisualVariant;
   image?: string;
   thumbnailFrameBackground?: string;
   imageAttribution?: {

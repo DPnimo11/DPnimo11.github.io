@@ -1716,17 +1716,26 @@ pennos&gt; fg 1</code></pre>
 
     const render = () => {
       if (!list || !dueCount) return;
-      list.innerHTML = items
-        .map((item, index) => `
-          <article class="review-row ${index === cursor ? "active" : ""}">
-            <div>
-              <strong>${item.title}</strong>
-              <span>${item.tag} / interval ${item.interval}d</span>
-            </div>
-            <em>${item.due}</em>
-          </article>
-        `)
-        .join("");
+      const fragment = document.createDocumentFragment();
+
+      items.forEach((item, index) => {
+        const row = document.createElement("article");
+        const body = document.createElement("div");
+        const title = document.createElement("strong");
+        const meta = document.createElement("span");
+        const due = document.createElement("em");
+
+        row.className = `review-row${index === cursor ? " active" : ""}`;
+        title.textContent = item.title;
+        meta.textContent = `${item.tag} / interval ${item.interval}d`;
+        due.textContent = item.due;
+
+        body.append(title, meta);
+        row.append(body, due);
+        fragment.append(row);
+      });
+
+      list.replaceChildren(fragment);
       dueCount.textContent = `${items.filter((item) => item.due !== "later").length} due`;
     };
 
