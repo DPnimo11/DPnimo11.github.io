@@ -664,6 +664,7 @@ h3 {
 
 .photo-card {
   display: grid;
+  align-self: start;
   overflow: hidden;
 }
 
