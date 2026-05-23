@@ -120,7 +120,7 @@ const sparkPosts = [
       </div>
       <div class={`map-sketch spark-map-shell${sparkStaticMapUrl ? "" : " map-fallback"}`} role="group" aria-label="Static map of University City, Philadelphia with sample Spark posts" data-spark-static-map>
         {sparkStaticMapUrl && (
-          <img class="spark-map-image" src={sparkStaticMapUrl} alt="" loading="eager" fetchpriority="high" data-spark-static-map-image />
+          <img class="spark-map-image" src={sparkStaticMapUrl} alt="" loading="eager" fetchpriority="high" decoding="async" data-spark-static-map-image />
         )}
         <div class="spark-map-markers" aria-label="Sample Spark posts">
           {sparkPosts.map((post) => (
@@ -149,13 +149,13 @@ const sparkPosts = [
         <article class="spark-post-card" data-spark-post-card hidden aria-live="polite">
           <button class="spark-post-close" type="button" data-spark-post-close aria-label="Close post preview"></button>
           <figure class="spark-post-photo" data-spark-post-photo-wrap hidden>
-            <img alt="" loading="lazy" data-spark-post-photo />
+            <img alt="" loading="lazy" decoding="async" data-spark-post-photo />
           </figure>
           <div class="spark-post-body">
             <div class="spark-post-top">
               <p class="spark-post-location" data-spark-post-location></p>
-              <img class="spark-post-stamp" src="/img/stamp.png" alt="" loading="lazy" aria-hidden="true" />
-              <img class="spark-post-postmark" src="/img/postmark.png" alt="" loading="lazy" aria-hidden="true" />
+              <img class="spark-post-stamp" src="/img/stamp.png" alt="" loading="lazy" decoding="async" aria-hidden="true" />
+              <img class="spark-post-postmark" src="/img/postmark.png" alt="" loading="lazy" decoding="async" aria-hidden="true" />
             </div>
             <p class="spark-post-message" data-spark-post-message></p>
           </div>

@@ -17,10 +17,10 @@ const frameStyle = frameBackground ? `--frame-bg: ${frameBackground}` : undefine
   {
     image && frameBackground ? (
       <span class="project-image-frame" style={frameStyle}>
-        <img src={image} alt="" loading="lazy" />
+        <img src={image} alt="" loading="lazy" decoding="async" />
       </span>
     ) : image ? (
-      <img src={image} alt="" loading="lazy" />
+      <img src={image} alt="" loading="lazy" decoding="async" />
     ) : (
       <div class="visual-fallback" aria-hidden="true">
         <span></span>
