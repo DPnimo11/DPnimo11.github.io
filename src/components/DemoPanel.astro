@@ -82,11 +82,48 @@ pennos&gt; fg 1</code></pre>
         <p class="eyebrow">Product surface</p>
         <h2 id="demo-title">Location posts and network filters</h2>
       </div>
-      <div class="map-sketch" aria-hidden="true">
-        <span class="marker m1"></span>
-        <span class="marker m2"></span>
-        <span class="marker m3"></span>
-        <span class="map-route"></span>
+      <div class="map-sketch ucity-map" role="group" aria-label="Stylized University City map with sample location markers">
+        <div class="ucity-river"><span>Schuylkill</span></div>
+        <div class="ucity-district district-drexel"><span>Drexel</span></div>
+        <div class="ucity-district district-penn"><span>Penn</span></div>
+        <div class="ucity-district district-hospital"><span>Hospital</span></div>
+
+        <span class="ucity-line h h-market"></span>
+        <span class="ucity-line h h-chestnut"></span>
+        <span class="ucity-line h h-walnut"></span>
+        <span class="ucity-line h h-locust"></span>
+        <span class="ucity-line h h-spruce"></span>
+        <span class="ucity-line h h-baltimore"></span>
+        <span class="ucity-line v v-30"></span>
+        <span class="ucity-line v v-34"></span>
+        <span class="ucity-line v v-36"></span>
+        <span class="ucity-line v v-38"></span>
+        <span class="ucity-line v v-40"></span>
+
+        <span class="ucity-street label-market">Market</span>
+        <span class="ucity-street label-walnut">Walnut</span>
+        <span class="ucity-street label-locust">Locust</span>
+        <span class="ucity-street label-spruce">Spruce</span>
+        <span class="ucity-avenue label-30">30th</span>
+        <span class="ucity-avenue label-34">34th</span>
+        <span class="ucity-avenue label-38">38th</span>
+        <span class="ucity-avenue label-40">40th</span>
+
+        <button class="map-post-marker marker-food" type="button" style="--x: 43%; --y: 42%;" data-post-id="food" aria-label="Sample food post marker near Walnut Street">
+          <span>Food</span>
+        </button>
+        <button class="map-post-marker marker-study" type="button" style="--x: 51%; --y: 55%;" data-post-id="study" aria-label="Sample study post marker near Locust Walk">
+          <span>Study</span>
+        </button>
+        <button class="map-post-marker marker-media" type="button" style="--x: 63%; --y: 36%;" data-post-id="media" aria-label="Sample media post marker near 34th Street">
+          <span>Media</span>
+        </button>
+        <button class="map-post-marker marker-event" type="button" style="--x: 34%; --y: 68%;" data-post-id="event" aria-label="Sample event post marker near Spruce Street">
+          <span>Event</span>
+        </button>
+        <button class="map-post-marker marker-following" type="button" style="--x: 24%; --y: 26%;" data-post-id="following" aria-label="Sample following post marker near Drexel">
+          <span>Following</span>
+        </button>
       </div>
     </section>
   )
