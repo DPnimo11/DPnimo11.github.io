@@ -1,6 +1,4 @@
 ---
-
-const { project } = Astro.props;
 const mapboxToken = import.meta.env.PUBLIC_MAPBOX_TOKEN ?? "";
 const sparkMap = {
   center: { lng: -75.1946, lat: 39.9554 },
@@ -167,7 +165,6 @@ const sparkPosts = [
         </div>
       </div>
     </section>
-  )
 
 <script is:inline>
   (() => {
@@ -194,7 +191,7 @@ const sparkPosts = [
     const closePost = () => {
       postCard?.setAttribute("hidden", "");
       postCard?.removeAttribute("style");
-      postCard?.classList.remove("visible", "postcard-photo", "postcard-text", "opens-left", "opens-right");
+      postCard?.classList.remove("visible", "postcard-photo", "postcard-text");
       root.classList.remove("post-open");
       markers.forEach((marker) => marker.classList.remove("active"));
       activeMarker = null;
@@ -232,11 +229,8 @@ const sparkPosts = [
 
       postCard.style.left = `${left}px`;
       postCard.style.top = `${top}px`;
-      postCard.style.setProperty("--post-pointer-y", `${Math.max(24, Math.min(markerCenterY - top, cardRect.height - 24))}px`);
       postCard.style.setProperty("--post-origin-x", opens === "left" ? "100%" : "0%");
       postCard.style.setProperty("--post-origin-y", `${Math.max(0, Math.min(markerCenterY - top, cardRect.height))}px`);
-      postCard.classList.toggle("opens-left", opens === "left");
-      postCard.classList.toggle("opens-right", opens === "right");
     };
 
     const loadPostPhoto = (src, location) => {

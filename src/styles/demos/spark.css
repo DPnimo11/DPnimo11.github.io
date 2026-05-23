@@ -92,10 +92,57 @@
   transition: opacity 180ms ease;
 }
 
+.spark-map-marker::before,
+.spark-map-marker::after {
+  position: absolute;
+  left: 50%;
+  top: 17px;
+  border-radius: 50%;
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.74);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.spark-map-marker::before {
+  z-index: 0;
+  width: 76px;
+  height: 76px;
+  background: radial-gradient(circle, rgba(255, 250, 240, 0.72) 0 22%, rgba(255, 250, 240, 0.34) 42%, rgba(255, 250, 240, 0) 72%);
+  filter: blur(1px);
+}
+
+.spark-map-marker::after {
+  z-index: 0;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255, 250, 240, 0.82);
+  box-shadow: 0 0 0 1px rgba(22, 24, 23, 0.16);
+}
+
+.spark-map-marker.active {
+  z-index: 3;
+  opacity: 1;
+}
+
+.spark-map-marker.active::before {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.spark-map-marker.active::after {
+  animation: spark-marker-pulse 1500ms ease-out infinite;
+  opacity: 0.86;
+}
+
 .spark-marker-pin {
   position: absolute;
   left: 50%;
   top: 0;
+  z-index: 1;
   width: 34px;
   height: 34px;
   border: 1px solid var(--line-strong);
@@ -221,28 +268,6 @@
 .spark-post-card.visible {
   opacity: 1;
   transform: translateY(0) scale(1);
-}
-
-.spark-post-card::before {
-  position: absolute;
-  top: calc(var(--post-pointer-y, 34px) - 9px);
-  width: 18px;
-  height: 18px;
-  border: 1px solid rgba(22, 24, 23, 0.56);
-  border-top: 0;
-  border-right: 0;
-  background: #fffaf0;
-  content: "";
-}
-
-.spark-post-card.opens-right::before {
-  left: -10px;
-  transform: rotate(45deg);
-}
-
-.spark-post-card.opens-left::before {
-  right: -10px;
-  transform: rotate(225deg);
 }
 
 .spark-post-card[hidden],
@@ -404,4 +429,27 @@
 .postcard-photo .spark-post-message {
   font-size: 1.02rem;
   font-weight: 400;
+}
+
+@keyframes spark-marker-pulse {
+  0% {
+    opacity: 0.78;
+    transform: translate(-50%, -50%) scale(0.7);
+  }
+
+  72% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.55);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.55);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spark-map-marker.active::after {
+    animation: none;
+  }
 }
