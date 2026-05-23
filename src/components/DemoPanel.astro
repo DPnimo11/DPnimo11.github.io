@@ -8,8 +8,8 @@ interface Props {
 const { project } = Astro.props;
 const mapboxToken = import.meta.env.PUBLIC_MAPBOX_TOKEN ?? "";
 const sparkMap = {
-  center: { lng: -75.1963, lat: 39.9534 },
-  zoom: 14.15,
+  center: { lng: -75.1946, lat: 39.9554 },
+  zoom: 13.86,
   width: 1080,
   height: 720,
   style: "streets-v12",
@@ -62,7 +62,7 @@ const sparkPosts = [
     kind: "photo",
     lng: -75.19700116298853,
     lat: 39.95225974543569,
-    photoBase: "locust",
+    photo: "/img/locust.jpg",
   },
   {
     id: "pho-saigon",
@@ -79,7 +79,23 @@ const sparkPosts = [
     kind: "photo",
     lng: -75.19438211519811,
     lat: 39.95411298784024,
-    photoBase: "kcech",
+    photo: "/img/kcech.jpg",
+  },
+  {
+    id: "river-trail",
+    location: "Schuylkill River Trail",
+    message: "finally caught a fish!",
+    kind: "text",
+    lng: -75.17992450452381,
+    lat: 39.961281754075685,
+  },
+  {
+    id: "penn-museum",
+    location: "Penn Museum",
+    message: "Penn Sargam show was fire 🔥",
+    kind: "text",
+    lng: -75.1917588135771,
+    lat: 39.94937550033123,
   },
 ].map((post) => {
   const position = projectSparkPoint(post.lng, post.lat);
@@ -179,7 +195,7 @@ pennos&gt; fg 1</code></pre>
               data-post-location={post.location}
               data-post-message={post.message}
               data-post-kind={post.kind}
-              data-post-photo-base={post.photoBase ?? ""}
+              data-post-photo={post.photo ?? ""}
               aria-label={`Open post at ${post.location}`}
             >
               <span class="spark-marker-pin" aria-hidden="true"><span></span></span>
@@ -195,7 +211,7 @@ pennos&gt; fg 1</code></pre>
             <button class="spark-post-close" type="button" data-spark-post-close aria-label="Close post preview"></button>
           </div>
           <figure class="spark-post-photo" data-spark-post-photo-wrap hidden>
-            <img src="" alt="" loading="lazy" data-spark-post-photo />
+            <img alt="" loading="lazy" data-spark-post-photo />
           </figure>
         </article>
         <div class="spark-map-fallback" data-spark-static-map-fallback>
@@ -558,7 +574,7 @@ pennos&gt; fg 1</code></pre>
     const postPhotoWrap = root.querySelector("[data-spark-post-photo-wrap]");
     const postPhoto = root.querySelector("[data-spark-post-photo]");
     const closeButton = root.querySelector("[data-spark-post-close]");
-    const photoExtensions = ["jpg", "jpeg", "png", "webp"];
+    let activeMarker = null;
     let photoRequestId = 0;
 
     const showFallback = (message) => {
@@ -568,58 +584,81 @@ pennos&gt; fg 1</code></pre>
 
     const closePost = () => {
       postCard?.setAttribute("hidden", "");
+      postCard?.removeAttribute("style");
       markers.forEach((marker) => marker.classList.remove("active"));
+      activeMarker = null;
     };
 
     const clearPhoto = () => {
       if (!postPhoto || !postPhotoWrap) return;
+      postPhoto.onload = null;
+      postPhoto.onerror = null;
       postPhoto.removeAttribute("src");
       postPhoto.alt = "";
       postPhotoWrap.setAttribute("hidden", "");
     };
 
-    const loadPostPhoto = (base, location) => {
-      if (!postPhoto || !postPhotoWrap || !base) {
+    const positionPostCard = (marker) => {
+      if (!postCard || !marker) return;
+
+      const gap = 14;
+      const rootRect = root.getBoundingClientRect();
+      const markerRect = marker.getBoundingClientRect();
+      const cardRect = postCard.getBoundingClientRect();
+      const markerCenterX = markerRect.left - rootRect.left + markerRect.width / 2;
+      const markerCenterY = markerRect.top - rootRect.top + markerRect.height / 2;
+      let left = markerCenterX + gap;
+      let top = markerCenterY - cardRect.height / 2;
+
+      if (left + cardRect.width > rootRect.width - gap) {
+        left = markerCenterX - cardRect.width - gap;
+      }
+
+      left = Math.max(gap, Math.min(left, rootRect.width - cardRect.width - gap));
+      top = Math.max(gap, Math.min(top, rootRect.height - cardRect.height - gap));
+
+      postCard.style.left = `${left}px`;
+      postCard.style.top = `${top}px`;
+    };
+
+    const loadPostPhoto = (src, location) => {
+      const requestId = ++photoRequestId;
+      if (!postPhoto || !postPhotoWrap || !src) {
         clearPhoto();
         return;
       }
 
-      const requestId = ++photoRequestId;
-      const candidates = [...photoExtensions.map((extension) => `/img/${base}.${extension}`), `/img/${base}`];
-      let index = 0;
-
-      const tryNext = () => {
-        if (requestId !== photoRequestId) return;
-        if (index >= candidates.length) {
-          clearPhoto();
-          return;
-        }
-
-        postPhoto.src = candidates[index];
-        postPhoto.alt = `${location} post photo`;
-        index += 1;
-      };
-
       postPhoto.onload = () => {
         if (requestId !== photoRequestId) return;
         postPhotoWrap.removeAttribute("hidden");
+        positionPostCard(activeMarker);
       };
-      postPhoto.onerror = tryNext;
-      postPhotoWrap.setAttribute("hidden", "");
-      tryNext();
+      postPhoto.onerror = () => {
+        if (requestId === photoRequestId) clearPhoto();
+      };
+      postPhoto.alt = `${location} post photo`;
+      postPhoto.src = src;
+      postPhotoWrap.removeAttribute("hidden");
+      positionPostCard(activeMarker);
+
+      if (postPhoto.complete && postPhoto.naturalWidth > 0) {
+        positionPostCard(activeMarker);
+      }
     };
 
     const openPost = (marker) => {
       if (!postCard || !postLocation || !postMessage) return;
       const location = marker.dataset.postLocation || "";
       const message = marker.dataset.postMessage || "";
-      const photoBase = marker.dataset.postPhotoBase || "";
+      const photo = marker.dataset.postPhoto || "";
 
+      activeMarker = marker;
       markers.forEach((item) => item.classList.toggle("active", item === marker));
       postLocation.textContent = location;
       postMessage.textContent = message;
       postCard.removeAttribute("hidden");
-      loadPostPhoto(photoBase, location);
+      loadPostPhoto(photo, location);
+      positionPostCard(marker);
     };
 
     if (!image) return;
@@ -637,6 +676,7 @@ pennos&gt; fg 1</code></pre>
       marker.addEventListener("click", () => openPost(marker));
     });
     closeButton?.addEventListener("click", closePost);
+    window.addEventListener("resize", () => positionPostCard(activeMarker));
     root.addEventListener("keydown", (event) => {
       if (event.key === "Escape") closePost();
     });

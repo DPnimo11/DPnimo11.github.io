@@ -2083,8 +2083,8 @@ h3 {
 
 .spark-post-card {
   position: absolute;
-  left: 18px;
-  bottom: 18px;
+  left: 14px;
+  top: 14px;
   z-index: 4;
   display: grid;
   width: min(340px, calc(100% - 36px));
@@ -2481,10 +2481,7 @@ h3 {
   }
 
   .spark-post-card {
-    right: 10px;
-    bottom: 10px;
-    left: 10px;
-    width: auto;
+    width: min(300px, calc(100% - 20px));
     padding: 12px;
   }
 
