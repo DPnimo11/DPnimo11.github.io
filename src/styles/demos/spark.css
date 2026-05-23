@@ -136,32 +136,18 @@
 }
 
 .spark-marker-text .spark-marker-pin span {
-  width: 15px;
-  height: 2px;
+  width: 18px;
+  height: 18px;
   border: 0;
-  border-radius: 999px;
+  border-radius: 0;
   background: var(--panel);
+  -webkit-mask: url("/img/chat.svg") center / contain no-repeat;
+  mask: url("/img/chat.svg") center / contain no-repeat;
 }
 
 .spark-marker-text .spark-marker-pin span::before,
 .spark-marker-text .spark-marker-pin span::after {
-  position: absolute;
-  left: 0;
-  width: 15px;
-  height: 2px;
-  border: 0;
-  border-radius: 999px;
-  background: var(--panel);
-  content: "";
-  transform: none;
-}
-
-.spark-marker-text .spark-marker-pin span::before {
-  top: -5px;
-}
-
-.spark-marker-text .spark-marker-pin span::after {
-  top: 5px;
+  content: none;
 }
 
 .spark-marker-photo {
@@ -210,7 +196,6 @@
   background:
     radial-gradient(circle at 18% 12%, rgba(181, 74, 53, 0.08), transparent 28%),
     radial-gradient(circle at 80% 72%, rgba(36, 92, 115, 0.06), transparent 30%),
-    linear-gradient(90deg, transparent 0 50%, rgba(22, 24, 23, 0.08) 50% calc(50% + 1px), transparent calc(50% + 1px)),
     repeating-linear-gradient(0deg, rgba(22, 24, 23, 0.025) 0 1px, transparent 1px 7px),
     #fffaf0;
   box-shadow:
