@@ -203,16 +203,28 @@ pennos&gt; fg 1</code></pre>
           ))}
         </div>
         <article class="spark-post-card" data-spark-post-card hidden aria-live="polite">
-          <div class="spark-post-top">
-            <div>
-              <p class="spark-post-location" data-spark-post-location></p>
-              <p class="spark-post-message" data-spark-post-message></p>
-            </div>
-            <button class="spark-post-close" type="button" data-spark-post-close aria-label="Close post preview"></button>
-          </div>
+          <button class="spark-post-close" type="button" data-spark-post-close aria-label="Close post preview"></button>
           <figure class="spark-post-photo" data-spark-post-photo-wrap hidden>
             <img alt="" loading="lazy" data-spark-post-photo />
           </figure>
+          <div class="spark-post-body">
+            <div class="spark-post-top">
+              <p class="spark-post-location" data-spark-post-location></p>
+              <span class="spark-post-stamp" aria-hidden="true">SP</span>
+            </div>
+            <p class="spark-post-message" data-spark-post-message></p>
+            <div class="spark-post-lines" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+          <div class="spark-postmark" aria-hidden="true">
+            <div>
+              <span>SPARK</span>
+              <span>PHL</span>
+            </div>
+          </div>
         </article>
         <div class="spark-map-fallback" data-spark-static-map-fallback>
           <span>{sparkStaticMapUrl ? "Map preview unavailable" : "Set PUBLIC_MAPBOX_TOKEN to load the map preview"}</span>
@@ -585,6 +597,8 @@ pennos&gt; fg 1</code></pre>
     const closePost = () => {
       postCard?.setAttribute("hidden", "");
       postCard?.removeAttribute("style");
+      postCard?.classList.remove("visible", "postcard-photo", "postcard-text", "opens-left", "opens-right");
+      root.classList.remove("post-open");
       markers.forEach((marker) => marker.classList.remove("active"));
       activeMarker = null;
     };
@@ -609,9 +623,11 @@ pennos&gt; fg 1</code></pre>
       const markerCenterY = markerRect.top - rootRect.top + markerRect.height / 2;
       let left = markerCenterX + gap;
       let top = markerCenterY - cardRect.height / 2;
+      let opens = "right";
 
       if (left + cardRect.width > rootRect.width - gap) {
         left = markerCenterX - cardRect.width - gap;
+        opens = "left";
       }
 
       left = Math.max(gap, Math.min(left, rootRect.width - cardRect.width - gap));
@@ -619,6 +635,11 @@ pennos&gt; fg 1</code></pre>
 
       postCard.style.left = `${left}px`;
       postCard.style.top = `${top}px`;
+      postCard.style.setProperty("--post-pointer-y", `${Math.max(24, Math.min(markerCenterY - top, cardRect.height - 24))}px`);
+      postCard.style.setProperty("--post-origin-x", opens === "left" ? "100%" : "0%");
+      postCard.style.setProperty("--post-origin-y", `${Math.max(0, Math.min(markerCenterY - top, cardRect.height))}px`);
+      postCard.classList.toggle("opens-left", opens === "left");
+      postCard.classList.toggle("opens-right", opens === "right");
     };
 
     const loadPostPhoto = (src, location) => {
@@ -650,15 +671,20 @@ pennos&gt; fg 1</code></pre>
       if (!postCard || !postLocation || !postMessage) return;
       const location = marker.dataset.postLocation || "";
       const message = marker.dataset.postMessage || "";
+      const kind = marker.dataset.postKind || "text";
       const photo = marker.dataset.postPhoto || "";
 
       activeMarker = marker;
+      root.classList.add("post-open");
       markers.forEach((item) => item.classList.toggle("active", item === marker));
       postLocation.textContent = location;
       postMessage.textContent = message;
+      postCard.classList.remove("visible", "postcard-photo", "postcard-text");
+      postCard.classList.add(kind === "photo" ? "postcard-photo" : "postcard-text");
       postCard.removeAttribute("hidden");
       loadPostPhoto(photo, location);
       positionPostCard(marker);
+      window.requestAnimationFrame(() => postCard.classList.add("visible"));
     };
 
     if (!image) return;
