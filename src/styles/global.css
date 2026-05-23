@@ -2066,17 +2066,32 @@ h3 {
 }
 
 .spark-marker-text .spark-marker-pin span {
-  height: 10px;
-  border-radius: 4px;
+  width: 15px;
+  height: 2px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--panel);
+}
+
+.spark-marker-text .spark-marker-pin span::before,
+.spark-marker-text .spark-marker-pin span::after {
+  position: absolute;
+  left: 0;
+  width: 15px;
+  height: 2px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--panel);
+  content: "";
+  transform: none;
+}
+
+.spark-marker-text .spark-marker-pin span::before {
+  top: -5px;
 }
 
 .spark-marker-text .spark-marker-pin span::after {
-  left: 10px;
-  top: 10px;
-  width: 5px;
-  height: 5px;
-  border-radius: 0 0 2px 0;
-  transform: rotate(35deg);
+  top: 5px;
 }
 
 .spark-marker-photo {
@@ -2114,24 +2129,38 @@ h3 {
   position: absolute;
   left: 14px;
   top: 14px;
+  --stamp-rotate: -4deg;
+  --stamp-x: 0px;
+  --stamp-y: 0px;
   z-index: 4;
   display: grid;
-  width: min(320px, calc(100% - 36px));
-  gap: 12px;
-  border: 1px solid rgba(22, 24, 23, 0.56);
+  width: min(318px, calc(100% - 36px));
+  gap: 10px;
+  border: 1px solid rgba(22, 24, 23, 0.42);
   background:
+    radial-gradient(circle at 18% 12%, rgba(181, 74, 53, 0.08), transparent 28%),
+    radial-gradient(circle at 80% 72%, rgba(36, 92, 115, 0.06), transparent 30%),
     linear-gradient(90deg, transparent 0 50%, rgba(22, 24, 23, 0.08) 50% calc(50% + 1px), transparent calc(50% + 1px)),
+    repeating-linear-gradient(0deg, rgba(22, 24, 23, 0.025) 0 1px, transparent 1px 7px),
     #fffaf0;
   box-shadow:
     6px 8px 0 rgba(22, 24, 23, 0.18),
     0 14px 32px rgba(22, 24, 23, 0.22);
   opacity: 0;
-  padding: 16px;
+  padding: 15px;
   transform: translateY(8px) scale(0.94);
   transform-origin: var(--post-origin-x, 0%) var(--post-origin-y, 50%);
   transition:
     opacity 170ms ease,
     transform 190ms ease;
+}
+
+.spark-post-card::after {
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(22, 24, 23, 0.13);
+  content: "";
+  pointer-events: none;
 }
 
 .spark-post-card.visible {
@@ -2167,13 +2196,17 @@ h3 {
 }
 
 .spark-post-card.postcard-photo {
-  background: #fffaf0;
+  background:
+    radial-gradient(circle at 14% 90%, rgba(181, 74, 53, 0.07), transparent 28%),
+    repeating-linear-gradient(0deg, rgba(22, 24, 23, 0.02) 0 1px, transparent 1px 7px),
+    #fffaf0;
 }
 
 .spark-post-body {
   position: relative;
   display: grid;
-  gap: 10px;
+  gap: 8px;
+  z-index: 1;
 }
 
 .spark-post-top {
@@ -2185,25 +2218,41 @@ h3 {
 
 .spark-post-location {
   margin-bottom: 5px;
-  color: var(--muted);
+  color: var(--ink);
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  font-size: 0.7rem;
-  font-weight: 800;
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
 .spark-post-stamp {
-  display: grid;
+  position: relative;
+  z-index: 2;
+  display: block;
   flex: 0 0 auto;
-  width: 34px;
-  height: 40px;
-  place-items: center;
-  border: 1px solid rgba(22, 24, 23, 0.36);
-  color: var(--red);
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  font-size: 0.68rem;
-  font-weight: 900;
-  letter-spacing: 0;
+  width: 82px;
+  height: 90px;
+  filter: drop-shadow(1px 2px 0 rgba(22, 24, 23, 0.18));
+  object-fit: cover;
+  object-position: center;
+  transform: translate(var(--stamp-x), var(--stamp-y)) rotate(var(--stamp-rotate));
+  transform-origin: center;
+}
+
+.spark-post-postmark {
+  position: absolute;
+  top: 22px;
+  right: 42px;
+  z-index: 1;
+  width: 118px;
+  height: 118px;
+  opacity: 0.42;
+  mix-blend-mode: multiply;
+  object-fit: contain;
+  pointer-events: none;
+  transform: translate(var(--postmark-x, 0), var(--postmark-y, 0)) rotate(var(--postmark-rotate, 0deg));
+  transform-origin: center;
 }
 
 .spark-post-message {
@@ -2211,16 +2260,18 @@ h3 {
   z-index: 1;
   margin-bottom: 0;
   color: var(--ink);
-  font-size: clamp(1rem, 2vw, 1.12rem);
-  font-weight: 800;
-  line-height: 1.35;
+  font-family: "Segoe Print", "Bradley Hand", "Comic Sans MS", "Marker Felt", cursive;
+  font-size: 0.94rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.48;
 }
 
 .spark-post-close {
   position: absolute;
   top: 8px;
   right: 8px;
-  z-index: 2;
+  z-index: 4;
   flex: 0 0 auto;
   width: 24px;
   height: 24px;
@@ -2251,9 +2302,11 @@ h3 {
 .spark-post-photo {
   overflow: hidden;
   margin: 0;
-  border: 8px solid #fffaf0;
+  border: 9px solid #fffaf0;
   background: #dfe8e5;
-  box-shadow: inset 0 0 0 1px rgba(22, 24, 23, 0.28);
+  box-shadow:
+    inset 0 0 0 1px rgba(22, 24, 23, 0.28),
+    0 2px 0 rgba(22, 24, 23, 0.08);
   aspect-ratio: 4 / 3;
 }
 
@@ -2265,7 +2318,7 @@ h3 {
 }
 
 .spark-post-lines {
-  display: grid;
+  display: none;
   gap: 11px;
   margin-top: 8px;
 }
@@ -2275,53 +2328,38 @@ h3 {
   background: rgba(22, 24, 23, 0.28);
 }
 
-.spark-postmark {
-  position: absolute;
-  right: 46px;
-  top: 16px;
-  display: none;
-  width: 54px;
-  height: 54px;
-  place-items: center;
-  border: 1px solid rgba(22, 24, 23, 0.32);
-  border-radius: 50%;
-  color: rgba(22, 24, 23, 0.46);
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  font-size: 0.54rem;
-  font-weight: 900;
-  text-align: center;
-  transform: rotate(-12deg);
-}
-
-.spark-postmark div {
-  display: grid;
-}
-
-.postcard-text .spark-postmark {
-  display: grid;
-}
-
 .postcard-text .spark-post-body {
-  min-height: 150px;
-  padding-right: 88px;
+  min-height: 132px;
+  padding-right: 0;
+}
+
+.postcard-text .spark-post-message {
+  min-height: 92px;
+  padding-top: 1px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(1.55rem - 1px),
+    rgba(36, 92, 115, 0.28) calc(1.55rem - 1px),
+    rgba(36, 92, 115, 0.28) 1.55rem
+  );
+  font-size: 0.82rem;
+  font-weight: 400;
+  line-height: 1.55rem;
 }
 
 .postcard-photo .spark-post-body {
-  gap: 6px;
+  gap: 7px;
 }
 
 .postcard-photo .spark-post-top {
-  padding-right: 26px;
+  padding-right: 24px;
 }
 
 .postcard-photo .spark-post-message {
-  font-size: 1rem;
-}
-
-.postcard-photo .spark-post-stamp,
-.postcard-photo .spark-post-lines,
-.postcard-photo .spark-postmark {
-  display: none;
+  font-size: 0.88rem;
+  font-weight: 400;
+  line-height: 1.38;
 }
 
 .bar-chart {
