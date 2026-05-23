@@ -209,28 +209,51 @@ const sparkPosts = [
     const positionPostCard = (marker) => {
       if (!postCard || !marker) return;
 
-      const gap = 14;
+      const edgeGap = 14;
+      const markerClearance = 25;
+      const leftShadowOffset = 20;
       const rootRect = root.getBoundingClientRect();
       const markerRect = marker.getBoundingClientRect();
       const cardRect = postCard.getBoundingClientRect();
-      const markerCenterX = markerRect.left - rootRect.left + markerRect.width / 2;
-      const markerCenterY = markerRect.top - rootRect.top + markerRect.height / 2;
-      let left = markerCenterX + gap;
-      let top = markerCenterY - cardRect.height / 2;
-      let opens = "right";
+      const markerX = markerRect.left - rootRect.left + markerRect.width / 2;
+      const markerY = markerRect.top - rootRect.top + markerRect.width / 2;
+      const maxLeft = Math.max(edgeGap, rootRect.width - cardRect.width - edgeGap);
+      const maxTop = Math.max(edgeGap, rootRect.height - cardRect.height - edgeGap);
+      const clamp = (value, min, max) => Math.max(min, Math.min(value, max));
+      const safeBox = {
+        left: markerX - markerClearance,
+        right: markerX + markerClearance,
+        top: markerY - markerClearance,
+        bottom: markerY + markerClearance,
+      };
+      const candidates = [
+        { left: markerX + markerClearance, top: markerY - cardRect.height / 2 },
+        { left: markerX - cardRect.width - markerClearance - leftShadowOffset, top: markerY - cardRect.height / 2 },
+        { left: markerX - cardRect.width / 2, top: markerY + markerClearance },
+        { left: markerX - cardRect.width / 2, top: markerY - cardRect.height - markerClearance },
+      ];
+      const choices = candidates.map((candidate, index) => {
+        const left = clamp(candidate.left, edgeGap, maxLeft);
+        const top = clamp(candidate.top, edgeGap, maxTop);
+        const overlapX = Math.max(0, Math.min(left + cardRect.width, safeBox.right) - Math.max(left, safeBox.left));
+        const overlapY = Math.max(0, Math.min(top + cardRect.height, safeBox.bottom) - Math.max(top, safeBox.top));
+        const overlapPenalty = overlapX * overlapY;
+        const clampPenalty = Math.abs(left - candidate.left) + Math.abs(top - candidate.top);
 
-      if (left + cardRect.width > rootRect.width - gap) {
-        left = markerCenterX - cardRect.width - gap;
-        opens = "left";
-      }
+        return {
+          left,
+          top,
+          score: overlapPenalty * 1000 + clampPenalty + index,
+        };
+      });
+      const best = choices.sort((a, b) => a.score - b.score)[0];
+      const originX = clamp(markerX - best.left, 0, cardRect.width);
+      const originY = clamp(markerY - best.top, 0, cardRect.height);
 
-      left = Math.max(gap, Math.min(left, rootRect.width - cardRect.width - gap));
-      top = Math.max(gap, Math.min(top, rootRect.height - cardRect.height - gap));
-
-      postCard.style.left = `${left}px`;
-      postCard.style.top = `${top}px`;
-      postCard.style.setProperty("--post-origin-x", opens === "left" ? "100%" : "0%");
-      postCard.style.setProperty("--post-origin-y", `${Math.max(0, Math.min(markerCenterY - top, cardRect.height))}px`);
+      postCard.style.left = `${best.left}px`;
+      postCard.style.top = `${best.top}px`;
+      postCard.style.setProperty("--post-origin-x", `${originX}px`);
+      postCard.style.setProperty("--post-origin-y", `${originY}px`);
     };
 
     const loadPostPhoto = (src, location) => {
