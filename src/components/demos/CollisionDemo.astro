@@ -30,6 +30,10 @@ const objects = [
       </div>
     </div>
 
+    <div class="collision-terminal" id="collisionTerminal" hidden>
+      <div class="terminal-log" id="terminalLog"></div>
+    </div>
+
     <div class="collision-video-container" id="collisionVideoContainer" hidden>
       <div class="video-header">
         <button type="button" class="back-btn" id="backToSelectorBtn">← Back to selection</button>
@@ -47,6 +51,8 @@ const objects = [
 
 <script>
   const selector = document.getElementById('collisionSelector');
+  const terminal = document.getElementById('collisionTerminal');
+  const terminalLog = document.getElementById('terminalLog');
   const videoContainer = document.getElementById('collisionVideoContainer');
   const objectBtns = document.querySelectorAll('.object-btn');
   const simulateBtn = document.getElementById('simulateBtn') as HTMLButtonElement;
@@ -71,7 +77,6 @@ const objects = [
           selectedObjects.push(id);
           btn.classList.add('selected');
         } else {
-          // Replace the second selected object if they click a third one
           const oldBtn = document.querySelector(`.object-btn[data-id="${selectedObjects[1]}"]`);
           if (oldBtn) oldBtn.classList.remove('selected');
           selectedObjects[1] = id;
@@ -88,40 +93,55 @@ const objects = [
     });
   });
 
+  const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+
   if (simulateBtn) {
-    simulateBtn.addEventListener('click', () => {
+    simulateBtn.addEventListener('click', async () => {
       if (selectedObjects.length !== 2) return;
       
-      // Sort to ensure apple_brick and brick_apple both resolve to apple_brick
       const sorted = [...selectedObjects].sort();
-      const videoName = `${sorted[0]}_${sorted[1]}`;
-      
-      // Placeholder logic: just use the single collision.mp4 for now so it doesn't break
-      if (videoSource) {
-        videoSource.src = `/video/collision.mp4`; 
-      }
-      
-      // Set title
       const btn1 = document.querySelector(`.object-btn[data-id="${sorted[0]}"]`);
       const btn2 = document.querySelector(`.object-btn[data-id="${sorted[1]}"]`);
       const name1 = btn1 ? btn1.querySelector('.object-label')?.textContent : sorted[0];
       const name2 = btn2 ? btn2.querySelector('.object-label')?.textContent : sorted[1];
+      
+      if (selector && terminal && videoContainer && terminalLog) {
+        selector.hidden = true;
+        terminal.hidden = false;
+        
+        terminalLog.innerHTML = '';
+        
+        const sequence = [
+          `> Initializing physics engine...`,
+          `> Loading materials: [${name1}, ${name2}]...`,
+          `> Estimating mass and friction coefficients...`,
+          `> Generating TripoSR meshes...`,
+          `> Running collision simulation...`
+        ];
+
+        for (const text of sequence) {
+          const p = document.createElement('p');
+          p.textContent = text;
+          terminalLog.appendChild(p);
+          await sleep(400);
+        }
+        
+        await sleep(300);
+        
+        terminal.hidden = true;
+        videoContainer.hidden = false;
+      }
+
+      if (videoSource) {
+        videoSource.src = `/video/collision.mp4`; 
+      }
       
       if (videoTitle) {
         videoTitle.textContent = `${name1} vs ${name2}`;
       }
 
       if (videoPlayer) {
-        videoPlayer.load(); // reload source
-      }
-      
-      if (selector && videoContainer) {
-        selector.hidden = true;
-        videoContainer.hidden = false;
-      }
-      
-      // Auto-play the video
-      if (videoPlayer) {
+        videoPlayer.load(); 
         videoPlayer.play().catch(e => console.log('Autoplay prevented:', e));
       }
     });
