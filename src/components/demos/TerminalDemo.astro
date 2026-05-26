@@ -117,7 +117,7 @@
 
       switch (cmd) {
         case "help":
-          await typeLine("Available mock commands: help, man, ls, cat, echo, busy, sleep, ps, jobs, fg, clear");
+          await typeLine("Available mock commands: help, man, ls, cat, echo, sleep, ps, jobs, fg, clear");
           break;
         case "man":
           if (args[1] === "ps") {
@@ -125,7 +125,6 @@
             await typeLine("Columns:");
             await typeLine("  PID   - Process ID");
             await typeLine("  PPID  - Parent Process ID");
-            await typeLine("  PRI   - Priority (-1, 0, 1)");
             await typeLine("  STAT  - State (R: running, S: stopped, Z: zombie, B: blocked)");
             await typeLine("  CMD   - Command line");
           } else if (args[1] === "ls") {
@@ -134,8 +133,6 @@
             await typeLine("cat - concatenate files and print on the standard output. Usage: cat [file]");
           } else if (args[1] === "echo") {
             await typeLine("echo - print text back to the terminal.");
-          } else if (args[1] === "busy") {
-            await typeLine("busy - simulate a CPU-bound job. Usage: busy [priority] [&]");
           } else if (args[1] === "sleep") {
             await typeLine("sleep - simulate a sleeping job for n seconds. Usage: sleep n [&]");
           } else if (args[1] === "jobs") {
@@ -177,10 +174,9 @@
         case "clear":
           output.innerHTML = "";
           break;
-        case "sleep":
-        case "busy": {
+        case "sleep": {
           const isBg = args[args.length - 1] === "&";
-          const dur = cmd === "sleep" ? (parseInt(args[1]) || 2) : 3;
+          const dur = parseInt(args[1]) || 2;
           const pid = pidCounter++;
           
           if (isBg) {
@@ -194,26 +190,21 @@
               if (j) j.state = "Done";
             }, dur * 1000);
           } else {
-            if (cmd === "sleep") {
-              await new Promise(r => setTimeout(r, dur * 1000));
-            } else {
-              await typeLine(`busy: running in foreground (mocked to run ${dur}s)...`);
-              await new Promise(r => setTimeout(r, dur * 1000));
-            }
+            await new Promise(r => setTimeout(r, dur * 1000));
           }
           break;
         }
         case "ps":
-          await typeLine("  PID  PPID   PRI  STAT CMD");
-          await typeLine("    1     0     0     B init");
-          await typeLine("    2     1     0     S shell");
+          await typeLine("  PID  PPID  STAT CMD");
+          await typeLine("    1     0     B init");
+          await typeLine("    2     1     S shell");
           for (const j of jobs) {
             if (j.state !== "Done") {
               const stat = j.type === 'sleep' ? 'S' : 'R';
-              await typeLine(`  ${j.pid.toString().padStart(3)}     2     1     ${stat} ${j.cmd}`);
+              await typeLine(`  ${j.pid.toString().padStart(3)}     2     ${stat} ${j.cmd}`);
             }
           }
-          await typeLine(`  ${pidCounter.toString().padStart(3)}     2     1     R ps`);
+          await typeLine(`  ${pidCounter.toString().padStart(3)}     2     R ps`);
           pidCounter++;
           break;
         case "jobs":
