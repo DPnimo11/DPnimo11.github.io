@@ -1,157 +1,110 @@
 ---
-const objects = [
-  { id: 'apple', label: 'Apple' },
-  { id: 'brick', label: 'Brick' },
-  { id: 'mug', label: 'Coffee Mug' },
-  { id: 'basketball', label: 'Basketball' }
-];
+const jobData = {
+  properties: {
+    objectA: {
+      mass: 500,
+      friction: 0.8,
+      bounciness: 0.1
+    },
+    objectB: {
+      mass: 600,
+      friction: 0.75,
+      bounciness: 0.15
+    }
+  }
+};
 ---
 
 <section class="demo-panel collision-demo-panel" aria-labelledby="demo-title">
   <div class="panel-heading">
     <p class="eyebrow">Interactive Demo</p>
-    <h2 id="demo-title">Material Collision Simulator</h2>
+    <h2 id="demo-title">Pipeline: 2D to 3D Collision</h2>
   </div>
 
-  <div class="collision-arena">
-    <div class="collision-selector" id="collisionSelector">
-      <h3>Select 2 objects to collide:</h3>
-      <div class="object-grid">
-        {objects.map((obj) => (
-          <button type="button" class="object-btn" data-id={obj.id}>
-            <span class="object-icon"></span>
-            <span class="object-label">{obj.label}</span>
-          </button>
-        ))}
-      </div>
-      <div class="selection-status">
-        <span id="selectionCount">0 / 2 selected</span>
-        <button type="button" class="button simulate-btn" id="simulateBtn" disabled>Simulate</button>
+  <div class="pipeline-viewer">
+    <div class="pipeline-tabs">
+      <button class="tab-btn active" data-target="tab-input">01. Input</button>
+      <button class="tab-btn" data-target="tab-estimate">02. Estimate</button>
+      <button class="tab-btn" data-target="tab-generate">03. Generate</button>
+      <button class="tab-btn" data-target="tab-render">04. Render</button>
+    </div>
+
+    <div class="tab-content active" id="tab-input">
+      <div class="split-view">
+        <div class="input-card">
+          <img src="/collision-job/objectA/clean.png" alt="Labubu clean input" />
+          <p>Object A (Labubu)</p>
+        </div>
+        <div class="input-card">
+          <img src="/collision-job/objectB/clean.png" alt="Unicorn clean input" />
+          <p>Object B (Unicorn)</p>
+        </div>
       </div>
     </div>
 
-    <div class="collision-terminal" id="collisionTerminal" hidden>
-      <div class="terminal-log" id="terminalLog"></div>
+    <div class="tab-content" id="tab-estimate">
+      <div class="json-viewer">
+        <pre><code>{`{
+  "objectA": {
+    "material": "Vinyl/Plastic",
+    "mass_g": ${jobData.properties.objectA.mass},
+    "friction": ${jobData.properties.objectA.friction},
+    "bounciness": ${jobData.properties.objectA.bounciness}
+  },
+  "objectB": {
+    "material": "Rubber/Foam",
+    "mass_g": ${jobData.properties.objectB.mass},
+    "friction": ${jobData.properties.objectB.friction},
+    "bounciness": ${jobData.properties.objectB.bounciness}
+  }
+}`}</code></pre>
+      </div>
     </div>
 
-    <div class="collision-video-container" id="collisionVideoContainer" hidden>
-      <div class="video-header">
-        <button type="button" class="back-btn" id="backToSelectorBtn">← Back to selection</button>
-        <strong id="videoTitle">Apple vs Brick</strong>
+    <div class="tab-content" id="tab-generate">
+      <div class="split-view mesh-view">
+        <div class="model-container">
+          <model-viewer src="/collision-job/labubu.glb" auto-rotate camera-controls shadow-intensity="1"></model-viewer>
+          <p>TripoSR Mesh A</p>
+        </div>
+        <div class="model-container">
+          <model-viewer src="/collision-job/unicorn.glb" auto-rotate camera-controls shadow-intensity="1"></model-viewer>
+          <p>TripoSR Mesh B</p>
+        </div>
       </div>
+    </div>
+
+    <div class="tab-content" id="tab-render">
       <div class="collision-video-frame">
-        <video id="collisionVideoPlayer" controls playsinline preload="metadata" poster="/img/collision.jpg">
-          <source id="collisionVideoSource" src="/video/collision.mp4" type="video/mp4" />
-          <a href="/video/collision.mp4">Open the collision video</a>
+        <video controls playsinline preload="metadata" poster="/img/collision.jpg">
+          <source src="/collision-job/output_collision.mp4" type="video/mp4" />
+          <a href="/collision-job/output_collision.mp4">Open the collision video</a>
         </video>
       </div>
     </div>
   </div>
 </section>
 
+<!-- Include model-viewer component script from Google -->
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+
 <script>
-  const selector = document.getElementById('collisionSelector');
-  const terminal = document.getElementById('collisionTerminal');
-  const terminalLog = document.getElementById('terminalLog');
-  const videoContainer = document.getElementById('collisionVideoContainer');
-  const objectBtns = document.querySelectorAll('.object-btn');
-  const simulateBtn = document.getElementById('simulateBtn') as HTMLButtonElement;
-  const backBtn = document.getElementById('backToSelectorBtn');
-  const selectionCount = document.getElementById('selectionCount');
-  const videoPlayer = document.getElementById('collisionVideoPlayer') as HTMLVideoElement;
-  const videoSource = document.getElementById('collisionVideoSource') as HTMLSourceElement;
-  const videoTitle = document.getElementById('videoTitle');
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
 
-  let selectedObjects: string[] = [];
-
-  objectBtns.forEach(btn => {
+  tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      const id = btn.getAttribute('data-id');
-      if (!id) return;
-      
-      if (selectedObjects.includes(id)) {
-        selectedObjects = selectedObjects.filter(obj => obj !== id);
-        btn.classList.remove('selected');
-      } else {
-        if (selectedObjects.length < 2) {
-          selectedObjects.push(id);
-          btn.classList.add('selected');
-        } else {
-          const oldBtn = document.querySelector(`.object-btn[data-id="${selectedObjects[1]}"]`);
-          if (oldBtn) oldBtn.classList.remove('selected');
-          selectedObjects[1] = id;
-          btn.classList.add('selected');
-        }
-      }
+      // Remove active from all
+      tabBtns.forEach(b => b.classList.remove('active'));
+      tabContents.forEach(c => c.classList.remove('active'));
 
-      if (selectionCount) {
-        selectionCount.textContent = `${selectedObjects.length} / 2 selected`;
-      }
-      if (simulateBtn) {
-        simulateBtn.disabled = selectedObjects.length !== 2;
+      // Add active to clicked
+      btn.classList.add('active');
+      const targetId = btn.getAttribute('data-target');
+      if (targetId) {
+        const targetContent = document.getElementById(targetId);
+        if (targetContent) targetContent.classList.add('active');
       }
     });
   });
-
-  const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
-
-  if (simulateBtn) {
-    simulateBtn.addEventListener('click', async () => {
-      if (selectedObjects.length !== 2) return;
-      
-      const sorted = [...selectedObjects].sort();
-      const btn1 = document.querySelector(`.object-btn[data-id="${sorted[0]}"]`);
-      const btn2 = document.querySelector(`.object-btn[data-id="${sorted[1]}"]`);
-      const name1 = btn1 ? btn1.querySelector('.object-label')?.textContent : sorted[0];
-      const name2 = btn2 ? btn2.querySelector('.object-label')?.textContent : sorted[1];
-      
-      if (selector && terminal && videoContainer && terminalLog) {
-        selector.hidden = true;
-        terminal.hidden = false;
-        
-        terminalLog.innerHTML = '';
-        
-        const sequence = [
-          `> Initializing physics engine...`,
-          `> Loading materials: [${name1}, ${name2}]...`,
-          `> Estimating mass and friction coefficients...`,
-          `> Generating TripoSR meshes...`,
-          `> Running collision simulation...`
-        ];
-
-        for (const text of sequence) {
-          const p = document.createElement('p');
-          p.textContent = text;
-          terminalLog.appendChild(p);
-          await sleep(400);
-        }
-        
-        await sleep(300);
-        
-        terminal.hidden = true;
-        videoContainer.hidden = false;
-      }
-
-      if (videoSource) {
-        videoSource.src = `/video/collision.mp4`; 
-      }
-      
-      if (videoTitle) {
-        videoTitle.textContent = `${name1} vs ${name2}`;
-      }
-
-      if (videoPlayer) {
-        videoPlayer.load(); 
-        videoPlayer.play().catch(e => console.log('Autoplay prevented:', e));
-      }
-    });
-  }
-
-  if (backBtn) {
-    backBtn.addEventListener('click', () => {
-      if (videoPlayer) videoPlayer.pause();
-      if (videoContainer) videoContainer.hidden = true;
-      if (selector) selector.hidden = false;
-    });
-  }
 </script>

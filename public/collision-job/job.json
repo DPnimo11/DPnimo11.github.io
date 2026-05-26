@@ -1,0 +1,52 @@
+{
+  "id": "16d7b4487a2f4572b569e13d64e3b4ef",
+  "dir": "C:\\Users\\dpnim\\Documents\\cis 5810\\final_project\\cis-5810-final-project\\jobs\\16d7b4487a2f4572b569e13d64e3b4ef",
+  "status": "complete",
+  "progress": 100,
+  "stages": {
+    "upload": {
+      "status": "completed",
+      "message": "Images uploaded"
+    },
+    "analysis": {
+      "status": "completed",
+      "message": "AI properties detected"
+    },
+    "generation": {
+      "status": "completed",
+      "message": "3D meshes ready"
+    },
+    "render": {
+      "status": "completed",
+      "message": "Render finished"
+    }
+  },
+  "files": {
+    "objectA": {
+      "original": "C:\\Users\\dpnim\\Documents\\cis 5810\\final_project\\cis-5810-final-project\\jobs\\16d7b4487a2f4572b569e13d64e3b4ef\\uploads\\labubu.png",
+      "clean": "C:\\Users\\dpnim\\Documents\\cis 5810\\final_project\\cis-5810-final-project\\jobs\\16d7b4487a2f4572b569e13d64e3b4ef\\objectA\\clean.png",
+      "model": "C:\\Users\\dpnim\\Documents\\cis 5810\\final_project\\cis-5810-final-project\\jobs\\16d7b4487a2f4572b569e13d64e3b4ef\\objectA\\mesh\\0\\mesh.obj"
+    },
+    "objectB": {
+      "original": "C:\\Users\\dpnim\\Documents\\cis 5810\\final_project\\cis-5810-final-project\\jobs\\16d7b4487a2f4572b569e13d64e3b4ef\\uploads\\unicorn.png",
+      "clean": "C:\\Users\\dpnim\\Documents\\cis 5810\\final_project\\cis-5810-final-project\\jobs\\16d7b4487a2f4572b569e13d64e3b4ef\\objectB\\clean.png",
+      "model": "C:\\Users\\dpnim\\Documents\\cis 5810\\final_project\\cis-5810-final-project\\jobs\\16d7b4487a2f4572b569e13d64e3b4ef\\objectB\\mesh\\0\\mesh.obj"
+    }
+  },
+  "properties": {
+    "objectA": {
+      "bounciness": 0.1,
+      "facing": "front",
+      "friction": 0.8,
+      "mass": 500
+    },
+    "objectB": {
+      "bounciness": 0.15,
+      "facing": "right",
+      "friction": 0.75,
+      "mass": 600
+    }
+  },
+  "video_path": "C:\\Users\\dpnim\\Documents\\cis 5810\\final_project\\cis-5810-final-project\\jobs\\16d7b4487a2f4572b569e13d64e3b4ef\\output_collision.mp4",
+  "error": null
+}
