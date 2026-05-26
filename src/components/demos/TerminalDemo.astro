@@ -14,13 +14,6 @@
             <input type="text" class="terminal-input" data-terminal-input autocomplete="off" spellcheck="false" aria-label="Terminal input" />
           </form>
         </div>
-        
-        <div class="terminal-chips">
-          <button type="button" class="terminal-chip" data-try="ls">ls</button>
-          <button type="button" class="terminal-chip" data-try="cat d2">cat d2</button>
-          <button type="button" class="terminal-chip" data-try="busy 1 &amp;">busy 1 &amp;</button>
-          <button type="button" class="terminal-chip" data-try="ps">ps</button>
-        </div>
       </div>
     </section>
 
@@ -33,7 +26,6 @@
     const output = root.querySelector("[data-terminal-output]");
     const form = root.querySelector("[data-terminal-form]");
     const input = root.querySelector("[data-terminal-input]");
-    const chips = root.querySelectorAll("[data-try]");
 
     let jobs = [];
     let jobIdCounter = 1;
@@ -84,7 +76,6 @@
     const blockInput = (block) => {
       isBlocked = block;
       input.disabled = block;
-      chips.forEach(c => { c.disabled = block; });
       if (!block) {
         input.focus();
         scrollToBottom();
@@ -95,7 +86,7 @@
       let printed = false;
       for (const j of jobs) {
         if (j.state === "Done" && !j.notified) {
-          printLine(`[${j.id}] Done ${j.cmd}`);
+          printLine(`[${j.id}] Done      ${j.cmd}`);
           j.notified = true;
           printed = true;
         }
@@ -126,32 +117,56 @@
 
       switch (cmd) {
         case "help":
+          await typeLine("Available mock commands: help, man, ls, cat, echo, busy, sleep, ps, jobs, fg, clear");
+          break;
         case "man":
-          await typeLine("Available mock commands:");
-          await typeLine("  help, man   - Show this message");
-          await typeLine("  ls          - List mock files");
-          await typeLine("  cat [file]  - Print file contents");
-          await typeLine("  echo [text] - Print text");
-          await typeLine("  busy [p] [&]- Spin CPU job (priority p)");
-          await typeLine("  sleep n [&] - Sleep for n seconds");
-          await typeLine("  ps          - Show process list");
-          await typeLine("  jobs        - List background jobs");
-          await typeLine("  clear       - Clear terminal");
+          if (args[1] === "ps") {
+            await typeLine("ps - report a snapshot of the current processes.");
+            await typeLine("Columns:");
+            await typeLine("  PID   - Process ID");
+            await typeLine("  PPID  - Parent Process ID");
+            await typeLine("  PRI   - Priority (-1, 0, 1)");
+            await typeLine("  STAT  - State (R: running, S: stopped, Z: zombie, B: blocked)");
+            await typeLine("  CMD   - Command line");
+          } else if (args[1] === "ls") {
+            await typeLine("ls - list mock files in the current directory.");
+          } else if (args[1] === "cat") {
+            await typeLine("cat - concatenate files and print on the standard output. Usage: cat [file]");
+          } else if (args[1] === "echo") {
+            await typeLine("echo - print text back to the terminal.");
+          } else if (args[1] === "busy") {
+            await typeLine("busy - simulate a CPU-bound job. Usage: busy [priority] [&]");
+          } else if (args[1] === "sleep") {
+            await typeLine("sleep - simulate a sleeping job for n seconds. Usage: sleep n [&]");
+          } else if (args[1] === "jobs") {
+            await typeLine("jobs - list active background jobs.");
+          } else if (args[1] === "fg") {
+            await typeLine("fg - bring a background job to the foreground. Usage: fg [job_id]");
+          } else if (args[1] === "clear") {
+            await typeLine("clear - clear the terminal screen.");
+          } else if (args[1] === "help") {
+            await typeLine("help - display a list of available mock commands.");
+          } else if (args[1] === "man") {
+            await typeLine("man - format and display the manual pages. Usage: man [command]");
+          } else if (args[1]) {
+            await typeLine(`man: No manual entry for ${args[1]}`);
+          } else {
+            await typeLine("What manual page do you want?");
+          }
           break;
         case "ls":
-          await typeLine("2 -rw-  128 Wed Apr 16 18:45:09 d1");
-          await typeLine("3 -rw-  256 Wed Apr 16 18:45:13 d2");
-          await typeLine("4 -rw-  128 Wed Apr 16 18:45:17 d3");
+          await typeLine("2 -rw-  128 Wed Apr 16 18:45:09 notes.txt");
+          await typeLine("3 -rw-  256 Wed Apr 16 18:45:13 readme.txt");
+          await typeLine("4 -rw-  128 Wed Apr 16 18:45:17 script.sh");
           break;
         case "cat":
-          if (args[1] === "d1") {
-            await typeLine("abcXYZ\n\nabcXYZ\n\nabcXYZ\n\na");
-          } else if (args[1] === "d2") {
-            await typeLine("The programs included with the Ubuntu system are free software;");
-            await typeLine("the exact distribution terms for each program are described in the");
-            await typeLine("individual files in /usr/share/doc/*/copyright.");
-          } else if (args[1] === "d3") {
-            await typeLine("...random data...");
+          if (args[1] === "notes.txt") {
+            await typeLine("the quick brown fox jumps over the lazy dog");
+          } else if (args[1] === "readme.txt") {
+            await typeLine("Welcome to the generic test file.");
+            await typeLine("This file demonstrates standard file system outputs.");
+          } else if (args[1] === "script.sh") {
+            await typeLine("echo 'hello world'");
           } else {
             await typeLine(`cat: ${args[1] || ""}: No such file or directory`);
           }
@@ -189,15 +204,16 @@
           break;
         }
         case "ps":
-          await typeLine("PID PPID PRI STAT CMD");
-          await typeLine("  1    0   0    B init");
-          await typeLine("  2    1   0    S shell");
+          await typeLine("  PID  PPID   PRI  STAT CMD");
+          await typeLine("    1     0     0     B init");
+          await typeLine("    2     1     0     S shell");
           for (const j of jobs) {
             if (j.state !== "Done") {
-              await typeLine(`  ${j.pid.toString().padEnd(4)}   2   1    ${j.type === 'sleep' ? 'S' : 'R'} ${j.cmd}`);
+              const stat = j.type === 'sleep' ? 'S' : 'R';
+              await typeLine(`  ${j.pid.toString().padStart(3)}     2     1     ${stat} ${j.cmd}`);
             }
           }
-          await typeLine(`  ${pidCounter}    2   1    R ps`);
+          await typeLine(`  ${pidCounter.toString().padStart(3)}     2     1     R ps`);
           pidCounter++;
           break;
         case "jobs":
@@ -206,15 +222,31 @@
           } else {
             for (const j of jobs) {
               if (j.state === "Done") {
-                 printLine(`[${j.id}] Done ${j.cmd}`);
+                 printLine(`[${j.id}] Done      ${j.cmd}`);
                  j.notified = true;
               } else {
-                 printLine(`[${j.id}] Running ${j.cmd}`);
+                 printLine(`[${j.id}] Running   ${j.cmd}`);
               }
             }
             jobs = jobs.filter(j => !j.notified);
           }
           break;
+        case "fg": {
+          const jid = parseInt(args[1]);
+          const job = jobs.find(j => j.id === jid);
+          if (job && job.state !== "Done") {
+            printLine(job.cmd);
+            if (job.type === "sleep") {
+               await new Promise(r => setTimeout(r, 2000));
+            } else {
+               await new Promise(r => setTimeout(r, 3000));
+            }
+            job.state = "Done";
+          } else {
+            printLine(`fg: job not found: ${args[1] || ""}`);
+          }
+          break;
+        }
         default:
           await typeLine(`pennos: ${cmd}: command not found`);
       }
@@ -227,14 +259,6 @@
       const val = input.value;
       input.value = "";
       handleCommand(val);
-    });
-
-    chips.forEach(chip => {
-      chip.addEventListener("click", () => {
-        if (!isBlocked) {
-          handleCommand(chip.dataset.try);
-        }
-      });
     });
 
     // Handle clicks on terminal window to focus input
