@@ -1,17 +1,249 @@
     <section class="demo-panel terminal-panel" aria-labelledby="demo-title">
       <div class="panel-heading">
-        <p class="eyebrow">Transcript demo</p>
-        <h2 id="demo-title">PennOS shell sketch</h2>
+        <p class="eyebrow">Interactive artifact</p>
+        <h2 id="demo-title">PennOS shell</h2>
       </div>
-      <pre><code>pennfat# mkfs disk.fs 1024 1
-pennfat# mount disk.fs
-pennfat# touch notes.txt
-pennfat# chmod +rw notes.txt
-
-$ ./pennos disk.fs log/scheduler.log
-pennos&gt; nice 1 sleep 8 &
-[job 1] pid 4 running
-pennos&gt; jobs
-1  running  sleep 8
-pennos&gt; fg 1</code></pre>
+      
+      <div class="terminal-demo" data-terminal-demo>
+        <div class="terminal-window" data-terminal-window>
+          <div class="terminal-output" data-terminal-output>
+            <div class="terminal-line"><span class="terminal-prefix">pennos&gt;</span><span>Welcome to PennOS! Type 'help' to see available commands.</span></div>
+          </div>
+          <form class="terminal-input-form" data-terminal-form>
+            <span class="terminal-prompt">pennos&gt;</span>
+            <input type="text" class="terminal-input" data-terminal-input autocomplete="off" spellcheck="false" aria-label="Terminal input" />
+          </form>
+        </div>
+        
+        <div class="terminal-chips">
+          <button type="button" class="terminal-chip" data-try="ls">ls</button>
+          <button type="button" class="terminal-chip" data-try="cat d2">cat d2</button>
+          <button type="button" class="terminal-chip" data-try="busy 1 &amp;">busy 1 &amp;</button>
+          <button type="button" class="terminal-chip" data-try="ps">ps</button>
+        </div>
+      </div>
     </section>
+
+<script is:inline>
+  (() => {
+    const root = document.querySelector("[data-terminal-demo]");
+    if (!root) return;
+
+    const windowEl = root.querySelector("[data-terminal-window]");
+    const output = root.querySelector("[data-terminal-output]");
+    const form = root.querySelector("[data-terminal-form]");
+    const input = root.querySelector("[data-terminal-input]");
+    const chips = root.querySelectorAll("[data-try]");
+
+    let jobs = [];
+    let jobIdCounter = 1;
+    let pidCounter = 3; // init is 1, shell is 2
+    let isBlocked = false;
+
+    const scrollToBottom = () => {
+      if (windowEl) windowEl.scrollTop = windowEl.scrollHeight;
+    };
+
+    const printLine = (text, prefix = "") => {
+      const line = document.createElement("div");
+      line.className = "terminal-line";
+      if (prefix) {
+        const p = document.createElement("span");
+        p.className = "terminal-prefix";
+        p.textContent = prefix;
+        line.appendChild(p);
+      }
+      const t = document.createElement("span");
+      t.textContent = text;
+      line.appendChild(t);
+      output.appendChild(line);
+      scrollToBottom();
+    };
+
+    const typeLine = async (text, delay = 10, prefix = "") => {
+      const line = document.createElement("div");
+      line.className = "terminal-line";
+      if (prefix) {
+        const p = document.createElement("span");
+        p.className = "terminal-prefix";
+        p.textContent = prefix;
+        line.appendChild(p);
+      }
+      const t = document.createElement("span");
+      line.appendChild(t);
+      output.appendChild(line);
+      
+      for (let i = 0; i < text.length; i++) {
+        t.textContent += text[i];
+        scrollToBottom();
+        // small delay for typing effect
+        await new Promise(r => setTimeout(r, delay));
+      }
+    };
+
+    const blockInput = (block) => {
+      isBlocked = block;
+      input.disabled = block;
+      chips.forEach(c => { c.disabled = block; });
+      if (!block) {
+        input.focus();
+        scrollToBottom();
+      }
+    };
+
+    const checkDoneJobs = () => {
+      let printed = false;
+      for (const j of jobs) {
+        if (j.state === "Done" && !j.notified) {
+          printLine(`[${j.id}] Done ${j.cmd}`);
+          j.notified = true;
+          printed = true;
+        }
+      }
+      jobs = jobs.filter(j => !j.notified);
+      return printed;
+    };
+
+    const handleCommand = async (cmdString) => {
+      checkDoneJobs(); // Print any finished background jobs first
+
+      if (!cmdString.trim()) {
+        printLine("", "pennos> ");
+        return;
+      }
+      
+      printLine(cmdString, "pennos> ");
+      
+      if (/[<>]/.test(cmdString)) {
+        await typeLine("PennOS web demo: Redirection is disabled in the browser environment.");
+        return;
+      }
+
+      const args = cmdString.trim().split(/\s+/);
+      const cmd = args[0];
+
+      blockInput(true);
+
+      switch (cmd) {
+        case "help":
+        case "man":
+          await typeLine("Available mock commands:");
+          await typeLine("  help, man   - Show this message");
+          await typeLine("  ls          - List mock files");
+          await typeLine("  cat [file]  - Print file contents");
+          await typeLine("  echo [text] - Print text");
+          await typeLine("  busy [p] [&]- Spin CPU job (priority p)");
+          await typeLine("  sleep n [&] - Sleep for n seconds");
+          await typeLine("  ps          - Show process list");
+          await typeLine("  jobs        - List background jobs");
+          await typeLine("  clear       - Clear terminal");
+          break;
+        case "ls":
+          await typeLine("2 -rw-  128 Wed Apr 16 18:45:09 d1");
+          await typeLine("3 -rw-  256 Wed Apr 16 18:45:13 d2");
+          await typeLine("4 -rw-  128 Wed Apr 16 18:45:17 d3");
+          break;
+        case "cat":
+          if (args[1] === "d1") {
+            await typeLine("abcXYZ\n\nabcXYZ\n\nabcXYZ\n\na");
+          } else if (args[1] === "d2") {
+            await typeLine("The programs included with the Ubuntu system are free software;");
+            await typeLine("the exact distribution terms for each program are described in the");
+            await typeLine("individual files in /usr/share/doc/*/copyright.");
+          } else if (args[1] === "d3") {
+            await typeLine("...random data...");
+          } else {
+            await typeLine(`cat: ${args[1] || ""}: No such file or directory`);
+          }
+          break;
+        case "echo":
+          await typeLine(args.slice(1).join(" "));
+          break;
+        case "clear":
+          output.innerHTML = "";
+          break;
+        case "sleep":
+        case "busy": {
+          const isBg = args[args.length - 1] === "&";
+          const dur = cmd === "sleep" ? (parseInt(args[1]) || 2) : 3;
+          const pid = pidCounter++;
+          
+          if (isBg) {
+            const jid = jobIdCounter++;
+            jobs.push({ id: jid, pid, cmd: cmdString.replace("&", "").trim(), state: "R", type: cmd, notified: false });
+            printLine(`[${jid}] ${pid}`);
+            
+            // Resolve job after duration
+            setTimeout(() => {
+              const j = jobs.find(x => x.id === jid);
+              if (j) j.state = "Done";
+            }, dur * 1000);
+          } else {
+            if (cmd === "sleep") {
+              await new Promise(r => setTimeout(r, dur * 1000));
+            } else {
+              await typeLine(`busy: running in foreground (mocked to run ${dur}s)...`);
+              await new Promise(r => setTimeout(r, dur * 1000));
+            }
+          }
+          break;
+        }
+        case "ps":
+          await typeLine("PID PPID PRI STAT CMD");
+          await typeLine("  1    0   0    B init");
+          await typeLine("  2    1   0    S shell");
+          for (const j of jobs) {
+            if (j.state !== "Done") {
+              await typeLine(`  ${j.pid.toString().padEnd(4)}   2   1    ${j.type === 'sleep' ? 'S' : 'R'} ${j.cmd}`);
+            }
+          }
+          await typeLine(`  ${pidCounter}    2   1    R ps`);
+          pidCounter++;
+          break;
+        case "jobs":
+          if (jobs.length === 0) {
+             // no output if no jobs, just like real shell
+          } else {
+            for (const j of jobs) {
+              if (j.state === "Done") {
+                 printLine(`[${j.id}] Done ${j.cmd}`);
+                 j.notified = true;
+              } else {
+                 printLine(`[${j.id}] Running ${j.cmd}`);
+              }
+            }
+            jobs = jobs.filter(j => !j.notified);
+          }
+          break;
+        default:
+          await typeLine(`pennos: ${cmd}: command not found`);
+      }
+
+      blockInput(false);
+    };
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const val = input.value;
+      input.value = "";
+      handleCommand(val);
+    });
+
+    chips.forEach(chip => {
+      chip.addEventListener("click", () => {
+        if (!isBlocked) {
+          handleCommand(chip.dataset.try);
+        }
+      });
+    });
+
+    // Handle clicks on terminal window to focus input
+    windowEl.addEventListener("click", () => {
+      if (!isBlocked) input.focus();
+    });
+    
+    // Auto focus on load
+    input.focus();
+
+  })();
+</script>

@@ -1,0 +1,102 @@
+.terminal-panel .panel-heading {
+  margin-bottom: var(--space-4);
+}
+
+.terminal-demo {
+  background-color: #111613; /* Very dark background */
+  color: #aeb8b4; /* off-white/grey text */
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.terminal-window {
+  padding: var(--space-4);
+  height: 320px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.terminal-output {
+  display: flex;
+  flex-direction: column;
+  white-space: pre-wrap;
+}
+
+.terminal-line {
+  display: flex;
+  margin-bottom: 2px;
+  word-break: break-all;
+}
+
+.terminal-prefix {
+  color: #8b9692; /* slightly dimmer for prompt */
+  margin-right: 8px;
+  user-select: none;
+}
+
+.terminal-input-form {
+  display: flex;
+  margin-top: 2px;
+}
+
+.terminal-prompt {
+  color: #8b9692;
+  margin-right: 8px;
+  user-select: none;
+}
+
+.terminal-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: inherit;
+  outline: none;
+  padding: 0;
+  caret-color: #ffffff;
+}
+
+.terminal-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--bg-secondary, #f8fbfb);
+  border-top: 1px solid var(--border-color);
+}
+
+@media (prefers-color-scheme: dark) {
+  .terminal-chips {
+    background-color: #1a1e1c;
+  }
+}
+
+.terminal-chip {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.terminal-chip:hover {
+  background-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.terminal-chip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
