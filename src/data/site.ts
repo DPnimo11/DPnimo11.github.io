@@ -5,6 +5,7 @@ export const site = {
     "Portfolio of Darren Wang, a University of Pennsylvania computer science and robotics student building research software, ML/data pipelines, systems projects, and full-stack apps.",
   url: "https://dpnimo11.github.io",
   socialImage: "/img/social-preview.jpg",
+  googleSiteVerification: "2sXiqOPoJsiIGYdDWY68K95sXJha6lBAP1xmRRett0A",
   github: "https://github.com/DPnimo11",
   linkedin: "https://www.linkedin.com/in/darren-wang-penn/",
   scholar: "https://scholar.google.com/citations?hl=en&user=fnvHV0cAAAAJ",
