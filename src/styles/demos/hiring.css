@@ -6,7 +6,7 @@
 .hiring-demo-container {
   position: relative;
   width: 100%;
-  min-height: 480px;
+  min-height: 540px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,7 +23,7 @@
   position: relative;
   width: 100%;
   max-width: 340px;
-  height: 440px;
+  height: 500px;
   perspective: 1000px;
 }
 
@@ -116,7 +116,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
 }
 
 .hiring-section-title {
