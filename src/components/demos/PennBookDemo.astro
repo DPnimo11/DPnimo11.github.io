@@ -2,35 +2,40 @@
 // A simple artifact placeholder for PennBook
 ---
 
-<div class="pennbook-demo">
-  <div class="demo-header">
-    <span class="demo-title">News Pipeline Status (Spark / EMR)</span>
-    <span class="demo-badge success">Job Completed</span>
+<section class="demo-panel pennbook-panel" aria-labelledby="demo-title">
+  <div class="panel-heading">
+    <p class="eyebrow">Pipeline artifact</p>
+    <h2 id="demo-title">Spark Data Pipeline</h2>
   </div>
-  
-  <div class="terminal-panel">
-    <div class="log-line"><code>[INFO] Starting dataset download...</code></div>
-    <div class="log-line"><code>[INFO] Seeding DynamoDB with initial news articles...</code></div>
-    <div class="log-line"><code>[INFO] Building Spark job (mvn clean package)...</code></div>
-    <div class="log-line"><code>[INFO] Uploading artifacts to S3 bucket...</code></div>
-    <div class="log-line"><code>[INFO] Submitting job to Livy server at ec2-xxx...</code></div>
-    <div class="log-line"><code>[INFO] Spark job running on EMR cluster...</code></div>
-    <div class="log-line"><code>[INFO] Computing PageRank and Inverted Indices...</code></div>
-    <div class="log-line"><code>[SUCCESS] Pipeline finished. Inverted index updated in DynamoDB.</code></div>
+
+  <div class="pennbook-demo-content">
+    <div class="demo-header">
+      <span class="demo-status">Status: <strong>Completed</strong></span>
+      <span class="demo-badge success">EMR Cluster Idle</span>
+    </div>
+    
+    <div class="terminal-panel">
+      <div class="log-line"><code>[INFO] [10:00:01] Starting automated news pipeline on AWS EMR...</code></div>
+      <div class="log-line"><code>[INFO] [10:00:03] Downloading News_Category_Dataset_v2.json from S3 bucket...</code></div>
+      <div class="log-line"><code>[INFO] [10:00:15] Seeding DynamoDB Tables (Users, Articles, Follows)...</code></div>
+      <div class="log-line"><code>[INFO] [10:00:22] Compiling Apache Spark job (mvn clean package)...</code></div>
+      <div class="log-line"><code>[INFO] [10:00:45] Uploading target/news-pipeline-1.0.jar to S3...</code></div>
+      <div class="log-line"><code>[INFO] [10:00:50] Submitting job to Livy server (ec2-xxx.compute-1.amazonaws.com)...</code></div>
+      <div class="log-line"><code>[INFO] [10:01:10] Job ID 42: Running Spark context...</code></div>
+      <div class="log-line"><code>[INFO] [10:02:30] Phase 1: Filtering stop words and extracting NLP keywords...</code></div>
+      <div class="log-line"><code>[INFO] [10:03:15] Phase 2: Building inverted indices for fast search queries...</code></div>
+      <div class="log-line"><code>[INFO] [10:04:00] Phase 3: Executing PageRank over user follow graphs...</code></div>
+      <div class="log-line"><code>[INFO] [10:05:42] Phase 4: Generating personalized news feed recommendations...</code></div>
+      <div class="log-line success"><code>[SUCCESS] [10:06:05] Pipeline finished. 85,000+ articles indexed and updated in DynamoDB.</code></div>
+    </div>
   </div>
-</div>
+</section>
 
 <style>
-  .pennbook-demo {
+  .pennbook-demo-content {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    padding: 1rem;
-    background-color: var(--color-surface, #f8fbfb);
-    border: 1px solid var(--color-border, #e0e0e0);
-    border-radius: 6px;
-    font-family: var(--font-mono, monospace);
-    font-size: 0.85rem;
   }
 
   .demo-header {
@@ -38,38 +43,52 @@
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid var(--color-border, #e0e0e0);
-    padding-bottom: 0.5rem;
+    padding-bottom: 0.75rem;
+    font-family: var(--font-sans, system-ui, sans-serif);
   }
 
-  .demo-title {
-    font-weight: 600;
+  .demo-status {
+    font-size: 0.9rem;
+    color: var(--color-text-muted, #555);
+  }
+
+  .demo-status strong {
     color: var(--color-text, #111613);
   }
 
   .demo-badge.success {
     background-color: #e6f4ea;
     color: #137333;
-    padding: 0.2rem 0.5rem;
+    padding: 0.25rem 0.6rem;
     border-radius: 4px;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 500;
   }
 
   .terminal-panel {
     background-color: #111613;
     color: #a8b2ac;
-    padding: 1rem;
-    border-radius: 4px;
+    padding: 1.25rem;
+    border-radius: 6px;
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: 0.5rem;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    overflow-x: auto;
+  }
+
+  .log-line {
+    white-space: nowrap;
   }
 
   .log-line code {
     font-family: inherit;
   }
 
-  .log-line:last-child {
+  .log-line.success {
     color: #81c995;
+    margin-top: 0.5rem;
   }
 </style>
