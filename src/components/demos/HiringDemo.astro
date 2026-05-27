@@ -18,7 +18,7 @@
           <div class="hiring-card-profile">
             <div class="hiring-avatar">👤</div>
             <div class="hiring-info">
-              <h3>Alice Chen</h3>
+              <h3 class="candidate-name">Alice Chen</h3>
               <div class="hiring-exp">💼 4 years</div>
             </div>
           </div>
@@ -46,21 +46,62 @@
           </div>
         </div>
         <div class="hiring-card-footer">
-          <input type="text" class="hiring-notes-input" placeholder="Add notes (e.g. 'Great startup exp')...">
+          <div class="hiring-hint">Swipe right to LIKE, left to DISLIKE</div>
+        </div>
+      </div>
+      
+      <div class="hiring-card hiring-card-active">
+        <div class="hiring-overlay hiring-overlay-dislike">
+          <div class="hiring-overlay-icon">✕</div>
+        </div>
+        <div class="hiring-overlay hiring-overlay-like">
+          <div class="hiring-overlay-icon">✓</div>
+        </div>
+        <div class="hiring-card-header" style="background: linear-gradient(135deg, #2e7d32, #1b5e20);">
+          <div class="hiring-card-profile">
+            <div class="hiring-avatar">👤</div>
+            <div class="hiring-info">
+              <h3 class="candidate-name">Bob Smith</h3>
+              <div class="hiring-exp">💼 2 years</div>
+            </div>
+          </div>
+          <div class="hiring-skills">
+            <span class="hiring-skill">Python</span>
+            <span class="hiring-skill">Django</span>
+            <span class="hiring-skill">PostgreSQL</span>
+          </div>
+        </div>
+        <div class="hiring-card-body">
+          <div>
+            <div class="hiring-section-title">Key Strengths</div>
+            <ul class="hiring-strengths">
+              <li>Built REST APIs for mobile clients.</li>
+              <li>Optimized database queries.</li>
+            </ul>
+          </div>
+          <div>
+            <div class="hiring-section-title">Standout Project</div>
+            <div class="hiring-project">Created a web scraper using Python and BeautifulSoup to aggregate tech news.</div>
+          </div>
+          <div class="hiring-summary">
+            "Junior backend developer with good Python fundamentals but lacks scalability experience."
+          </div>
+        </div>
+        <div class="hiring-card-footer">
           <div class="hiring-hint">Swipe right to LIKE, left to DISLIKE</div>
         </div>
       </div>
       
       <div class="hiring-email-view" id="hiringEmailView">
         <div class="hiring-email-header">
-          <p><strong>To:</strong> alice.chen@example.com</p>
+          <p><strong>To:</strong> <span id="emailToName">alice.chen</span>@example.com</p>
           <p><strong>Subject:</strong> Software Engineer Role at NexHacks</p>
         </div>
-        <div class="hiring-email-body">Hi Alice,
+        <div class="hiring-email-body">Hi <span id="emailGreetingName">Alice</span>,
 
-I was really impressed by your background, particularly your work migrating to Next.js and improving load times by 40%. 
+I was really impressed by your background and recent projects!
 
-We are currently looking for a strong frontend engineer to help scale our platform, and your experience with React and Node.js aligns perfectly with our stack. I'd love to chat and share more about what we're building.
+We are currently looking for a strong engineer to help scale our platform, and your technical stack aligns perfectly with what we're building. I'd love to chat and share more about the role.
 
 Are you free for a quick call sometime this week?
 
@@ -71,27 +112,60 @@ Darren</div>
           <button class="hiring-btn primary">Send Email</button>
         </div>
       </div>
+
+      <div class="hiring-end-screen" id="hiringEndScreen">
+        <div class="hiring-end-content">
+          <h3>Batch Complete</h3>
+          <p id="hiringEndSubtitle">0 prospective candidates selected</p>
+          <div class="hiring-end-actions">
+            <button class="hiring-btn" id="hiringResetBtn2">Reset Demo</button>
+            <button class="hiring-btn primary" id="hiringDraftEmailsBtn" style="display: none;">Draft Emails</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <script is:inline>
   (() => {
-    const card = document.getElementById('hiringCard');
     const stack = document.getElementById('hiringCardStack');
     const emailView = document.getElementById('hiringEmailView');
-    const resetBtn = document.getElementById('hiringResetBtn');
+    const endScreen = document.getElementById('hiringEndScreen');
+    const endSubtitle = document.getElementById('hiringEndSubtitle');
+    const draftBtn = document.getElementById('hiringDraftEmailsBtn');
     
-    if (!card || !stack || !emailView) return;
+    if (!stack || !emailView || !endScreen) return;
 
     let isDragging = false;
     let startX = 0;
     let currentX = 0;
+    let acceptedNames = [];
+    
+    // Get all cards and set z-index
+    let cards = Array.from(stack.querySelectorAll('.hiring-card'));
+    const initCards = () => {
+      cards.forEach((c, i) => {
+        c.style.zIndex = cards.length - i;
+        c.style.setProperty('--x', '0px');
+        c.style.setProperty('--rot', '0deg');
+        c.style.opacity = '1';
+        c.classList.remove('animating');
+        
+        const likeOverlay = c.querySelector('.hiring-overlay-like');
+        const dislikeOverlay = c.querySelector('.hiring-overlay-dislike');
+        if (likeOverlay) likeOverlay.style.setProperty('--overlay-op', '0');
+        if (dislikeOverlay) dislikeOverlay.style.setProperty('--overlay-op', '0');
+      });
+    };
+    
+    initCards();
+
+    const getActiveCard = () => cards[0];
 
     const onPointerDown = (e) => {
-      // Allow interacting with the input field
-      if (e.target.tagName === 'INPUT') return;
-      
+      const card = getActiveCard();
+      if (!card || e.target.closest('.hiring-email-view')) return;
       isDragging = true;
       startX = e.clientX;
       card.classList.remove('animating');
@@ -107,6 +181,9 @@ Darren</div>
     const onPointerUp = (e) => {
       if (!isDragging) return;
       isDragging = false;
+      const card = getActiveCard();
+      if (!card) return;
+      
       card.classList.add('animating');
       card.releasePointerCapture(e.pointerId);
 
@@ -116,18 +193,27 @@ Darren</div>
         // Swipe right (Like)
         currentX = window.innerWidth > 600 ? 500 : 300;
         updateCard();
+        
+        const nameNode = card.querySelector('.candidate-name');
+        if (nameNode) {
+          acceptedNames.push(nameNode.textContent.split(' ')[0]);
+        }
+        
         setTimeout(() => {
-          emailView.classList.add('active');
-        }, 300);
+          card.style.display = 'none';
+          cards.shift();
+          currentX = 0;
+          checkEndState();
+        }, 350);
       } else if (currentX < -threshold) {
         // Swipe left (Pass)
         currentX = window.innerWidth > 600 ? -500 : -300;
         updateCard();
         setTimeout(() => {
-          // Reset card immediately for demo loop
-          card.classList.remove('animating');
+          card.style.display = 'none';
+          cards.shift();
           currentX = 0;
-          updateCard();
+          checkEndState();
         }, 350);
       } else {
         // Spring back
@@ -136,7 +222,18 @@ Darren</div>
       }
     };
 
+    const checkEndState = () => {
+      if (cards.length === 0) {
+        endSubtitle.textContent = `${acceptedNames.length} prospective candidate${acceptedNames.length === 1 ? '' : 's'} selected`;
+        draftBtn.style.display = acceptedNames.length > 0 ? 'block' : 'none';
+        endScreen.classList.add('active');
+      }
+    };
+
     const updateCard = () => {
+      const card = getActiveCard();
+      if (!card) return;
+
       const rot = currentX * 0.05;
       card.style.setProperty('--x', `${currentX}px`);
       card.style.setProperty('--rot', `${rot}deg`);
@@ -159,18 +256,31 @@ Darren</div>
       }
     };
 
-    card.addEventListener('pointerdown', onPointerDown);
-    card.addEventListener('pointermove', onPointerMove);
-    card.addEventListener('pointerup', onPointerUp);
-    card.addEventListener('pointercancel', onPointerUp);
-
-    resetBtn?.addEventListener('click', () => {
+    const resetDemo = () => {
       emailView.classList.remove('active');
-      card.classList.remove('animating');
+      endScreen.classList.remove('active');
       currentX = 0;
-      updateCard();
-      // small delay to let email view hide before spring animation if desired, 
-      // but instant reset looks fine since email view covers it.
+      acceptedNames = [];
+      cards = Array.from(stack.querySelectorAll('.hiring-card'));
+      cards.forEach(c => c.style.display = 'flex');
+      initCards();
+    };
+
+    stack.addEventListener('pointerdown', onPointerDown);
+    stack.addEventListener('pointermove', onPointerMove);
+    stack.addEventListener('pointerup', onPointerUp);
+    stack.addEventListener('pointercancel', onPointerUp);
+
+    document.getElementById('hiringResetBtn')?.addEventListener('click', resetDemo);
+    document.getElementById('hiringResetBtn2')?.addEventListener('click', resetDemo);
+    
+    draftBtn?.addEventListener('click', () => {
+      if (acceptedNames.length > 0) {
+        const firstName = acceptedNames[0];
+        document.getElementById('emailToName').textContent = firstName.toLowerCase();
+        document.getElementById('emailGreetingName').textContent = firstName;
+      }
+      emailView.classList.add('active');
     });
   })();
 </script>
