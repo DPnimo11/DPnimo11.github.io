@@ -171,6 +171,7 @@ h3 {
   display: grid;
   align-content: center;
   gap: 16px;
+  min-width: 0;
 }
 
 .headshot-frame,
@@ -214,6 +215,7 @@ h3 {
   padding: 18px;
   background: #111613;
   color: #dfe9dd;
+  min-width: 0;
 }
 
 .console-card pre,

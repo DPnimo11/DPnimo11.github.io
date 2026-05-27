@@ -198,8 +198,22 @@
   }
 
   .spark-post-card {
-    width: min(300px, calc(100% - 20px));
+    width: min(280px, calc(100% - 20px));
     padding: 12px;
+  }
+
+  .spark-post-location {
+    font-size: 1.25rem;
+  }
+
+  .spark-post-message {
+    font-size: 1.15rem;
+    --spark-note-line-height: 1.35rem;
+  }
+
+  .spark-post-photo {
+    border-width: 6px;
+    aspect-ratio: 16 / 9;
   }
 
   .about-notes div,
