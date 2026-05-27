@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <style>
+    /* CUSTOMIZATION OPTIONS: */
+    /* 1. Change font-family (matches the site's default sans-serif stack) */
+    /* 2. Change font-size to make the text bigger/smaller */
+    /* 3. Change font-weight (boldness) */
+    .txt {
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      font-weight: 800;
+      font-size: 52px;
+      fill: #161817; /* Default (Light Mode) Text Color */
+      text-anchor: middle;
+      dominant-baseline: central;
+      letter-spacing: -2px;
+    }
+
+    /* DARK MODE STYLES */
+    @media (prefers-color-scheme: dark) {
+      .txt {
+        fill: #f6f1e8; /* Dark Mode Text Color */
+      }
+    }
+  </style>
+  <!-- 4. Change the x, y coordinates to perfectly center the text if you change the font size -->
+  <text class="txt" x="50" y="54">DW</text>
+</svg>
