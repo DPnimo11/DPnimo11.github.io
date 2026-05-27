@@ -94,7 +94,7 @@
       
       <div class="hiring-email-view" id="hiringEmailView">
         <div class="hiring-email-header">
-          <p><strong>To:</strong> <span id="emailToName"></span>@example.com</p>
+          <p><strong>To:</strong> <span id="emailToName"></span></p>
           <p><strong>Subject:</strong> Software Engineer Role at NexHacks</p>
         </div>
         <div class="hiring-email-body" id="emailBodyContent">
@@ -197,7 +197,7 @@
         
         const nameNode = card.querySelector('.candidate-name');
         if (nameNode) {
-          acceptedNames.push(nameNode.textContent.split(' ')[0]);
+          acceptedNames.push(nameNode.textContent.trim().split(' ')[0]);
         }
         
         setTimeout(() => {
@@ -277,10 +277,11 @@
     const renderEmail = () => {
       if (currentEmailIndex >= acceptedNames.length) return;
       const firstName = acceptedNames[currentEmailIndex];
-      document.getElementById('emailToName').textContent = firstName.toLowerCase();
+      document.getElementById('emailToName').textContent = firstName.toLowerCase() + '@example.com';
       
       const emailText = personalizedEmails[firstName] || `Hi ${firstName},\n\nWe were impressed by your background and would love to chat.\n\nBest,\nDarren`;
       emailBodyContent.textContent = emailText;
+      emailBodyContent.scrollTop = 0;
 
       if (currentEmailIndex < acceptedNames.length - 1) {
         nextEmailBtn.style.display = 'block';
