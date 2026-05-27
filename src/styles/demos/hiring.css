@@ -25,7 +25,6 @@
   max-width: 340px;
   height: 440px;
   perspective: 1000px;
-  touch-action: none;
 }
 
 .hiring-card {
@@ -43,6 +42,7 @@
   transform-origin: center center;
   cursor: grab;
   user-select: none;
+  touch-action: pan-y;
   --x: 0px;
   --rot: 0deg;
   transform: translate3d(var(--x), 0, 0) rotate(var(--rot));
