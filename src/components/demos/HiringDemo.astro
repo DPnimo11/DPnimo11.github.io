@@ -1,13 +1,176 @@
-    <section class="demo-panel hiring-panel" aria-labelledby="demo-title">
-      <div class="panel-heading">
-        <p class="eyebrow">Product flow</p>
-        <h2 id="demo-title">Resume intake to candidate outreach</h2>
+---
+---
+<section class="demo-panel hiring-panel" aria-labelledby="demo-title">
+  <div class="panel-heading">
+    <p class="eyebrow">Interactive swipe</p>
+    <h2 id="demo-title">Candidate screening and outreach</h2>
+  </div>
+  <div class="hiring-demo-container">
+    <div class="hiring-card-stack" id="hiringCardStack">
+      <div class="hiring-card" id="hiringCard">
+        <div class="hiring-overlay hiring-overlay-dislike">
+          <div class="hiring-overlay-icon">✕</div>
+        </div>
+        <div class="hiring-overlay hiring-overlay-like">
+          <div class="hiring-overlay-icon">✓</div>
+        </div>
+        <div class="hiring-card-header">
+          <div class="hiring-card-profile">
+            <div class="hiring-avatar">👤</div>
+            <div class="hiring-info">
+              <h3>Alice Chen</h3>
+              <div class="hiring-exp">💼 4 years</div>
+            </div>
+          </div>
+          <div class="hiring-skills">
+            <span class="hiring-skill">React</span>
+            <span class="hiring-skill">Next.js</span>
+            <span class="hiring-skill">Node.js</span>
+            <span class="hiring-skill">TypeScript</span>
+          </div>
+        </div>
+        <div class="hiring-card-body">
+          <div>
+            <div class="hiring-section-title">Key Strengths</div>
+            <ul class="hiring-strengths">
+              <li>Led migration to Next.js reducing load times by 40%.</li>
+              <li>Built robust GraphQL APIs for core services.</li>
+            </ul>
+          </div>
+          <div>
+            <div class="hiring-section-title">Standout Project</div>
+            <div class="hiring-project">Developed an internal analytics dashboard using React and D3 to track user engagement.</div>
+          </div>
+          <div class="hiring-summary">
+            "Strong frontend candidate with a solid grasp of React performance optimization and backend data fetching."
+          </div>
+        </div>
+        <div class="hiring-card-footer">
+          <input type="text" class="hiring-notes-input" placeholder="Add notes (e.g. 'Great startup exp')...">
+          <div class="hiring-hint">Swipe right to LIKE, left to DISLIKE</div>
+        </div>
       </div>
-      <ol class="pipeline-steps">
-        <li><span>01</span><strong>Define</strong><p>Set role requirements, tech stack, and screening preferences.</p></li>
-        <li><span>02</span><strong>Compress</strong><p>Use The Token Company to reduce resume input before AI parsing.</p></li>
-        <li><span>03</span><strong>Swipe</strong><p>Review candidate cards with interested, pass, star, and undo states.</p></li>
-        <li><span>04</span><strong>Email</strong><p>Generate customized candidate emails from profile-specific details.</p></li>
-      </ol>
-    </section>
-}
+      
+      <div class="hiring-email-view" id="hiringEmailView">
+        <div class="hiring-email-header">
+          <p><strong>To:</strong> alice.chen@example.com</p>
+          <p><strong>Subject:</strong> Software Engineer Role at NexHacks</p>
+        </div>
+        <div class="hiring-email-body">Hi Alice,
+
+I was really impressed by your background, particularly your work migrating to Next.js and improving load times by 40%. 
+
+We are currently looking for a strong frontend engineer to help scale our platform, and your experience with React and Node.js aligns perfectly with our stack. I'd love to chat and share more about what we're building.
+
+Are you free for a quick call sometime this week?
+
+Best,
+Darren</div>
+        <div class="hiring-email-actions">
+          <button class="hiring-btn" id="hiringResetBtn">Reset Demo</button>
+          <button class="hiring-btn primary">Send Email</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    const card = document.getElementById('hiringCard');
+    const stack = document.getElementById('hiringCardStack');
+    const emailView = document.getElementById('hiringEmailView');
+    const resetBtn = document.getElementById('hiringResetBtn');
+    
+    if (!card || !stack || !emailView) return;
+
+    let isDragging = false;
+    let startX = 0;
+    let currentX = 0;
+
+    const onPointerDown = (e) => {
+      // Allow interacting with the input field
+      if (e.target.tagName === 'INPUT') return;
+      
+      isDragging = true;
+      startX = e.clientX;
+      card.classList.remove('animating');
+      card.setPointerCapture(e.pointerId);
+    };
+
+    const onPointerMove = (e) => {
+      if (!isDragging) return;
+      currentX = e.clientX - startX;
+      updateCard();
+    };
+
+    const onPointerUp = (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      card.classList.add('animating');
+      card.releasePointerCapture(e.pointerId);
+
+      const threshold = 80;
+
+      if (currentX > threshold) {
+        // Swipe right (Like)
+        currentX = window.innerWidth > 600 ? 500 : 300;
+        updateCard();
+        setTimeout(() => {
+          emailView.classList.add('active');
+        }, 300);
+      } else if (currentX < -threshold) {
+        // Swipe left (Pass)
+        currentX = window.innerWidth > 600 ? -500 : -300;
+        updateCard();
+        setTimeout(() => {
+          // Reset card immediately for demo loop
+          card.classList.remove('animating');
+          currentX = 0;
+          updateCard();
+        }, 350);
+      } else {
+        // Spring back
+        currentX = 0;
+        updateCard();
+      }
+    };
+
+    const updateCard = () => {
+      const rot = currentX * 0.05;
+      card.style.setProperty('--x', `${currentX}px`);
+      card.style.setProperty('--rot', `${rot}deg`);
+      
+      const likeOverlay = card.querySelector('.hiring-overlay-like');
+      const dislikeOverlay = card.querySelector('.hiring-overlay-dislike');
+      
+      if (currentX > 0) {
+        likeOverlay.style.setProperty('--overlay-op', Math.min(1, currentX / 100));
+        dislikeOverlay.style.setProperty('--overlay-op', 0);
+      } else {
+        dislikeOverlay.style.setProperty('--overlay-op', Math.min(1, Math.abs(currentX) / 100));
+        likeOverlay.style.setProperty('--overlay-op', 0);
+      }
+      
+      if (Math.abs(currentX) > 200 && !isDragging) {
+        card.style.opacity = '0';
+      } else {
+        card.style.opacity = '1';
+      }
+    };
+
+    card.addEventListener('pointerdown', onPointerDown);
+    card.addEventListener('pointermove', onPointerMove);
+    card.addEventListener('pointerup', onPointerUp);
+    card.addEventListener('pointercancel', onPointerUp);
+
+    resetBtn?.addEventListener('click', () => {
+      emailView.classList.remove('active');
+      card.classList.remove('animating');
+      currentX = 0;
+      updateCard();
+      // small delay to let email view hide before spring animation if desired, 
+      // but instant reset looks fine since email view covers it.
+    });
+  })();
+</script>
