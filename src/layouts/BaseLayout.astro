@@ -54,12 +54,15 @@ const graph = [
     <meta name="theme-color" content="#f6f1e8" />
     <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" id="dynamic-favicon" type="image/svg+xml" href="/favicon-light.svg" />
-    <meta property="og:type" content="website" />
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="144x144" href="/apple-touch-icon.png" />
+    <meta name="generator" content={Astro.generator} />
     <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:type" content="website" />
     <meta property="og:image:secure_url" content={socialImageUrl} />
     <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
