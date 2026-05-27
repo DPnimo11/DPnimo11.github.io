@@ -197,23 +197,34 @@
     height: 30px;
   }
 
+  .spark-map-shell {
+    aspect-ratio: auto;
+    min-height: 380px;
+  }
+
   .spark-post-card {
-    width: min(280px, calc(100% - 20px));
-    padding: 12px;
+    width: min(250px, calc(100% - 20px));
+    padding: 10px;
+    gap: 6px;
   }
 
   .spark-post-location {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
+    margin-bottom: 2px;
   }
 
   .spark-post-message {
-    font-size: 1.15rem;
-    --spark-note-line-height: 1.35rem;
+    font-size: 1rem;
+    --spark-note-line-height: 1.25rem;
   }
 
   .spark-post-photo {
-    border-width: 6px;
+    border-width: 4px;
     aspect-ratio: 16 / 9;
+  }
+
+  .postcard-text .spark-post-body {
+    min-height: 80px;
   }
 
   .about-notes div,
