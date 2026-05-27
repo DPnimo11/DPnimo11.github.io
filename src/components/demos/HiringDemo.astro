@@ -134,7 +134,9 @@
 
     let isDragging = false;
     let startX = 0;
+    let startY = 0;
     let currentX = 0;
+    let isHorizontal = null;
     let acceptedNames = [];
     let currentEmailIndex = 0;
     
@@ -168,13 +170,22 @@
       const card = getActiveCard();
       if (!card || e.target.closest('.hiring-email-view')) return;
       isDragging = true;
+      isHorizontal = null;
       startX = e.clientX;
+      startY = e.clientY;
       card.classList.remove('animating');
       card.setPointerCapture(e.pointerId);
     };
 
     const onPointerMove = (e) => {
       if (!isDragging) return;
+      
+      if (e.pointerType === 'mouse' && isHorizontal === null) {
+        isHorizontal = true;
+      }
+      
+      if (isHorizontal === false) return;
+
       currentX = e.clientX - startX;
       updateCard();
     };
@@ -271,6 +282,21 @@
     stack.addEventListener('pointermove', onPointerMove);
     stack.addEventListener('pointerup', onPointerUp);
     stack.addEventListener('pointercancel', onPointerUp);
+
+    stack.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      const touch = e.touches[0];
+      const dx = Math.abs(touch.clientX - startX);
+      const dy = Math.abs(touch.clientY - startY);
+      
+      if (isHorizontal === null && (dx > 2 || dy > 2)) {
+        isHorizontal = dx > dy;
+      }
+      
+      if (isHorizontal && e.cancelable) {
+        e.preventDefault();
+      }
+    }, { passive: false });
 
     document.getElementById('hiringResetBtn')?.addEventListener('click', resetDemo);
     document.getElementById('hiringResetBtn2')?.addEventListener('click', resetDemo);
