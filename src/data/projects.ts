@@ -37,7 +37,8 @@ export type Project = {
     | "charts"
     | "azure-criticality"
     | "translator"
-    | "hiring";
+    | "hiring"
+    | "pennbook";
   visual: ProjectVisualVariant;
   image?: string;
   thumbnailFrameBackground?: string;
@@ -465,5 +466,32 @@ export const projects: Project[] = [
     visual: "screenshot",
     image: "/img/chess.png",
     thumbnailFrameBackground: "#111613",
+  },
+  {
+    slug: "pennbook",
+    title: "PennBook",
+    kicker: "Social network",
+    year: "2025",
+    status: "Course project",
+    summary:
+      "A distributed social network with a Spark-based news pipeline, media uploading, and DynamoDB data modeling.",
+    problem:
+      "A scalable social network needs resilient data storage for connections and posts, plus batch processing to generate news recommendations.",
+    approach:
+      "We built a Node.js and DynamoDB backend with AWS S3 for media, and an Apache Spark pipeline on EMR to generate user news feeds.",
+    result:
+      "The app supports secure authentication, friendships, music/image uploads, and personalized news feeds powered by Livy and EMR.",
+    stack: ["Node.js", "DynamoDB", "AWS S3", "Apache Spark", "AWS EMR"],
+    highlights: [
+      "DynamoDB data modeling for users, posts, and relationships",
+      "Spark job on EMR for daily news processing",
+      "Direct S3 integration for profile pictures and music",
+      "End-to-end AWS deployment on EC2",
+    ],
+    metrics: ["4-person team", "Spark/EMR pipeline", "AWS backend"],
+    links: [],
+    demo: "pennbook",
+    visual: "pipeline",
+    thumbnailFrameBackground: "#fff",
   },
 ];

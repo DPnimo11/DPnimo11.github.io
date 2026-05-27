@@ -1,0 +1,75 @@
+---
+// A simple artifact placeholder for PennBook
+---
+
+<div class="pennbook-demo">
+  <div class="demo-header">
+    <span class="demo-title">News Pipeline Status (Spark / EMR)</span>
+    <span class="demo-badge success">Job Completed</span>
+  </div>
+  
+  <div class="terminal-panel">
+    <div class="log-line"><code>[INFO] Starting dataset download...</code></div>
+    <div class="log-line"><code>[INFO] Seeding DynamoDB with initial news articles...</code></div>
+    <div class="log-line"><code>[INFO] Building Spark job (mvn clean package)...</code></div>
+    <div class="log-line"><code>[INFO] Uploading artifacts to S3 bucket...</code></div>
+    <div class="log-line"><code>[INFO] Submitting job to Livy server at ec2-xxx...</code></div>
+    <div class="log-line"><code>[INFO] Spark job running on EMR cluster...</code></div>
+    <div class="log-line"><code>[INFO] Computing PageRank and Inverted Indices...</code></div>
+    <div class="log-line"><code>[SUCCESS] Pipeline finished. Inverted index updated in DynamoDB.</code></div>
+  </div>
+</div>
+
+<style>
+  .pennbook-demo {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: var(--color-surface, #f8fbfb);
+    border: 1px solid var(--color-border, #e0e0e0);
+    border-radius: 6px;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.85rem;
+  }
+
+  .demo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border, #e0e0e0);
+    padding-bottom: 0.5rem;
+  }
+
+  .demo-title {
+    font-weight: 600;
+    color: var(--color-text, #111613);
+  }
+
+  .demo-badge.success {
+    background-color: #e6f4ea;
+    color: #137333;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .terminal-panel {
+    background-color: #111613;
+    color: #a8b2ac;
+    padding: 1rem;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .log-line code {
+    font-family: inherit;
+  }
+
+  .log-line:last-child {
+    color: #81c995;
+  }
+</style>
