@@ -94,22 +94,15 @@
       
       <div class="hiring-email-view" id="hiringEmailView">
         <div class="hiring-email-header">
-          <p><strong>To:</strong> <span id="emailToName">alice.chen</span>@example.com</p>
+          <p><strong>To:</strong> <span id="emailToName"></span>@example.com</p>
           <p><strong>Subject:</strong> Software Engineer Role at NexHacks</p>
         </div>
-        <div class="hiring-email-body">Hi <span id="emailGreetingName">Alice</span>,
-
-I was really impressed by your background and recent projects!
-
-We are currently looking for a strong engineer to help scale our platform, and your technical stack aligns perfectly with what we're building. I'd love to chat and share more about the role.
-
-Are you free for a quick call sometime this week?
-
-Best,
-Darren</div>
+        <div class="hiring-email-body" id="emailBodyContent">
+          <!-- Populated by JS -->
+        </div>
         <div class="hiring-email-actions">
+          <button class="hiring-btn primary" id="hiringNextEmailBtn" style="display: none;">Next Draft</button>
           <button class="hiring-btn" id="hiringResetBtn">Reset Demo</button>
-          <button class="hiring-btn primary">Send Email</button>
         </div>
       </div>
 
@@ -134,6 +127,8 @@ Darren</div>
     const endScreen = document.getElementById('hiringEndScreen');
     const endSubtitle = document.getElementById('hiringEndSubtitle');
     const draftBtn = document.getElementById('hiringDraftEmailsBtn');
+    const nextEmailBtn = document.getElementById('hiringNextEmailBtn');
+    const emailBodyContent = document.getElementById('emailBodyContent');
     
     if (!stack || !emailView || !endScreen) return;
 
@@ -141,6 +136,12 @@ Darren</div>
     let startX = 0;
     let currentX = 0;
     let acceptedNames = [];
+    let currentEmailIndex = 0;
+    
+    const personalizedEmails = {
+      'Alice': `Hi Alice,\n\nI was really impressed by your background, particularly your work migrating to Next.js and improving load times by 40%.\n\nWe are currently looking for a strong frontend engineer to help scale our platform, and your experience with React and Node.js aligns perfectly with our stack. I'd love to chat and share more about what we're building.\n\nAre you free for a quick call sometime this week?\n\nBest,\nDarren`,
+      'Bob': `Hi Bob,\n\nI was impressed by your backend projects, particularly the web scraper you built using Python and BeautifulSoup.\n\nWe are currently looking for a backend engineer to help scale our platform, and your experience with Django and PostgreSQL aligns well with what we're building. I'd love to chat and share more about the role.\n\nAre you free for a quick call sometime this week?\n\nBest,\nDarren`
+    };
     
     // Get all cards and set z-index
     let cards = Array.from(stack.querySelectorAll('.hiring-card'));
@@ -273,12 +274,32 @@ Darren</div>
 
     document.getElementById('hiringResetBtn')?.addEventListener('click', resetDemo);
     document.getElementById('hiringResetBtn2')?.addEventListener('click', resetDemo);
-    
+    const renderEmail = () => {
+      if (currentEmailIndex >= acceptedNames.length) return;
+      const firstName = acceptedNames[currentEmailIndex];
+      document.getElementById('emailToName').textContent = firstName.toLowerCase();
+      
+      const emailText = personalizedEmails[firstName] || `Hi ${firstName},\n\nWe were impressed by your background and would love to chat.\n\nBest,\nDarren`;
+      emailBodyContent.textContent = emailText;
+
+      if (currentEmailIndex < acceptedNames.length - 1) {
+        nextEmailBtn.style.display = 'block';
+        document.getElementById('hiringResetBtn').style.display = 'none';
+      } else {
+        nextEmailBtn.style.display = 'none';
+        document.getElementById('hiringResetBtn').style.display = 'block';
+      }
+    };
+
+    nextEmailBtn?.addEventListener('click', () => {
+      currentEmailIndex++;
+      renderEmail();
+    });
+
     draftBtn?.addEventListener('click', () => {
       if (acceptedNames.length > 0) {
-        const firstName = acceptedNames[0];
-        document.getElementById('emailToName').textContent = firstName.toLowerCase();
-        document.getElementById('emailGreetingName').textContent = firstName;
+        currentEmailIndex = 0;
+        renderEmail();
       }
       emailView.classList.add('active');
     });
