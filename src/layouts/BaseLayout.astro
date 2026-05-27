@@ -1,17 +1,44 @@
 ---
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import { absoluteUrl, site } from "../data/site";
 import "../styles/global.css";
 
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
-  title = "Darren Wang | Software, research, robotics",
-  description = "Portfolio of Darren Wang, a Penn CIS and Robotics student building software, research tooling, and interactive systems.",
+  title = site.title,
+  description = site.description,
+  image = site.socialImage,
+  jsonLd,
 } = Astro.props;
+
+const canonicalUrl = absoluteUrl(Astro.url.pathname);
+const socialImageUrl = absoluteUrl(image);
+const pageTitle = title === site.title ? title : `${title}`;
+const graph = [
+  {
+    "@type": "Person",
+    "@id": `${site.url}/#person`,
+    name: site.name,
+    url: site.url,
+    image: absoluteUrl("/img/headshot-primary.jpg"),
+    jobTitle: site.role,
+    affiliation: {
+      "@type": "CollegeOrUniversity",
+      name: site.affiliation,
+    },
+    email: site.emails.map((email) => `mailto:${email}`),
+    sameAs: [site.github, site.linkedin, site.scholar],
+    knowsAbout: site.keywords.slice(3),
+  },
+  ...(Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : []),
+];
 ---
 
 <!doctype html>
@@ -20,8 +47,26 @@ const {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content={site.name} />
+    <meta name="keywords" content={site.keywords.join(", ")} />
     <meta name="theme-color" content="#f6f1e8" />
+    <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" id="dynamic-favicon" type="image/svg+xml" href="/favicon-light.svg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Darren Wang portfolio preview" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageUrl} />
+    <script type="application/ld+json" set:html={JSON.stringify({ "@context": "https://schema.org", "@graph": graph })} />
     <script is:inline>
       const setFavicon = (isDark) => {
         const favicon = document.getElementById("dynamic-favicon");
@@ -31,7 +76,7 @@ const {
       setFavicon(mq.matches);
       mq.addEventListener("change", (e) => setFavicon(e.matches));
     </script>
-    <title>{title}</title>
+    <title>{pageTitle}</title>
   </head>
   <body>
     <div class="page-shell">

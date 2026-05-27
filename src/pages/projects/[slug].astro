@@ -3,6 +3,7 @@ import DemoPanel from "../../components/DemoPanel.astro";
 import ProjectVisual from "../../components/ProjectVisual.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { projects } from "../../data/projects";
+import { absoluteUrl, site } from "../../data/site";
 
 export function getStaticPaths() {
   return projects.map((project) => ({
@@ -12,9 +13,23 @@ export function getStaticPaths() {
 }
 
 const { project } = Astro.props;
+const projectUrl = absoluteUrl(`/projects/${project.slug}/`);
+const projectJsonLd = {
+  "@type": "CreativeWork",
+  "@id": `${projectUrl}#creativework`,
+  name: project.title,
+  headline: project.title,
+  description: project.summary,
+  url: projectUrl,
+  creator: { "@id": `${site.url}/#person` },
+  dateCreated: project.year,
+  keywords: [project.kicker, project.status, ...project.stack].join(", "),
+  sameAs: project.links.map((link) => link.href),
+  image: project.image ? absoluteUrl(project.image) : absoluteUrl(site.socialImage),
+};
 ---
 
-<BaseLayout title={`${project.title} | Darren Wang`} description={project.summary}>
+<BaseLayout title={`${project.title} | Darren Wang`} description={project.summary} jsonLd={projectJsonLd}>
   <article class="project-detail">
     <a class="back-link" href="/projects/">Back to projects</a>
     <header class="detail-hero">
