@@ -1,9 +1,14 @@
-    <section class="demo-panel affinity-panel" aria-labelledby="demo-title">
-      <div class="panel-heading">
-        <p class="eyebrow">Feature model</p>
-        <h2 id="demo-title">Embedding benchmark frame</h2>
-      </div>
-      <div class="matrix-figure" aria-hidden="true">
-        {Array.from({ length: 64 }).map((_, index) => <span style={`--v: ${(index * 19) % 100}%`}></span>)}
-      </div>
-    </section>
+---
+---
+<section class="demo-panel affinity-panel" aria-labelledby="demo-title">
+  <div class="panel-heading">
+    <p class="eyebrow">Research Pipeline</p>
+    <h2 id="demo-title">Affinity Embedding Extraction</h2>
+  </div>
+  <ol class="pipeline-steps">
+    <li><span>01</span><strong>Extract</strong><p>Run Boltz-2 to generate internal affinity module embeddings rather than relying solely on scalar output.</p></li>
+    <li><span>02</span><strong>Baseline</strong><p>Evaluate embeddings on ~900 typical ligand pairs via classification and regression models.</p></li>
+    <li><span>03</span><strong>Augment</strong><p>Append Ligand-Residue Interaction Profile Scoring Function (LRIP-SF) for added structural features.</p></li>
+    <li><span>04</span><strong>Generalize</strong><p>Switch to peptide-target complexes to test predictor performance in an out-of-distribution domain.</p></li>
+  </ol>
+</section>
