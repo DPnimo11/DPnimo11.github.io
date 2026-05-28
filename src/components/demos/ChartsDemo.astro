@@ -1,14 +1,14 @@
-    <section class="demo-panel chart-panel" aria-labelledby="demo-title">
-      <div class="panel-heading">
-        <p class="eyebrow">Analysis surface</p>
-        <h2 id="demo-title">Modeling artifacts</h2>
-      </div>
-      <div class="bar-chart" aria-hidden="true">
-        <span style="--h: 42%"></span>
-        <span style="--h: 68%"></span>
-        <span style="--h: 55%"></span>
-        <span style="--h: 81%"></span>
-        <span style="--h: 47%"></span>
-      </div>
-    </section>
-}
+---
+---
+<section class="demo-panel chart-panel" aria-labelledby="demo-title">
+  <div class="panel-heading">
+    <p class="eyebrow">Analysis surface</p>
+    <h2 id="demo-title">Modeling Pipeline</h2>
+  </div>
+  <ol class="pipeline-steps">
+    <li><span>01</span><strong>Audit</strong><p>Merge Bluesky social sentiment data with Yahoo Finance hourly OHLCV data.</p></li>
+    <li><span>02</span><strong>Feature</strong><p>Aggregate to ticker-hours, split by intraday/overnight, and build rolling features.</p></li>
+    <li><span>03</span><strong>Model</strong><p>Train baseline and tree-based ensembles using strict chronological train/test splits.</p></li>
+    <li><span>04</span><strong>Evaluate</strong><p>Compare F1 and ROC-AUC scores to test for actionable, short-term directional signal.</p></li>
+  </ol>
+</section>
