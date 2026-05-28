@@ -1,13 +1,14 @@
-    <section class="demo-panel paper-panel" aria-labelledby="demo-title">
-      <div class="panel-heading">
-        <p class="eyebrow">Research artifact</p>
-        <h2 id="demo-title">Docking and reranking loop</h2>
-      </div>
-      <div class="paper-figure">
-        <span>AlphaFold structures</span>
-        <span>ZDOCK candidates</span>
-        <span>ANI-2x refinement</span>
-        <span>Pose ranking</span>
-      </div>
-    </section>
-}
+---
+---
+<section class="demo-panel paper-panel" aria-labelledby="demo-title">
+  <div class="panel-heading">
+    <p class="eyebrow">Research artifact</p>
+    <h2 id="demo-title">AI-Assisted Docking Protocol</h2>
+  </div>
+  <ol class="pipeline-steps">
+    <li><span>01</span><strong>Predict</strong><p>Generate initial receptor and complex structures using AlphaFold 2.</p></li>
+    <li><span>02</span><strong>Dock</strong><p>Perform rigid protein-peptide docking using ZDOCK to generate candidate poses.</p></li>
+    <li><span>03</span><strong>Refine</strong><p>Relax poses via AMBER restrained minimization and ANI-2x/CG-BS optimization.</p></li>
+    <li><span>04</span><strong>Rank</strong><p>Select the top docking poses by evaluating their refined ANI-2x potential energies.</p></li>
+  </ol>
+</section>
