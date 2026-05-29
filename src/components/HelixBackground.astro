@@ -26,7 +26,7 @@
     // Math for the helix
     const numPoints = 800;
     const height = 60;
-    const radius = 5;
+    const radius = 7.5; // Increased for thickness
     const frequency = 0.3; // How tightly wound it is
 
     // --- Strand 1: Wireframe Tube (Biology) ---
@@ -40,7 +40,8 @@
       points1.push(new THREE.Vector3(x, y, z));
     }
     const curve1 = new THREE.CatmullRomCurve3(points1);
-    const geometry1 = new THREE.TubeGeometry(curve1, 150, 0.4, 6, false);
+    // Increased tube radius to 0.75 for much more thickness
+    const geometry1 = new THREE.TubeGeometry(curve1, 150, 0.75, 6, false);
     const wireframeGeo = new THREE.WireframeGeometry(geometry1);
     const lineMat = new THREE.LineBasicMaterial({ color: 0x111613, transparent: true, opacity: 0.35, linewidth: 1 });
     const wireframeTube = new THREE.LineSegments(wireframeGeo, lineMat);
@@ -106,7 +107,8 @@
       return new THREE.Mesh(geometry, material);
     };
 
-    const numPlanes = 55; // Number of code snippets along the curve
+    // Dramatically increased density
+    const numPlanes = 250; 
     for(let i = 0; i < numPlanes; i++) {
       const t = i / (numPlanes - 1);
       const pt = curve2.getPoint(t);
@@ -129,8 +131,7 @@
       helixGroup.add(mesh);
     }
 
-    // --- Connecting Rungs ---
-    const rungMaterial = new THREE.MeshBasicMaterial({ color: 0x111613, transparent: true, opacity: 0.15 });
+    // --- Connecting Rungs (Half Bio, Half Code) ---
     for (let i = 0; i < numPoints; i += 20) {
       const t = i / numPoints;
       const y = (t - 0.5) * height;
@@ -143,25 +144,43 @@
       const x2 = Math.cos(angle2) * radius;
       const z2 = Math.sin(angle2) * radius;
       
-      const p1 = new THREE.Vector3(x1, y, z1);
-      const p2 = new THREE.Vector3(x2, y, z2);
+      const p1 = new THREE.Vector3(x1, y, z1); // Bio strand
+      const p2 = new THREE.Vector3(x2, y, z2); // Code strand
       const distance = p1.distanceTo(p2);
-      
-      const rungGeo = new THREE.CylinderGeometry(0.08, 0.08, distance, 4);
-      const rungMesh = new THREE.Mesh(rungGeo, rungMaterial);
-      
-      // Position halfway between the two strands
       const midPoint = p1.clone().lerp(p2, 0.5);
-      rungMesh.position.copy(midPoint);
-      // Orient the cylinder to point from p1 to p2
-      rungMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), p2.clone().sub(p1).normalize());
       
-      helixGroup.add(rungMesh);
+      // Bio Half (Wireframe Cylinder)
+      const bioGeo = new THREE.CylinderGeometry(0.15, 0.15, distance / 2, 5);
+      const bioWireframeGeo = new THREE.WireframeGeometry(bioGeo);
+      const bioMat = new THREE.LineBasicMaterial({ color: 0x111613, transparent: true, opacity: 0.35 });
+      const bioMesh = new THREE.LineSegments(bioWireframeGeo, bioMat);
+      
+      bioMesh.position.copy(p1.clone().lerp(midPoint, 0.5));
+      bioMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), midPoint.clone().sub(p1).normalize());
+      helixGroup.add(bioMesh);
+
+      // Code Half (Text Plane oriented along the rung)
+      const textIndex = (i / 20) % codeLines.length;
+      const codeMesh = createTextPlane(codeLines[textIndex]);
+      
+      // Scale down to fit the rung length (roughly 4.0 plane width vs distance/2 ~ 7.5)
+      codeMesh.scale.set(0.6, 0.6, 0.6); 
+      codeMesh.position.copy(midPoint.clone().lerp(p2, 0.5));
+      
+      const rungVector = p2.clone().sub(midPoint).normalize();
+      const outward = new THREE.Vector3(codeMesh.position.x, 0, codeMesh.position.z).normalize();
+      const up = new THREE.Vector3().crossVectors(rungVector, outward).normalize();
+      
+      const matrix = new THREE.Matrix4();
+      matrix.makeBasis(rungVector, up, outward);
+      codeMesh.quaternion.setFromRotationMatrix(matrix);
+      
+      helixGroup.add(codeMesh);
     }
 
-    // Position and tilt the parent group (bottom-left to top-right)
+    // Position and tilt the parent group (Moved significantly Left)
     tiltGroup.rotation.z = -Math.PI / 4; 
-    tiltGroup.position.x = 5; 
+    tiltGroup.position.x = -12; // Moved left
     tiltGroup.position.y = -5;
     
     scene.add(tiltGroup);
