@@ -50,7 +50,9 @@ const graph = [
       (() => {
         try {
           const storedTheme = localStorage.getItem("darren-theme");
-          const theme = storedTheme === "dark" ? "dark" : "light";
+          const hasStoredTheme = storedTheme === "dark" || storedTheme === "light";
+          const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          const theme = hasStoredTheme ? storedTheme : prefersDark ? "dark" : "light";
           document.documentElement.dataset.theme = theme;
           document.documentElement.style.colorScheme = theme;
         } catch {
@@ -95,6 +97,9 @@ const graph = [
 
         const normalizeTheme = (theme) => (theme === "dark" ? "dark" : "light");
 
+        const getPreferredTheme = () =>
+          window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+
         const readStoredTheme = () => {
           try {
             return localStorage.getItem(storageKey);
@@ -103,12 +108,22 @@ const graph = [
           }
         };
 
+        const hasStoredTheme = () => {
+          const storedTheme = readStoredTheme();
+          return storedTheme === "dark" || storedTheme === "light";
+        };
+
         const writeStoredTheme = (theme) => {
           try {
             localStorage.setItem(storageKey, theme);
           } catch {
             // Theme still updates for the current page if storage is unavailable.
           }
+        };
+
+        const resolveTheme = () => {
+          const storedTheme = readStoredTheme();
+          return storedTheme === "dark" || storedTheme === "light" ? storedTheme : getPreferredTheme();
         };
 
         const syncThemeControls = (theme) => {
@@ -136,7 +151,7 @@ const graph = [
         };
 
         const bindThemeControls = () => {
-          applyTheme(document.documentElement.dataset.theme || readStoredTheme());
+          applyTheme(document.documentElement.dataset.theme || resolveTheme());
 
           document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
             button.addEventListener("click", () => {
@@ -144,9 +159,14 @@ const graph = [
               applyTheme(currentTheme === "dark" ? "light" : "dark", { persist: true });
             });
           });
+
+          const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
+          systemTheme.addEventListener("change", () => {
+            if (!hasStoredTheme()) applyTheme(getPreferredTheme());
+          });
         };
 
-        applyTheme(readStoredTheme());
+        applyTheme(resolveTheme());
 
         if (document.readyState === "loading") {
           document.addEventListener("DOMContentLoaded", bindThemeControls, { once: true });
