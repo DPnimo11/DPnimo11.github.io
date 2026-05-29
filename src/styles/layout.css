@@ -144,20 +144,19 @@ h3 {
 .hero-lede {
   position: relative;
   z-index: 1;
+  line-height: 1.8;
 }
 
-.hero-lede::before {
-  content: "";
-  position: absolute;
-  inset: -30px -80px -30px -40px; 
-  z-index: -1;
-  /* Very smooth, wide radial gradient that fades out completely */
-  background: radial-gradient(ellipse at center, rgba(246, 241, 232, 0.75) 20%, rgba(246, 241, 232, 0) 90%);
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
-  -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 90%);
-  mask-image: radial-gradient(ellipse at center, black 20%, transparent 90%);
-  pointer-events: none;
+.hero-lede span {
+  background: rgba(246, 241, 232, 0.45); /* Highly translucent paper */
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 4px 6px;
+  border-radius: 4px;
+  /* This ensures the blur strictly hugs the actual text characters,
+     breaking across lines to follow the ragged right edge naturally */
 }
 
 .action-row {
