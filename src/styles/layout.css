@@ -693,9 +693,6 @@ h3 {
   overflow: hidden;
 }
 
-.photo-card.tall {
-}
-
 .photo-card.wide {
   column-span: all;
 }
