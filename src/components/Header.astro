@@ -15,7 +15,7 @@ const links = [
     <span>Darren Wang</span>
   </a>
   <div class="header-actions">
-    <nav aria-label="Primary navigation">
+    <nav class="desktop-nav" aria-label="Primary navigation">
       {
         links.map((link) => (
           <a
@@ -40,5 +40,31 @@ const links = [
         <path d="M20.5 14.7A8.2 8.2 0 0 1 9.3 3.5 8.2 8.2 0 1 0 20.5 14.7Z" />
       </svg>
     </button>
+    <details class="mobile-menu">
+      <summary aria-label="Toggle navigation" title="Toggle navigation">
+        <svg class="mobile-menu-open" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+        <svg class="mobile-menu-close" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18" />
+        </svg>
+      </summary>
+      <nav aria-label="Mobile navigation">
+        {
+          links.map((link) => (
+            <a
+              href={link.href}
+              class:list={[
+                currentPath === link.href || (link.href !== "/" && currentPath.startsWith(link.href))
+                  ? "active"
+                  : "",
+              ]}
+            >
+              {link.label}
+            </a>
+          ))
+        }
+      </nav>
+    </details>
   </div>
 </header>
