@@ -103,7 +103,7 @@ export const projects: Project[] = [
       "Includes processed data, notebooks, results, figures, and example outputs",
     ],
     metrics: ["Median DockQ above 0.85 baseline", "Mutation and ligand-swapping tests", "May 2026 writeup"],
-    links: [{ label: "GitHub", href: "https://github.com/DPnimo11/pepdock" }],
+    links: [{ label: "GitHub", href: "https://github.com/DPnimo11/af3-peptide-benchmark" }],
     demo: "structures",
     visual: "screenshot",
     image: "/img/pepdock.png",
