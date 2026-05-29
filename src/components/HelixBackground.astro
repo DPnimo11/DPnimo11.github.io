@@ -26,6 +26,40 @@
     const height = 180;
     const radius = 7.5; 
     const frequency = 0.3; 
+    const snippets = [
+        "struct pcb_t {", "pid_t pid;", "int status;", "void *stack;", 
+        "struct pcb_t *next;", "};", "void schedule() {", "pcb_t *p = pop();", 
+        "context_switch(p);", "}", "import torch", "import torch.nn as nn", 
+        "class Model(nn.Module):", "def forward(self, x):", "return self.fc(x)"
+    ];
+
+    const getInkColor = () => getComputedStyle(document.documentElement).getPropertyValue('--ink').trim() || '#111613';
+
+    const drawCodeTexture = (texture, color) => {
+      const canvas = texture.image;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0)'; 
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = color;
+      ctx.font = 'bold 48px monospace'; 
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      
+      // Pack text tightly vertically and horizontally.
+      for (let y = 0; y < canvas.height; y += 42) {
+          let lineStr = "";
+          for(let i=0; i<20; i++) {
+              lineStr += snippets[Math.floor(Math.random() * snippets.length)] + " ";
+          }
+          const offsetX = -(Math.random() * 100);
+          ctx.fillText(lineStr, offsetX, y);
+      }
+
+      texture.needsUpdate = true;
+    };
 
     // Generate Points for Curves
     const points1 = [];
@@ -50,7 +84,7 @@
     // --- Strand 1: Wireframe Tube (Biology) ---
     const geometry1 = new THREE.TubeGeometry(curve1, 450, 0.55, 8, false);
     const wireframeGeo = new THREE.WireframeGeometry(geometry1);
-    const lineMat = new THREE.LineBasicMaterial({ color: 0x111613, transparent: true, opacity: 0.35, linewidth: 1 });
+    const lineMat = new THREE.LineBasicMaterial({ color: getInkColor(), transparent: true, opacity: 0.35, linewidth: 1 });
     const wireframeTube = new THREE.LineSegments(wireframeGeo, lineMat);
     helixGroup.add(wireframeTube);
 
@@ -59,33 +93,8 @@
       const canvas = document.createElement('canvas');
       canvas.width = 1024;
       canvas.height = 1024; 
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.fillStyle = 'rgba(255, 255, 255, 0)'; 
-        ctx.fillRect(0, 0, 1024, 1024);
-        ctx.fillStyle = '#111613';
-        ctx.font = 'bold 48px monospace'; 
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'top';
-        
-        const snippets = [
-            "struct pcb_t {", "pid_t pid;", "int status;", "void *stack;", 
-            "struct pcb_t *next;", "};", "void schedule() {", "pcb_t *p = pop();", 
-            "context_switch(p);", "}", "import torch", "import torch.nn as nn", 
-            "class Model(nn.Module):", "def forward(self, x):", "return self.fc(x)"
-        ];
-        
-        // Pack text incredibly tightly vertically and horizontally
-        for (let y = 0; y < 1024; y += 42) {
-            let lineStr = "";
-            for(let i=0; i<20; i++) {
-                lineStr += snippets[Math.floor(Math.random() * snippets.length)] + " ";
-            }
-            const offsetX = -(Math.random() * 100);
-            ctx.fillText(lineStr, offsetX, y);
-        }
-      }
       const texture = new THREE.CanvasTexture(canvas);
+      drawCodeTexture(texture, getInkColor());
       texture.wrapS = THREE.RepeatWrapping;
       texture.wrapT = THREE.RepeatWrapping;
       // Perfect aspect ratio mapping for lengthwise tube flow
@@ -116,6 +125,16 @@
     // so the rung text remains exactly the same physical size as before.
     rungCodeTexture.repeat.set(1.06, 0.31); 
     const rungCodeMat = new THREE.MeshBasicMaterial({ map: rungCodeTexture, transparent: true, opacity: 0.85 });
+
+    const updateThemeColors = () => {
+      const inkColor = getInkColor();
+      lineMat.color.set(inkColor);
+      drawCodeTexture(codeTexture, inkColor);
+      rungCodeTexture.needsUpdate = true;
+    };
+
+    const themeObserver = new MutationObserver(updateThemeColors);
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
     for (let i = 0; i < numPoints; i += 20) {
       const t = i / numPoints;

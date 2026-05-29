@@ -19,7 +19,7 @@
 .structure-controls button {
   min-height: 38px;
   border: 1px solid var(--line-strong);
-  background: rgba(246, 241, 232, 0.72);
+  background: var(--surface-control);
   padding: 8px 11px;
   color: var(--ink);
   cursor: pointer;
@@ -45,7 +45,7 @@
   overflow: hidden;
   min-height: 460px;
   border: 1px solid var(--line-strong);
-  background: #9aa6a3;
+  background: var(--protein-viewer-bg, #9aa6a3);
 }
 
 .protein-viewer canvas {
@@ -58,7 +58,7 @@
   display: grid;
   place-items: center;
   padding: 24px;
-  color: #111613;
+  color: var(--protein-viewer-text, #111613);
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 0.84rem;
   text-align: center;

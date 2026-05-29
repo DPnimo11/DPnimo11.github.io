@@ -1,9 +1,9 @@
 .spark-map-shell {
-  --post-dim: rgba(22, 24, 23, 0);
+  --post-dim: rgba(0, 0, 0, 0);
   aspect-ratio: 3 / 2;
   min-height: 0;
   border-color: var(--line-strong);
-  background: #dfe8e5;
+  background: var(--visual-map-bg);
   isolation: isolate;
 }
 
@@ -19,7 +19,7 @@
 }
 
 .spark-map-shell.post-open::before {
-  --post-dim: rgba(22, 24, 23, 0.24);
+  --post-dim: rgba(0, 0, 0, 0.28);
   opacity: 1;
 }
 
@@ -50,9 +50,9 @@
   place-items: center;
   padding: 24px;
   background:
-    linear-gradient(rgba(22, 24, 23, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(22, 24, 23, 0.06) 1px, transparent 1px),
-    #edf3f0;
+    linear-gradient(var(--grid-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-soft) 1px, transparent 1px),
+    var(--visual-map-bg);
   background-size: 24px 24px;
   color: var(--muted);
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
@@ -148,7 +148,7 @@
   border: 1px solid var(--line-strong);
   border-radius: 50% 50% 50% 0;
   background: var(--marker-bg, var(--red));
-  box-shadow: 3px 3px 0 rgba(22, 24, 23, 0.2);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.22);
   transform: translateX(-50%) rotate(-45deg);
   transition:
     box-shadow 160ms ease,
@@ -215,7 +215,7 @@
 .spark-map-marker:hover .spark-marker-pin,
 .spark-map-marker:focus-visible .spark-marker-pin,
 .spark-map-marker.active .spark-marker-pin {
-  box-shadow: 5px 5px 0 rgba(22, 24, 23, 0.26);
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.28);
   transform: translateX(-50%) rotate(-45deg) scale(1.08);
 }
 

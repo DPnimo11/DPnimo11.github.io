@@ -25,7 +25,7 @@
 .paint-toolbar button {
   min-height: 38px;
   border: 1px solid var(--line-strong);
-  background: rgba(246, 241, 232, 0.72);
+  background: var(--surface-control);
   padding: 8px 11px;
   color: var(--ink);
   cursor: pointer;
@@ -41,7 +41,7 @@
 .paint-size-control {
   min-height: 38px;
   border: 1px solid var(--line);
-  background: rgba(246, 241, 232, 0.58);
+  background: var(--surface-control-muted);
   padding: 7px 10px;
 }
 
@@ -68,14 +68,14 @@
   aspect-ratio: 1;
   border: 1px solid var(--line-strong);
   background: var(--panel);
-  box-shadow: inset 0 0 0 1px rgba(22, 24, 23, 0.06);
+  box-shadow: inset 0 0 0 1px var(--grid-soft);
   touch-action: none;
   user-select: none;
 }
 
 .paint-board span {
   aspect-ratio: 1;
-  border-right: 1px solid rgba(22, 24, 23, 0.06);
-  border-bottom: 1px solid rgba(22, 24, 23, 0.06);
+  border-right: 1px solid var(--grid-soft);
+  border-bottom: 1px solid var(--grid-soft);
   background: transparent;
 }

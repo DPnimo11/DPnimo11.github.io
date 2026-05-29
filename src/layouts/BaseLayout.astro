@@ -42,10 +42,22 @@ const graph = [
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      (() => {
+        try {
+          const storedTheme = localStorage.getItem("darren-theme");
+          const theme = storedTheme === "dark" ? "dark" : "light";
+          document.documentElement.dataset.theme = theme;
+          document.documentElement.style.colorScheme = theme;
+        } catch {
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
     <meta name="description" content={description} />
     <meta name="robots" content="index, follow" />
     <meta name="author" content={site.name} />
@@ -74,13 +86,74 @@ const graph = [
     <meta name="twitter:image" content={socialImageUrl} />
     <script type="application/ld+json" set:html={JSON.stringify({ "@context": "https://schema.org", "@graph": graph })} />
     <script is:inline>
-      const setFavicon = (isDark) => {
-        const favicon = document.getElementById("dynamic-favicon");
-        if (favicon) favicon.href = isDark ? "/favicon-dark.svg" : "/favicon-light.svg";
-      };
-      const mq = window.matchMedia("(prefers-color-scheme: dark)");
-      setFavicon(mq.matches);
-      mq.addEventListener("change", (e) => setFavicon(e.matches));
+      (() => {
+        const storageKey = "darren-theme";
+        const themeColors = {
+          light: "#f6f1e8",
+          dark: "#151514",
+        };
+
+        const normalizeTheme = (theme) => (theme === "dark" ? "dark" : "light");
+
+        const readStoredTheme = () => {
+          try {
+            return localStorage.getItem(storageKey);
+          } catch {
+            return null;
+          }
+        };
+
+        const writeStoredTheme = (theme) => {
+          try {
+            localStorage.setItem(storageKey, theme);
+          } catch {
+            // Theme still updates for the current page if storage is unavailable.
+          }
+        };
+
+        const syncThemeControls = (theme) => {
+          document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+            const isDark = theme === "dark";
+            button.setAttribute("aria-pressed", String(isDark));
+            button.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+            button.setAttribute("title", isDark ? "Switch to light mode" : "Switch to dark mode");
+          });
+        };
+
+        const applyTheme = (theme, { persist = false } = {}) => {
+          const nextTheme = normalizeTheme(theme);
+          document.documentElement.dataset.theme = nextTheme;
+          document.documentElement.style.colorScheme = nextTheme;
+
+          const themeColor = document.querySelector('meta[name="theme-color"]');
+          if (themeColor) themeColor.setAttribute("content", themeColors[nextTheme]);
+
+          const favicon = document.getElementById("dynamic-favicon");
+          if (favicon) favicon.href = nextTheme === "dark" ? "/favicon-dark.svg" : "/favicon-light.svg";
+
+          syncThemeControls(nextTheme);
+          if (persist) writeStoredTheme(nextTheme);
+        };
+
+        const bindThemeControls = () => {
+          applyTheme(document.documentElement.dataset.theme || readStoredTheme());
+
+          document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+            button.addEventListener("click", () => {
+              const currentTheme = normalizeTheme(document.documentElement.dataset.theme);
+              applyTheme(currentTheme === "dark" ? "light" : "dark", { persist: true });
+            });
+          });
+        };
+
+        applyTheme(readStoredTheme());
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", bindThemeControls, { once: true });
+        } else {
+          bindThemeControls();
+        }
+      })();
     </script>
     <title>{pageTitle}</title>
   </head>
