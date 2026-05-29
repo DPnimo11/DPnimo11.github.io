@@ -58,35 +58,38 @@
     const createDenseCodeTexture = () => {
       const canvas = document.createElement('canvas');
       canvas.width = 1024;
-      canvas.height = 1024; // Power of two for smooth repeating
+      canvas.height = 1024; 
       const ctx = canvas.getContext('2d');
       if (ctx) {
         ctx.fillStyle = 'rgba(255, 255, 255, 0)'; 
         ctx.fillRect(0, 0, 1024, 1024);
         ctx.fillStyle = '#111613';
-        ctx.font = 'bold 22px monospace';
+        ctx.font = 'bold 36px monospace'; 
         ctx.textAlign = 'left';
         ctx.textBaseline = 'top';
         
-        const lines = [
-            "struct pcb_t {", "  pid_t pid;", "  int status;", "  void *stack;", 
-            "  struct pcb_t *next;", "};", "void schedule() {", "  pcb_t *p = pop();", 
-            "  context_switch(p);", "}", "import torch", "import torch.nn as nn", 
-            "class Model(nn.Module):", "  def forward(self, x):", "    return self.fc(x)"
+        const snippets = [
+            "struct pcb_t {", "pid_t pid;", "int status;", "void *stack;", 
+            "struct pcb_t *next;", "};", "void schedule() {", "pcb_t *p = pop();", 
+            "context_switch(p);", "}", "import torch", "import torch.nn as nn", 
+            "class Model(nn.Module):", "def forward(self, x):", "return self.fc(x)"
         ];
         
-        // Tile text heavily across the canvas
-        for (let y = 0; y < 1024; y += 30) {
-            for (let x = 0; x < 1024; x += 300) {
-                const line = lines[Math.floor(Math.random() * lines.length)];
-                ctx.fillText(line, x, y);
+        // Pack text tightly horizontally with random stagger per row
+        for (let y = 0; y < 1024; y += 45) {
+            let lineStr = "";
+            for(let i=0; i<15; i++) {
+                lineStr += snippets[Math.floor(Math.random() * snippets.length)] + " ";
             }
+            const offsetX = -(Math.random() * 300);
+            ctx.fillText(lineStr, offsetX, y);
         }
       }
       const texture = new THREE.CanvasTexture(canvas);
       texture.wrapS = THREE.RepeatWrapping;
       texture.wrapT = THREE.RepeatWrapping;
-      texture.repeat.set(2, 20); // Wrap around the tube and along its length
+      // Perfect aspect ratio mapping for lengthwise tube flow
+      texture.repeat.set(16, 0.5); 
       texture.minFilter = THREE.LinearFilter;
       return texture;
     };
@@ -147,8 +150,11 @@
       requestAnimationFrame(animate);
       helixGroup.rotation.y += 0.0025; // Pure rotation around the internal Y axis
       
-      // Slowly scroll the code texture along the tubes
-      codeTexture.offset.y -= 0.001;
+      // Scroll main tube lengthwise
+      codeTexture.offset.x -= 0.005;
+      
+      // Animate the cylinder rungs so they flow with the data stream
+      rungCodeTexture.offset.y -= 0.005; 
       
       renderer.render(scene, camera);
     };
