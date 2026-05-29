@@ -64,7 +64,7 @@
         ctx.fillStyle = 'rgba(255, 255, 255, 0)'; 
         ctx.fillRect(0, 0, 1024, 1024);
         ctx.fillStyle = '#111613';
-        ctx.font = 'bold 36px monospace'; 
+        ctx.font = 'bold 24px monospace'; 
         ctx.textAlign = 'left';
         ctx.textBaseline = 'top';
         
@@ -75,13 +75,13 @@
             "class Model(nn.Module):", "def forward(self, x):", "return self.fc(x)"
         ];
         
-        // Pack text tightly horizontally with random stagger per row
-        for (let y = 0; y < 1024; y += 45) {
+        // Pack text incredibly tightly vertically and horizontally
+        for (let y = 0; y < 1024; y += 22) {
             let lineStr = "";
-            for(let i=0; i<15; i++) {
+            for(let i=0; i<20; i++) {
                 lineStr += snippets[Math.floor(Math.random() * snippets.length)] + " ";
             }
-            const offsetX = -(Math.random() * 300);
+            const offsetX = -(Math.random() * 100);
             ctx.fillText(lineStr, offsetX, y);
         }
       }
@@ -106,8 +106,15 @@
     helixGroup.add(codeTube);
 
     // --- Connecting Rungs (Half Bio, Half Code) ---
-    const rungCodeTexture = createDenseCodeTexture();
-    rungCodeTexture.repeat.set(1, 2); 
+    // Clone the texture so we can map it to the short rungs independently
+    const rungCodeTexture = codeTexture.clone();
+    rungCodeTexture.needsUpdate = true;
+    
+    // Rung length is ~7.5, circumference is ~2.2.
+    // To match the exact physical text size of the main tube:
+    // U = 7.5 / (150/16) = 0.8
+    // V = 2.2 / (4.7/0.5) = 0.234
+    rungCodeTexture.repeat.set(0.8, 0.23); 
     const rungCodeMat = new THREE.MeshBasicMaterial({ map: rungCodeTexture, transparent: true, opacity: 0.85 });
 
     for (let i = 0; i < numPoints; i += 20) {
@@ -129,12 +136,11 @@
       bioMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), midPoint.clone().sub(p1).normalize());
       helixGroup.add(bioMesh);
 
-      // Code Half (Text-Wrapped Cylinder)
-      const codeGeo = new THREE.CylinderGeometry(0.35, 0.35, distance / 2, 8);
+      // Code Half (Static Code Tube)
+      // TubeGeometry guarantees text flows flawlessly lengthwise
+      const rungCurve = new THREE.LineCurve3(midPoint, p2);
+      const codeGeo = new THREE.TubeGeometry(rungCurve, 2, 0.35, 8, false);
       const codeMesh = new THREE.Mesh(codeGeo, rungCodeMat);
-      
-      codeMesh.position.copy(midPoint.clone().lerp(p2, 0.5));
-      codeMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), p2.clone().sub(midPoint).normalize());
       helixGroup.add(codeMesh);
     }
 
@@ -153,8 +159,8 @@
       // Scroll main tube lengthwise
       codeTexture.offset.x -= 0.005;
       
-      // Animate the cylinder rungs so they flow with the data stream
-      rungCodeTexture.offset.y -= 0.005; 
+      // We intentionally do NOT scroll rungCodeTexture here, 
+      // so it remains physically locked to the rotating helix structure.
       
       renderer.render(scene, camera);
     };
