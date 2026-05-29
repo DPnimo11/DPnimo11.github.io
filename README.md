@@ -1,59 +1,16 @@
 # DPnimo11.github.io
 
-Personal portfolio site, built with Astro and deployed to GitHub Pages.
+Personal portfolio site for Darren Wang. Built with a restrained, tactile lab-notebook aesthetic to showcase computational biology research, systems code, ML/data projects, and web applications. 
 
-## Tech
+## Tech Stack
 
-- Astro static site
-- Plain CSS in `src/styles/global.css`
-- Project content in `src/data/projects.ts`
-- Static assets in `public/`
-- GitHub Actions deployment to Pages
-
-## Local Development
-
-Requires Node `>=22.12.0`.
-
-```bash
-npm install
-npm run dev
-```
-
-Optional local environment:
-
-```bash
-PUBLIC_MAPBOX_TOKEN=your_mapbox_public_token
-```
-
-The Spark Social Map demo uses Mapbox Static Images when this token is present.
-Without it, the site still builds and shows the map fallback state.
-
-Build locally:
-
-```bash
-npm run build
-```
-
-Preview the production build:
-
-```bash
-npm run preview
-```
-
-## Editing
-
-- Home page: `src/pages/index.astro`
-- About page: `src/pages/about.astro`
-- Project data: `src/data/projects.ts`
-- Project detail template: `src/pages/projects/[slug].astro`
-- Shared visual styling: `src/styles/global.css`
+- **Framework**: [Astro](https://astro.build/) (Static Site Generation)
+- **3D Graphics**: [Three.js](https://threejs.org/) (used for the interactive Hybrid Data Stream Helix and ambient graphics)
+- **Styling**: Vanilla CSS (zero-dependency global partials with CSS variables)
+- **Content**: Type-safe data registries (`src/data/projects.ts`)
+- **Demos**: Embedded interactive components, Mapbox Static Images API integrations, and Vanilla JS simulators
+- **Hosting**: GitHub Pages
 
 ## Deployment
 
-Pushes to `main` trigger `.github/workflows/deploy.yml`, which builds the Astro site and deploys `dist/` through GitHub Pages Actions.
-
-GitHub Pages should be configured to deploy from Actions.
-
-For the Spark map preview in production, set `PUBLIC_MAPBOX_TOKEN` as a GitHub
-Actions secret or repository variable. The workflow passes it through only at
-build time.
+Pushes to the `main` branch automatically trigger the `.github/workflows/deploy.yml` pipeline. This securely injects necessary environment variables (like `PUBLIC_MAPBOX_TOKEN`), compiles the Astro site, and deploys the fully optimized static bundle through GitHub Pages Actions.
