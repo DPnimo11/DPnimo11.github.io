@@ -29,7 +29,7 @@
     const radius = 5;
     const frequency = 0.3; // How tightly wound it is
 
-    // Strand 1: Solid Tube (Biology)
+    // --- Strand 1: Wireframe Tube (Biology) ---
     const points1 = [];
     for (let i = 0; i < numPoints; i++) {
       const t = i / numPoints;
@@ -40,69 +40,98 @@
       points1.push(new THREE.Vector3(x, y, z));
     }
     const curve1 = new THREE.CatmullRomCurve3(points1);
-    const geometry1 = new THREE.TubeGeometry(curve1, 400, 0.35, 8, false);
-    const material1 = new THREE.MeshBasicMaterial({ color: 0x111613, transparent: true, opacity: 0.65 });
-    const tube1 = new THREE.Mesh(geometry1, material1);
-    helixGroup.add(tube1);
+    const geometry1 = new THREE.TubeGeometry(curve1, 150, 0.4, 6, false);
+    const wireframeGeo = new THREE.WireframeGeometry(geometry1);
+    const lineMat = new THREE.LineBasicMaterial({ color: 0x111613, transparent: true, opacity: 0.35, linewidth: 1 });
+    const wireframeTube = new THREE.LineSegments(wireframeGeo, lineMat);
+    helixGroup.add(wireframeTube);
 
-    // Strand 2: Code Stream (CS)
-    const words = ['struct', 'def', 'void', 'class', 'import', 'malloc()', 'return', 'if', 'else', 'await'];
-    
-    const createCodeTexture = (text) => {
-      const canvas = document.createElement('canvas');
-      canvas.width = 256;
-      canvas.height = 128; // Rectangular aspect ratio for words
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.fillStyle = 'rgba(255, 255, 255, 0)';
-        ctx.fillRect(0, 0, 256, 128);
-        ctx.fillStyle = '#111613';
-        ctx.font = 'bold 36px monospace';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(text, 128, 64);
-      }
-      return new THREE.CanvasTexture(canvas);
-    };
-
-    const materials2 = words.map(word => {
-      return new THREE.PointsMaterial({
-        color: 0x111613,
-        size: 3.5, // Larger size to read the words
-        transparent: true,
-        opacity: 0.8,
-        map: createCodeTexture(word),
-        alphaTest: 0.1,
-        depthWrite: false
-      });
-    });
-
-    // We split the CS strand points into chunks, assigning a different code texture to each chunk
-    const chunkGeometries = words.map(() => new THREE.BufferGeometry());
-    const chunkPositions = words.map(() => []);
-
-    for (let i = 0; i < numPoints; i += 2) { // Less dense so text is readable
+    // --- Strand 2: Code Stream (CS) ---
+    const points2 = [];
+    for (let i = 0; i < numPoints; i++) {
       const t = i / numPoints;
       const y = (t - 0.5) * height;
       const angle = t * height * frequency + Math.PI; // Opposite phase
       const x = Math.cos(angle) * radius;
       const z = Math.sin(angle) * radius;
+      points2.push(new THREE.Vector3(x, y, z));
+    }
+    const curve2 = new THREE.CatmullRomCurve3(points2);
+
+    const codeLines = [
+      "struct pcb_t {",
+      "  pid_t pid;",
+      "  int status;",
+      "  void *stack;",
+      "  struct pcb_t *next;",
+      "};",
+      "void schedule() {",
+      "  pcb_t *p = pop();",
+      "  context_switch(p);",
+      "}",
+      "import torch",
+      "import torch.nn as nn",
+      "class Model(nn.Module):",
+      "  def forward(self, x):",
+      "    return self.fc(x)"
+    ];
+    
+    const createTextPlane = (text) => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 64;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0)';
+        ctx.fillRect(0, 0, 512, 64);
+        ctx.fillStyle = '#111613';
+        ctx.font = 'bold 36px monospace';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, 10, 32);
+      }
       
-      const chunkIndex = Math.floor(Math.random() * words.length);
-      chunkPositions[chunkIndex].push(x, y, z);
+      const texture = new THREE.CanvasTexture(canvas);
+      // Improve texture filtering for text
+      texture.minFilter = THREE.LinearFilter;
+      
+      const material = new THREE.MeshBasicMaterial({
+        map: texture,
+        transparent: true,
+        opacity: 0.85,
+        depthWrite: false,
+        side: THREE.DoubleSide
+      });
+      const geometry = new THREE.PlaneGeometry(4.0, 0.5);
+      return new THREE.Mesh(geometry, material);
+    };
+
+    const numPlanes = 55; // Number of code snippets along the curve
+    for(let i = 0; i < numPlanes; i++) {
+      const t = i / (numPlanes - 1);
+      const pt = curve2.getPoint(t);
+      const tangent = curve2.getTangent(t).normalize();
+      
+      const textIndex = i % codeLines.length;
+      const mesh = createTextPlane(codeLines[textIndex]);
+      mesh.position.copy(pt);
+      
+      // Orient the mesh to flow ALONG the curve
+      // X axis aligns with the tangent vector
+      // Z axis points outward from the center
+      const outward = new THREE.Vector3(pt.x, 0, pt.z).normalize();
+      const up = new THREE.Vector3().crossVectors(tangent, outward).normalize();
+      
+      const matrix = new THREE.Matrix4();
+      matrix.makeBasis(tangent, up, outward);
+      mesh.quaternion.setFromRotationMatrix(matrix);
+      
+      helixGroup.add(mesh);
     }
 
-    words.forEach((_, index) => {
-      if (chunkPositions[index].length > 0) {
-        chunkGeometries[index].setAttribute('position', new THREE.Float32BufferAttribute(chunkPositions[index], 3));
-        const points = new THREE.Points(chunkGeometries[index], materials2[index]);
-        helixGroup.add(points);
-      }
-    });
-
-    // Add 3D rungs connecting the two strands
-    const rungMaterial = new THREE.MeshBasicMaterial({ color: 0x111613, transparent: true, opacity: 0.25 });
-    for (let i = 0; i < numPoints; i += 15) {
+    // --- Connecting Rungs ---
+    const rungMaterial = new THREE.MeshBasicMaterial({ color: 0x111613, transparent: true, opacity: 0.15 });
+    for (let i = 0; i < numPoints; i += 20) {
       const t = i / numPoints;
       const y = (t - 0.5) * height;
       
@@ -118,7 +147,7 @@
       const p2 = new THREE.Vector3(x2, y, z2);
       const distance = p1.distanceTo(p2);
       
-      const rungGeo = new THREE.CylinderGeometry(0.1, 0.1, distance, 8);
+      const rungGeo = new THREE.CylinderGeometry(0.08, 0.08, distance, 4);
       const rungMesh = new THREE.Mesh(rungGeo, rungMaterial);
       
       // Position halfway between the two strands
@@ -141,7 +170,7 @@
     const animate = function () {
       requestAnimationFrame(animate);
       
-      // Pure rotation around the Y axis, removed the X-axis breathing
+      // Pure rotation around the internal Y axis
       helixGroup.rotation.y += 0.0025;
       
       renderer.render(scene, camera);
@@ -177,7 +206,7 @@
     width: 100%;
     height: 100%;
     z-index: 0;
-    pointer-events: none; /* Let clicks pass through to the buttons */
+    pointer-events: none;
     overflow: hidden;
   }
 </style>
