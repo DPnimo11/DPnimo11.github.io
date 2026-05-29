@@ -11,7 +11,6 @@
     const scene = new THREE.Scene();
     
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    // Position camera so helix goes bottom-left to top-right
     camera.position.z = 40;
     
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
@@ -23,164 +22,122 @@
     const helixGroup = new THREE.Group();
     tiltGroup.add(helixGroup);
     
-    // Math for the helix
     const numPoints = 800;
     const height = 60;
-    const radius = 7.5; // Increased for thickness
-    const frequency = 0.3; // How tightly wound it is
+    const radius = 7.5; 
+    const frequency = 0.3; 
 
-    // --- Strand 1: Wireframe Tube (Biology) ---
+    // Generate Points for Curves
     const points1 = [];
-    for (let i = 0; i < numPoints; i++) {
-      const t = i / numPoints;
-      const y = (t - 0.5) * height;
-      const angle = t * height * frequency;
-      const x = Math.cos(angle) * radius;
-      const z = Math.sin(angle) * radius;
-      points1.push(new THREE.Vector3(x, y, z));
-    }
-    const curve1 = new THREE.CatmullRomCurve3(points1);
-    // Increased tube radius to 0.75 for much more thickness
-    const geometry1 = new THREE.TubeGeometry(curve1, 150, 0.75, 6, false);
-    const wireframeGeo = new THREE.WireframeGeometry(geometry1);
-    const lineMat = new THREE.LineBasicMaterial({ color: 0x111613, transparent: true, opacity: 0.35, linewidth: 1 });
-    const wireframeTube = new THREE.LineSegments(wireframeGeo, lineMat);
-    helixGroup.add(wireframeTube);
-
-    // --- Strand 2: Code Stream (CS) ---
     const points2 = [];
     for (let i = 0; i < numPoints; i++) {
-      const t = i / numPoints;
-      const y = (t - 0.5) * height;
-      const angle = t * height * frequency + Math.PI; // Opposite phase
-      const x = Math.cos(angle) * radius;
-      const z = Math.sin(angle) * radius;
-      points2.push(new THREE.Vector3(x, y, z));
-    }
-    const curve2 = new THREE.CatmullRomCurve3(points2);
-
-    const codeLines = [
-      "struct pcb_t {",
-      "  pid_t pid;",
-      "  int status;",
-      "  void *stack;",
-      "  struct pcb_t *next;",
-      "};",
-      "void schedule() {",
-      "  pcb_t *p = pop();",
-      "  context_switch(p);",
-      "}",
-      "import torch",
-      "import torch.nn as nn",
-      "class Model(nn.Module):",
-      "  def forward(self, x):",
-      "    return self.fc(x)"
-    ];
-    
-    const createTextPlane = (text) => {
-      const canvas = document.createElement('canvas');
-      canvas.width = 512;
-      canvas.height = 64;
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.fillStyle = 'rgba(255, 255, 255, 0)';
-        ctx.fillRect(0, 0, 512, 64);
-        ctx.fillStyle = '#111613';
-        ctx.font = 'bold 36px monospace';
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(text, 10, 32);
-      }
-      
-      const texture = new THREE.CanvasTexture(canvas);
-      // Improve texture filtering for text
-      texture.minFilter = THREE.LinearFilter;
-      
-      const material = new THREE.MeshBasicMaterial({
-        map: texture,
-        transparent: true,
-        opacity: 0.85,
-        depthWrite: false,
-        side: THREE.DoubleSide
-      });
-      const geometry = new THREE.PlaneGeometry(4.0, 0.5);
-      return new THREE.Mesh(geometry, material);
-    };
-
-    // Dramatically increased density
-    const numPlanes = 250; 
-    for(let i = 0; i < numPlanes; i++) {
-      const t = i / (numPlanes - 1);
-      const pt = curve2.getPoint(t);
-      const tangent = curve2.getTangent(t).normalize();
-      
-      const textIndex = i % codeLines.length;
-      const mesh = createTextPlane(codeLines[textIndex]);
-      mesh.position.copy(pt);
-      
-      // Orient the mesh to flow ALONG the curve
-      // X axis aligns with the tangent vector
-      // Z axis points outward from the center
-      const outward = new THREE.Vector3(pt.x, 0, pt.z).normalize();
-      const up = new THREE.Vector3().crossVectors(tangent, outward).normalize();
-      
-      const matrix = new THREE.Matrix4();
-      matrix.makeBasis(tangent, up, outward);
-      mesh.quaternion.setFromRotationMatrix(matrix);
-      
-      helixGroup.add(mesh);
-    }
-
-    // --- Connecting Rungs (Half Bio, Half Code) ---
-    for (let i = 0; i < numPoints; i += 20) {
       const t = i / numPoints;
       const y = (t - 0.5) * height;
       
       const angle1 = t * height * frequency;
       const x1 = Math.cos(angle1) * radius;
       const z1 = Math.sin(angle1) * radius;
-      
-      const angle2 = t * height * frequency + Math.PI;
+      points1.push(new THREE.Vector3(x1, y, z1));
+
+      const angle2 = t * height * frequency + Math.PI; 
       const x2 = Math.cos(angle2) * radius;
       const z2 = Math.sin(angle2) * radius;
+      points2.push(new THREE.Vector3(x2, y, z2));
+    }
+    const curve1 = new THREE.CatmullRomCurve3(points1);
+    const curve2 = new THREE.CatmullRomCurve3(points2);
+
+    // --- Strand 1: Wireframe Tube (Biology) ---
+    const geometry1 = new THREE.TubeGeometry(curve1, 150, 0.75, 8, false);
+    const wireframeGeo = new THREE.WireframeGeometry(geometry1);
+    const lineMat = new THREE.LineBasicMaterial({ color: 0x111613, transparent: true, opacity: 0.35, linewidth: 1 });
+    const wireframeTube = new THREE.LineSegments(wireframeGeo, lineMat);
+    helixGroup.add(wireframeTube);
+
+    // --- Strand 2: Code Tube (CS) ---
+    const createDenseCodeTexture = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1024;
+      canvas.height = 1024; // Power of two for smooth repeating
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0)'; 
+        ctx.fillRect(0, 0, 1024, 1024);
+        ctx.fillStyle = '#111613';
+        ctx.font = 'bold 22px monospace';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        
+        const lines = [
+            "struct pcb_t {", "  pid_t pid;", "  int status;", "  void *stack;", 
+            "  struct pcb_t *next;", "};", "void schedule() {", "  pcb_t *p = pop();", 
+            "  context_switch(p);", "}", "import torch", "import torch.nn as nn", 
+            "class Model(nn.Module):", "  def forward(self, x):", "    return self.fc(x)"
+        ];
+        
+        // Tile text heavily across the canvas
+        for (let y = 0; y < 1024; y += 30) {
+            for (let x = 0; x < 1024; x += 300) {
+                const line = lines[Math.floor(Math.random() * lines.length)];
+                ctx.fillText(line, x, y);
+            }
+        }
+      }
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.set(2, 20); // Wrap around the tube and along its length
+      texture.minFilter = THREE.LinearFilter;
+      return texture;
+    };
+
+    const geometry2 = new THREE.TubeGeometry(curve2, 150, 0.75, 10, false);
+    const codeTexture = createDenseCodeTexture();
+    const material2 = new THREE.MeshBasicMaterial({ 
+        map: codeTexture, 
+        transparent: true, 
+        opacity: 0.85,
+        side: THREE.DoubleSide
+    });
+    const codeTube = new THREE.Mesh(geometry2, material2);
+    helixGroup.add(codeTube);
+
+    // --- Connecting Rungs (Half Bio, Half Code) ---
+    const rungCodeTexture = createDenseCodeTexture();
+    rungCodeTexture.repeat.set(1, 2); 
+    const rungCodeMat = new THREE.MeshBasicMaterial({ map: rungCodeTexture, transparent: true, opacity: 0.85 });
+
+    for (let i = 0; i < numPoints; i += 20) {
+      const t = i / numPoints;
       
-      const p1 = new THREE.Vector3(x1, y, z1); // Bio strand
-      const p2 = new THREE.Vector3(x2, y, z2); // Code strand
+      // Calculate exact positions on the curves to guarantee perfect alignment
+      const p1 = curve1.getPoint(t); 
+      const p2 = curve2.getPoint(t);
+      
       const distance = p1.distanceTo(p2);
       const midPoint = p1.clone().lerp(p2, 0.5);
       
       // Bio Half (Wireframe Cylinder)
-      const bioGeo = new THREE.CylinderGeometry(0.15, 0.15, distance / 2, 5);
+      const bioGeo = new THREE.CylinderGeometry(0.35, 0.35, distance / 2, 6);
       const bioWireframeGeo = new THREE.WireframeGeometry(bioGeo);
-      const bioMat = new THREE.LineBasicMaterial({ color: 0x111613, transparent: true, opacity: 0.35 });
-      const bioMesh = new THREE.LineSegments(bioWireframeGeo, bioMat);
+      const bioMesh = new THREE.LineSegments(bioWireframeGeo, lineMat); // Reuse wireframe material
       
       bioMesh.position.copy(p1.clone().lerp(midPoint, 0.5));
       bioMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), midPoint.clone().sub(p1).normalize());
       helixGroup.add(bioMesh);
 
-      // Code Half (Text Plane oriented along the rung)
-      const textIndex = (i / 20) % codeLines.length;
-      const codeMesh = createTextPlane(codeLines[textIndex]);
+      // Code Half (Text-Wrapped Cylinder)
+      const codeGeo = new THREE.CylinderGeometry(0.35, 0.35, distance / 2, 8);
+      const codeMesh = new THREE.Mesh(codeGeo, rungCodeMat);
       
-      // Scale down to fit the rung length (roughly 4.0 plane width vs distance/2 ~ 7.5)
-      codeMesh.scale.set(0.6, 0.6, 0.6); 
       codeMesh.position.copy(midPoint.clone().lerp(p2, 0.5));
-      
-      const rungVector = p2.clone().sub(midPoint).normalize();
-      const outward = new THREE.Vector3(codeMesh.position.x, 0, codeMesh.position.z).normalize();
-      const up = new THREE.Vector3().crossVectors(rungVector, outward).normalize();
-      
-      const matrix = new THREE.Matrix4();
-      matrix.makeBasis(rungVector, up, outward);
-      codeMesh.quaternion.setFromRotationMatrix(matrix);
-      
+      codeMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), p2.clone().sub(midPoint).normalize());
       helixGroup.add(codeMesh);
     }
 
-    // Position and tilt the parent group (Moved significantly Left)
+    // Position and tilt the parent group
     tiltGroup.rotation.z = -Math.PI / 4; 
-    tiltGroup.position.x = -12; // Moved left
+    tiltGroup.position.x = -12; 
     tiltGroup.position.y = -5;
     
     scene.add(tiltGroup);
@@ -188,9 +145,10 @@
     // Animation Loop
     const animate = function () {
       requestAnimationFrame(animate);
+      helixGroup.rotation.y += 0.0025; // Pure rotation around the internal Y axis
       
-      // Pure rotation around the internal Y axis
-      helixGroup.rotation.y += 0.0025;
+      // Slowly scroll the code texture along the tubes
+      codeTexture.offset.y -= 0.001;
       
       renderer.render(scene, camera);
     };
