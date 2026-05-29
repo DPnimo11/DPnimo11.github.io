@@ -1,0 +1,170 @@
+---
+// src/components/HelixBackground.astro
+---
+<div id="helix-container" aria-hidden="true"></div>
+
+<script>
+  import * as THREE from 'three';
+
+  const container = document.getElementById('helix-container');
+  if (container) {
+    const scene = new THREE.Scene();
+    
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    // Position camera so helix goes bottom-left to top-right
+    camera.position.z = 40;
+    
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
+
+    const helixGroup = new THREE.Group();
+    
+    // Math for the helix
+    const numPoints = 800;
+    const height = 60;
+    const radius = 5;
+    const frequency = 0.3; // How tightly wound it is
+
+    // Strand 1: Solid Wireframe (Line)
+    const points1 = [];
+    for (let i = 0; i < numPoints; i++) {
+      const t = i / numPoints;
+      const y = (t - 0.5) * height;
+      const angle = t * height * frequency;
+      const x = Math.cos(angle) * radius;
+      const z = Math.sin(angle) * radius;
+      points1.push(new THREE.Vector3(x, y, z));
+    }
+    const geometry1 = new THREE.BufferGeometry().setFromPoints(points1);
+    const material1 = new THREE.LineBasicMaterial({ color: 0x111613, transparent: true, opacity: 0.3, linewidth: 1 });
+    const line1 = new THREE.Line(geometry1, material1);
+    helixGroup.add(line1);
+
+    // Strand 2: Data Stream (Points)
+    // Create a simple text texture using a 2D canvas
+    const createTextTexture = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 64;
+      canvas.height = 64;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0)'; // Transparent bg
+        ctx.fillRect(0, 0, 64, 64);
+        ctx.fillStyle = '#111613';
+        ctx.font = 'bold 48px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        // Draw a data-like character
+        ctx.fillText('1', 32, 32);
+      }
+      return new THREE.CanvasTexture(canvas);
+    };
+
+    const geometry2 = new THREE.BufferGeometry();
+    const positions2 = new Float32Array(numPoints * 3);
+    for (let i = 0; i < numPoints; i++) {
+      const t = i / numPoints;
+      const y = (t - 0.5) * height;
+      const angle = t * height * frequency + Math.PI; // Opposite phase
+      const x = Math.cos(angle) * radius;
+      const z = Math.sin(angle) * radius;
+      
+      positions2[i * 3] = x;
+      positions2[i * 3 + 1] = y;
+      positions2[i * 3 + 2] = z;
+    }
+    geometry2.setAttribute('position', new THREE.BufferAttribute(positions2, 3));
+    
+    const material2 = new THREE.PointsMaterial({
+      color: 0x111613,
+      size: 1.0,
+      transparent: true,
+      opacity: 0.6,
+      map: createTextTexture(),
+      alphaTest: 0.1,
+      depthWrite: false
+    });
+    
+    const pointsStrand = new THREE.Points(geometry2, material2);
+    helixGroup.add(pointsStrand);
+
+    // Add rungs connecting the two strands
+    const rungMaterial = new THREE.LineBasicMaterial({ color: 0x111613, transparent: true, opacity: 0.1 });
+    const rungGeometry = new THREE.BufferGeometry();
+    const rungPositions = [];
+    // Add a rung every 15 points
+    for (let i = 0; i < numPoints; i += 15) {
+      const t = i / numPoints;
+      const y = (t - 0.5) * height;
+      
+      const angle1 = t * height * frequency;
+      const x1 = Math.cos(angle1) * radius;
+      const z1 = Math.sin(angle1) * radius;
+      
+      const angle2 = t * height * frequency + Math.PI;
+      const x2 = Math.cos(angle2) * radius;
+      const z2 = Math.sin(angle2) * radius;
+      
+      rungPositions.push(x1, y, z1);
+      rungPositions.push(x2, y, z2);
+    }
+    rungGeometry.setAttribute('position', new THREE.Float32BufferAttribute(rungPositions, 3));
+    const rungs = new THREE.LineSegments(rungGeometry, rungMaterial);
+    helixGroup.add(rungs);
+
+    // Position and tilt the helix (bottom-left to top-right)
+    helixGroup.rotation.z = -Math.PI / 4; 
+    helixGroup.position.x = 5; 
+    helixGroup.position.y = -5;
+    
+    scene.add(helixGroup);
+
+    // Animation Loop
+    let time = 0;
+    const animate = function () {
+      requestAnimationFrame(animate);
+      
+      // Rotate the entire helix slowly
+      helixGroup.rotation.y += 0.003;
+      helixGroup.rotation.x = Math.sin(time) * 0.05;
+      
+      time += 0.01;
+      renderer.render(scene, camera);
+    };
+
+    animate();
+
+    // Handle Window Resize
+    window.addEventListener('resize', () => {
+      const parent = container.parentElement;
+      if (parent) {
+        camera.aspect = parent.clientWidth / parent.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(parent.clientWidth, parent.clientHeight);
+      }
+    });
+    
+    // Initial size
+    const parent = container.parentElement;
+    if (parent) {
+      camera.aspect = parent.clientWidth / parent.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(parent.clientWidth, parent.clientHeight);
+    }
+  }
+</script>
+
+<style>
+  #helix-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none; /* Let clicks pass through to the buttons */
+    overflow: hidden;
+  }
+</style>

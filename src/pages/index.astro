@@ -1,4 +1,5 @@
 ---
+import HelixBackground from "../components/HelixBackground.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { projects } from "../data/projects";
@@ -22,6 +23,7 @@ const featured = featuredSlugs.map((slug) => {
   description="Darren Wang is a University of Pennsylvania computer science and robotics student building computational biology research software, ML/data pipelines, systems projects, and full-stack apps."
 >
   <section class="hero-section">
+    <HelixBackground />
     <div class="hero-copy">
       <p class="eyebrow">Penn CIS + Robotics</p>
       <h1>Darren Wang</h1>

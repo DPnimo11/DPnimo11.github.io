@@ -75,6 +75,7 @@
 }
 
 .hero-section {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1.3fr) minmax(300px, 0.7fr);
   gap: 40px;
@@ -84,6 +85,8 @@
 }
 
 .hero-copy {
+  position: relative;
+  z-index: 1;
   display: flex;
   min-width: 0;
   flex-direction: column;
@@ -168,6 +171,8 @@ h3 {
 }
 
 .hero-instrument {
+  position: relative;
+  z-index: 1;
   display: grid;
   align-content: center;
   gap: 16px;
