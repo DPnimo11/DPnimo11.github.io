@@ -64,7 +64,7 @@
         ctx.fillStyle = 'rgba(255, 255, 255, 0)'; 
         ctx.fillRect(0, 0, 1024, 1024);
         ctx.fillStyle = '#111613';
-        ctx.font = 'bold 36px monospace'; 
+        ctx.font = 'bold 48px monospace'; 
         ctx.textAlign = 'left';
         ctx.textBaseline = 'top';
         
@@ -76,7 +76,7 @@
         ];
         
         // Pack text incredibly tightly vertically and horizontally
-        for (let y = 0; y < 1024; y += 30) {
+        for (let y = 0; y < 1024; y += 42) {
             let lineStr = "";
             for(let i=0; i<20; i++) {
                 lineStr += snippets[Math.floor(Math.random() * snippets.length)] + " ";
@@ -112,10 +112,9 @@
     rungCodeTexture.needsUpdate = true;
     
     // Rung length is ~7.5, circumference is ~2.2.
-    // To match the exact physical text size of the main tube:
-    // U = 7.5 / (150/16) = 0.8
-    // V = 2.2 / (4.7/0.5) = 0.234
-    rungCodeTexture.repeat.set(0.8, 0.23); 
+    // Scaled up by 1.33x to compensate for the main font size increase (36px -> 48px)
+    // so the rung text remains exactly the same physical size as before.
+    rungCodeTexture.repeat.set(1.06, 0.31); 
     const rungCodeMat = new THREE.MeshBasicMaterial({ map: rungCodeTexture, transparent: true, opacity: 0.85 });
 
     for (let i = 0; i < numPoints; i += 20) {
