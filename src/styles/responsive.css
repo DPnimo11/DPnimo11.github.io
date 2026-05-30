@@ -121,6 +121,16 @@
     min-height: 40px;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-menu nav {
+      animation: none;
+    }
+
+    .mobile-menu summary svg {
+      transition: none;
+    }
+  }
+
   .site-header nav a,
   .button {
     padding-right: 10px;
