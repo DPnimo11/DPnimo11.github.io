@@ -7,6 +7,16 @@
     grid-template-columns: 1fr;
   }
 
+  .hero-section {
+    min-height: auto;
+    gap: 24px;
+  }
+
+  .hero-artifact {
+    min-height: clamp(300px, 44vh, 420px);
+    margin-right: 0;
+  }
+
   .project-grid,
   .project-grid.wide,
   .about-notes {
@@ -94,6 +104,8 @@
 
   .site-header {
     top: 10px;
+    width: calc(100vw - 20px);
+    max-width: 100%;
     gap: 12px;
     margin: 10px 0 38px;
     padding: 10px;
@@ -103,10 +115,19 @@
     min-width: 0;
   }
 
+  .brand > span:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .header-actions {
-    width: auto;
+    display: grid;
+    grid-template-columns: 40px 40px;
+    width: 88px;
     margin-left: auto;
     align-items: center;
+    gap: 8px;
   }
 
   .site-header .desktop-nav {
@@ -146,6 +167,38 @@
   .detail-hero > div:first-child,
   .detail-copy {
     padding-left: 16px;
+  }
+
+  .hero-section {
+    gap: 18px;
+  }
+
+  .hero-copy,
+  .hero-lede {
+    width: min(100%, calc(100vw - 20px));
+    max-width: 100%;
+  }
+
+  .hero-lede {
+    width: min(100%, calc(100vw - 54px));
+  }
+
+  .hero-artifact {
+    min-height: 260px;
+  }
+
+  .hero-artifact::before {
+    inset: 7% 0 8% 10%;
+  }
+
+  .hero-copy .action-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: min(100%, 330px);
+  }
+
+  .hero-copy .button {
+    width: 100%;
   }
 
   .project-grid,

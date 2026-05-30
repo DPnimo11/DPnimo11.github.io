@@ -23,7 +23,6 @@ const featured = featuredSlugs.map((slug) => {
   description="Darren Wang is a University of Pennsylvania computer science and robotics student building computational biology research software, ML/data pipelines, systems projects, and full-stack apps."
 >
   <section class="hero-section">
-    <HelixBackground />
     <div class="hero-copy">
       <p class="eyebrow">Penn CIS + Robotics</p>
       <h1>Darren Wang</h1>
@@ -37,17 +36,8 @@ const featured = featuredSlugs.map((slug) => {
         <a class="button" href="#contact">Contact</a>
       </div>
     </div>
-    <aside class="hero-instrument" aria-label="Portfolio status panel">
-      <div class="headshot-frame">
-        <img src="/img/headshot-primary.jpg" alt="Portrait of Darren Wang" decoding="async" fetchpriority="high" />
-      </div>
-      <div class="console-card">
-        <span class="console-dot"></span>
-        <pre><code>$ focus --current
-research: machine learning, protein modeling
-systems: distributed systems, human systems engineering
-projects: algorithmic trading, AI tools</code></pre>
-      </div>
+    <aside class="hero-artifact" aria-label="Hybrid biology and systems artifact">
+      <HelixBackground />
     </aside>
   </section>
 

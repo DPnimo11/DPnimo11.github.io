@@ -9,12 +9,17 @@
   const container = document.getElementById('helix-container');
   if (container) {
     const scene = new THREE.Scene();
+    const getSize = () => ({
+      width: container.clientWidth || window.innerWidth,
+      height: container.clientHeight || window.innerHeight,
+    });
+    const initialSize = getSize();
     
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(45, initialSize.width / initialSize.height, 0.1, 1000);
     camera.position.z = 40;
     
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(initialSize.width, initialSize.height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
@@ -84,7 +89,7 @@
     // --- Strand 1: Wireframe Tube (Biology) ---
     const geometry1 = new THREE.TubeGeometry(curve1, 450, 0.55, 8, false);
     const wireframeGeo = new THREE.WireframeGeometry(geometry1);
-    const lineMat = new THREE.LineBasicMaterial({ color: getInkColor(), transparent: true, opacity: 0.35, linewidth: 1 });
+    const lineMat = new THREE.LineBasicMaterial({ color: getInkColor(), transparent: true, opacity: 0.28, linewidth: 1 });
     const wireframeTube = new THREE.LineSegments(wireframeGeo, lineMat);
     helixGroup.add(wireframeTube);
 
@@ -109,7 +114,7 @@
     const material2 = new THREE.MeshBasicMaterial({ 
         map: codeTexture, 
         transparent: true, 
-        opacity: 0.85,
+        opacity: 0.64,
         side: THREE.DoubleSide
     });
     const codeTube = new THREE.Mesh(geometry2, material2);
@@ -124,7 +129,7 @@
     // Scaled up by 1.33x to compensate for the main font size increase (36px -> 48px)
     // so the rung text remains exactly the same physical size as before.
     rungCodeTexture.repeat.set(1.06, 0.31); 
-    const rungCodeMat = new THREE.MeshBasicMaterial({ map: rungCodeTexture, transparent: true, opacity: 0.85 });
+    const rungCodeMat = new THREE.MeshBasicMaterial({ map: rungCodeTexture, transparent: true, opacity: 0.58 });
 
     const updateThemeColors = () => {
       const inkColor = getInkColor();
@@ -136,7 +141,7 @@
     const themeObserver = new MutationObserver(updateThemeColors);
     themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
-    for (let i = 0; i < numPoints; i += 20) {
+    for (let i = 0; i < numPoints; i += 28) {
       const t = i / numPoints;
       
       // Calculate exact positions on the curves to guarantee perfect alignment
@@ -165,8 +170,6 @@
 
     // Position and tilt the parent group
     tiltGroup.rotation.z = -Math.PI / 4; 
-    tiltGroup.position.x = window.innerWidth < 768 ? 4 : 18; 
-    tiltGroup.position.y = window.innerWidth < 768 ? -10 : -5;
     
     scene.add(tiltGroup);
 
@@ -187,32 +190,22 @@
     animate();
 
     const updateLayout = () => {
-      const height = window.innerHeight;
-      camera.aspect = window.innerWidth / height;
+      const { width, height } = getSize();
+      camera.aspect = width / height;
       camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, height);
+      renderer.setSize(width, height);
       
-      const vFov = camera.fov * Math.PI / 180;
-      const visibleHeight = 2 * Math.tan(vFov / 2) * camera.position.z;
-      const visibleWidth = visibleHeight * camera.aspect;
-      
-      const isMobile = window.innerWidth < 768;
-      // Put it back to -12 so it sits in the center-left behind the text
-      tiltGroup.position.x = isMobile ? 0 : -12; 
-      tiltGroup.position.y = isMobile ? -10 : -5;
+      const isMobile = width < 560;
+      const isNarrow = width < 760;
+      tiltGroup.position.x = isMobile ? 0 : isNarrow ? 1.5 : 4;
+      tiltGroup.position.y = isMobile ? -7 : -2.5;
+      const scale = isMobile ? 0.78 : isNarrow ? 0.92 : 1.08;
+      tiltGroup.scale.setScalar(scale);
     };
 
-    // Handle Window Resize
+    const resizeObserver = new ResizeObserver(updateLayout);
+    resizeObserver.observe(container);
     window.addEventListener('resize', updateLayout);
-    
-    // Fade out on scroll so it disappears when scrolling past the hero
-    window.addEventListener('scroll', () => {
-      if (container) {
-        // Fade out completely by 400px of scroll
-        const opacity = Math.max(0, 1 - window.scrollY / 400);
-        container.style.opacity = opacity.toString();
-      }
-    });
     
     // Initial size
     updateLayout();
@@ -221,14 +214,16 @@
 
 <style>
   #helix-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: -1;
+    position: absolute;
+    inset: -5% -8% -8% -2%;
+    z-index: 1;
     pointer-events: none;
     overflow: hidden;
-    will-change: opacity;
+    mask-image: linear-gradient(90deg, transparent 0, black 16%, black 100%);
+    opacity: 0.92;
+  }
+
+  #helix-container canvas {
+    display: block;
   }
 </style>
