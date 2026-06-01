@@ -38,7 +38,8 @@
         "class Model(nn.Module):", "def forward(self, x):", "return self.fc(x)"
     ];
 
-    const getInkColor = () => getComputedStyle(document.documentElement).getPropertyValue('--ink').trim() || '#111613';
+    const getThemeColor = (name, fallback) =>
+      getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
 
     const drawCodeTexture = (texture, color) => {
       const canvas = texture.image;
@@ -49,14 +50,14 @@
       ctx.fillStyle = 'rgba(255, 255, 255, 0)'; 
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = color;
-      ctx.font = 'bold 48px monospace'; 
+      ctx.font = 'bold 56px monospace'; 
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
       
       // Pack text tightly vertically and horizontally.
-      for (let y = 0; y < canvas.height; y += 42) {
+      for (let y = 0; y < canvas.height; y += 52) {
           let lineStr = "";
-          for(let i=0; i<20; i++) {
+          for(let i=0; i<14; i++) {
               lineStr += snippets[Math.floor(Math.random() * snippets.length)] + " ";
           }
           const offsetX = -(Math.random() * 100);
@@ -87,9 +88,14 @@
     const curve2 = new THREE.CatmullRomCurve3(points2);
 
     // --- Strand 1: Wireframe Tube (Biology) ---
-    const geometry1 = new THREE.TubeGeometry(curve1, 450, 0.55, 8, false);
+    const geometry1 = new THREE.TubeGeometry(curve1, 450, 0.48, 8, false);
     const wireframeGeo = new THREE.WireframeGeometry(geometry1);
-    const lineMat = new THREE.LineBasicMaterial({ color: getInkColor(), transparent: true, opacity: 0.28, linewidth: 1 });
+    const lineMat = new THREE.LineBasicMaterial({
+      color: getThemeColor('--blue', '#245c73'),
+      transparent: true,
+      opacity: 0.34,
+      linewidth: 1,
+    });
     const wireframeTube = new THREE.LineSegments(wireframeGeo, lineMat);
     helixGroup.add(wireframeTube);
 
@@ -99,22 +105,22 @@
       canvas.width = 1024;
       canvas.height = 1024; 
       const texture = new THREE.CanvasTexture(canvas);
-      drawCodeTexture(texture, getInkColor());
+      drawCodeTexture(texture, getThemeColor('--ink', '#111613'));
       texture.wrapS = THREE.RepeatWrapping;
       texture.wrapT = THREE.RepeatWrapping;
       // Perfect aspect ratio mapping for lengthwise tube flow
-      // Repeated 48 times to match the 3x increased height (180 vs 60)
-      texture.repeat.set(48, 0.5); 
+      // Repeated enough to preserve a code stream while leaving glyphs readable.
+      texture.repeat.set(30, 0.42); 
       texture.minFilter = THREE.LinearFilter;
       return texture;
     };
 
-    const geometry2 = new THREE.TubeGeometry(curve2, 450, 0.55, 10, false);
+    const geometry2 = new THREE.TubeGeometry(curve2, 450, 0.68, 10, false);
     const codeTexture = createDenseCodeTexture();
     const material2 = new THREE.MeshBasicMaterial({ 
         map: codeTexture, 
         transparent: true, 
-        opacity: 0.64,
+        opacity: 0.72,
         side: THREE.DoubleSide
     });
     const codeTube = new THREE.Mesh(geometry2, material2);
@@ -132,9 +138,8 @@
     const rungCodeMat = new THREE.MeshBasicMaterial({ map: rungCodeTexture, transparent: true, opacity: 0.58 });
 
     const updateThemeColors = () => {
-      const inkColor = getInkColor();
-      lineMat.color.set(inkColor);
-      drawCodeTexture(codeTexture, inkColor);
+      lineMat.color.set(getThemeColor('--blue', '#245c73'));
+      drawCodeTexture(codeTexture, getThemeColor('--ink', '#111613'));
       rungCodeTexture.needsUpdate = true;
     };
 
@@ -152,7 +157,7 @@
       const midPoint = p1.clone().lerp(p2, 0.5);
       
       // Bio Half (Wireframe Cylinder)
-      const bioGeo = new THREE.CylinderGeometry(0.25, 0.25, distance / 2, 6);
+      const bioGeo = new THREE.CylinderGeometry(0.2, 0.2, distance / 2, 6);
       const bioWireframeGeo = new THREE.WireframeGeometry(bioGeo);
       const bioMesh = new THREE.LineSegments(bioWireframeGeo, lineMat); // Reuse wireframe material
       
@@ -197,9 +202,9 @@
       
       const isMobile = width < 560;
       const isNarrow = width < 760;
-      tiltGroup.position.x = isMobile ? 0 : isNarrow ? 1.5 : 4;
-      tiltGroup.position.y = isMobile ? -7 : -2.5;
-      const scale = isMobile ? 0.78 : isNarrow ? 0.92 : 1.08;
+      tiltGroup.position.x = isMobile ? 2 : isNarrow ? 1.2 : 2.4;
+      tiltGroup.position.y = isMobile ? -8 : -2.5;
+      const scale = isMobile ? 0.9 : isNarrow ? 1.02 : 1.24;
       tiltGroup.scale.setScalar(scale);
     };
 
@@ -215,11 +220,14 @@
 <style>
   #helix-container {
     position: absolute;
-    inset: -5% -8% -8% -2%;
+    inset: -12% -14% -14% -8%;
     z-index: 1;
     pointer-events: none;
     overflow: hidden;
-    mask-image: linear-gradient(90deg, transparent 0, black 16%, black 100%);
+    -webkit-mask-image:
+      linear-gradient(90deg, transparent 0%, black 13%, black 74%, transparent 88%, transparent 100%);
+    mask-image:
+      linear-gradient(90deg, transparent 0%, black 13%, black 74%, transparent 88%, transparent 100%);
     opacity: 0.92;
   }
 

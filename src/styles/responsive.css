@@ -171,6 +171,8 @@
 
   .hero-section {
     gap: 18px;
+    overflow: hidden;
+    padding-bottom: 24px;
   }
 
   .hero-copy,
@@ -184,11 +186,20 @@
   }
 
   .hero-artifact {
-    min-height: 260px;
+    position: absolute;
+    right: -118px;
+    bottom: -26px;
+    z-index: 0;
+    width: min(82vw, 340px);
+    height: 260px;
+    min-height: 0;
+    opacity: 0.34;
+    pointer-events: none;
   }
 
-  .hero-artifact::before {
-    inset: 7% 0 8% 10%;
+  .hero-artifact::before,
+  .hero-artifact::after {
+    content: none;
   }
 
   .hero-copy .action-row {
