@@ -187,8 +187,8 @@
 
   .hero-artifact {
     position: absolute;
-    right: -118px;
-    bottom: -26px;
+    right: -76px;
+    bottom: 8px;
     z-index: 0;
     width: min(82vw, 340px);
     height: 260px;
