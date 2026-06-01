@@ -208,6 +208,10 @@
     width: min(100%, 330px);
   }
 
+  .hero-copy .mobile-secondary-action {
+    display: none;
+  }
+
   .hero-copy .button {
     width: 100%;
   }
