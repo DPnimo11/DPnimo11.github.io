@@ -216,26 +216,30 @@ export const projects: Project[] = [
     year: "2026",
     status: "Active build",
     summary:
-      "A local-first spaced repetition tracker for coding interview prep.",
+      "A cloud-backed review queue for LeetCode-style interview prep.",
     problem:
       "LeetCode prep gets noisy fast. Solved problems disappear into a list, weak topics are hard to revisit intentionally, and most trackers are either too manual or too rigid.",
     approach:
-      "I built a Next.js app with typed problem data, attempt logging, review scheduling, import/export backups, and curated templates for common study sets.",
+      "I built a Next.js app with Supabase Auth and Postgres, typed scheduling logic, built-in study templates, a LeetCode Daily flow, and an optional Chrome spoiler shield for review links.",
     result:
-      "The current version supports adding problems, logging attempts, reviewing scheduled work, and backing up local data as JSON.",
-    stack: ["Next.js", "TypeScript", "React", "Vitest", "local data"],
+      "The live app supports Google and GitHub sign-in, synced review data, daily queues, analytics, JSON import/export, and fast attempt logging.",
+    stack: ["Next.js", "TypeScript", "React", "Supabase", "Postgres", "Vitest", "Chrome MV3"],
     highlights: [
-      "Spaced repetition scheduling for problem review",
-      "Attempt modal with fast outcomes",
-      "LeetCode 75 and Top Interview 150 templates",
-      "JSON backup controls for local data",
+      "Cloud accounts with Supabase Auth and per-user Postgres rows",
+      "Today queue for overdue reviews, planned new starts, and completed work",
+      "Built-in LeetCode 75, Top Interview 150, and NeetCode 150 templates",
+      "LeetCode Daily card with add/log flow",
+      "Chrome extension review shield that hides old code until intentionally revealed",
     ],
-    metrics: ["Client-first data model", "Template-backed problem sets", "Unit-tested date helpers"],
-    links: [{ label: "GitHub", href: "https://github.com/DPnimo11/leetloop" }],
+    metrics: ["Live Vercel app", "Cloud Postgres sync", "Template-backed problem sets"],
+    links: [
+      { label: "Live app", href: "https://useleetloop.vercel.app" },
+      { label: "GitHub", href: "https://github.com/DPnimo11/leetloop" },
+    ],
     demo: "leetloop",
-    visual: "screenshot",
+    visual: "logo",
     image: "/img/leetloop.png",
-    thumbnailFrameBackground: "#f1f7fb",
+    thumbnailFrameBackground: "#fff",
   },
   {
     slug: "anime-analytics",
