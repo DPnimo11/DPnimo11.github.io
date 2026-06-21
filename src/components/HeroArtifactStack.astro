@@ -1,0 +1,340 @@
+﻿---
+// src/components/HeroArtifactStack.astro
+---
+<div class="artifact-stack" aria-hidden="true">
+  <div class="artifact-axis axis-x"></div>
+  <div class="artifact-axis axis-y"></div>
+
+  <section class="artifact-panel terminal-panel">
+    <span class="panel-shadow"></span>
+    <img
+      class="panel-base"
+      src="/img/home-artifacts/terminal-panel.png"
+      width="640"
+      height="430"
+      alt=""
+      loading="eager"
+      decoding="async"
+      fetchpriority="high"
+      draggable="false"
+    />
+  </section>
+
+  <section class="artifact-panel molecule-panel">
+    <span class="panel-shadow"></span>
+    <img
+      class="panel-base"
+      src="/img/home-artifacts/molecule-panel.png"
+      width="640"
+      height="445"
+      alt=""
+      loading="eager"
+      decoding="async"
+      fetchpriority="high"
+      draggable="false"
+    />
+  </section>
+
+  <section class="artifact-panel vm-panel">
+    <span class="panel-shadow"></span>
+    <img
+      class="panel-base"
+      src="/img/home-artifacts/vm-panel.png"
+      width="640"
+      height="376"
+      alt=""
+      loading="eager"
+      decoding="async"
+      fetchpriority="high"
+      draggable="false"
+    />
+  </section>
+
+  <section class="artifact-panel data-panel">
+    <span class="panel-shadow"></span>
+    <img
+      class="panel-base"
+      src="/img/home-artifacts/data-panel.png"
+      width="640"
+      height="387"
+      alt=""
+      loading="eager"
+      decoding="async"
+      fetchpriority="high"
+      draggable="false"
+    />
+  </section>
+
+  <section class="artifact-panel chess-panel">
+    <span class="panel-shadow"></span>
+    <img
+      class="panel-base"
+      src="/img/home-artifacts/chess-panel.png"
+      width="602"
+      height="640"
+      alt=""
+      loading="eager"
+      decoding="async"
+      fetchpriority="high"
+      draggable="false"
+    />
+  </section>
+</div>
+
+<style>
+  .artifact-stack {
+    position: absolute;
+    inset: 1% -5% 0 0;
+    z-index: 1;
+    overflow: hidden;
+    perspective: 980px;
+    perspective-origin: 52% 44%;
+    pointer-events: none;
+  }
+
+  .artifact-axis {
+    position: absolute;
+    border-color: var(--line-strong);
+    opacity: 0.18;
+  }
+
+  .axis-x {
+    right: 8%;
+    bottom: 15%;
+    left: 18%;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .axis-y {
+    top: 13%;
+    bottom: 18%;
+    left: 27%;
+    border-left: 1px solid var(--line-strong);
+  }
+
+  .artifact-panel {
+    --left: 0%;
+    --top: 0%;
+    --dx: 0px;
+    --dy: 0px;
+    --rx: 0deg;
+    --ry: 0deg;
+    --rz: 0deg;
+    --drx: 0deg;
+    --dry: 0deg;
+    --drz: 0deg;
+    --scale: 1;
+    --dur: 9s;
+    --panel-mask: none;
+    position: absolute;
+    top: var(--top);
+    left: var(--left);
+    isolation: isolate;
+    transform:
+      translate3d(0, 0, 0)
+      rotateX(var(--rx))
+      rotateY(var(--ry))
+      rotateZ(var(--rz))
+      scale(var(--scale));
+    transform-origin: center;
+    transform-style: preserve-3d;
+    animation: artifact-drift var(--dur) ease-in-out infinite;
+    will-change: transform;
+  }
+
+  .terminal-panel {
+    --left: 0%;
+    --top: 28%;
+    --dx: 6px;
+    --dy: -8px;
+    --rx: 47deg;
+    --ry: -9deg;
+    --rz: -19deg;
+    --drx: -2deg;
+    --dry: 1deg;
+    --drz: 0.8deg;
+    --dur: 9.5s;
+    --panel-mask: url("/img/home-artifacts/terminal-panel.png");
+    z-index: 5;
+    width: min(53%, 420px);
+    aspect-ratio: 640 / 430;
+  }
+
+  .molecule-panel {
+    --left: 40%;
+    --top: 4%;
+    --dx: -5px;
+    --dy: 7px;
+    --rx: 39deg;
+    --ry: 10deg;
+    --rz: 14deg;
+    --drx: 1deg;
+    --dry: -1deg;
+    --drz: -0.8deg;
+    --dur: 10.5s;
+    --panel-mask: url("/img/home-artifacts/molecule-panel.png");
+    z-index: 4;
+    width: min(42%, 328px);
+    aspect-ratio: 640 / 445;
+  }
+
+  .vm-panel {
+    --left: 45%;
+    --top: 39%;
+    --dx: 7px;
+    --dy: -5px;
+    --rx: 43deg;
+    --ry: -7deg;
+    --rz: -9deg;
+    --drx: -1deg;
+    --dry: 1deg;
+    --drz: 0.7deg;
+    --scale: 0.98;
+    --dur: 8.8s;
+    --panel-mask: url("/img/home-artifacts/vm-panel.png");
+    z-index: 3;
+    width: min(43%, 336px);
+    aspect-ratio: 640 / 376;
+  }
+
+  .data-panel {
+    --left: 19%;
+    --top: 54%;
+    --dx: -6px;
+    --dy: -7px;
+    --rx: 44deg;
+    --ry: 7deg;
+    --rz: 10deg;
+    --drx: 1deg;
+    --dry: -1deg;
+    --drz: -0.6deg;
+    --scale: 0.95;
+    --dur: 9.8s;
+    --panel-mask: url("/img/home-artifacts/data-panel.png");
+    z-index: 6;
+    width: min(40%, 306px);
+    aspect-ratio: 640 / 387;
+  }
+
+  .chess-panel {
+    --left: 62%;
+    --top: 25%;
+    --dx: -4px;
+    --dy: 6px;
+    --rx: 42deg;
+    --ry: 13deg;
+    --rz: 20deg;
+    --drx: 1deg;
+    --dry: -1deg;
+    --drz: -0.7deg;
+    --scale: 0.88;
+    --dur: 11s;
+    --panel-mask: url("/img/home-artifacts/chess-panel.png");
+    z-index: 7;
+    width: min(24%, 184px);
+    aspect-ratio: 602 / 640;
+  }
+
+  .panel-shadow,
+  .panel-base {
+    position: absolute;
+    inset: 0;
+  }
+
+  .panel-shadow {
+    z-index: 0;
+    background: color-mix(in srgb, var(--ink) 18%, transparent);
+    filter: blur(2px);
+    opacity: 0.46;
+    transform: translate3d(17px, 20px, -1px) scale(0.99);
+    mask-image: var(--panel-mask);
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+    -webkit-mask-image: var(--panel-mask);
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+  }
+
+  .panel-base {
+    z-index: 1;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    user-select: none;
+  }
+
+  :global(:root[data-theme="dark"]) .panel-base {
+    filter: brightness(0.86) contrast(1.08) saturate(0.82);
+  }
+
+  :global(:root[data-theme="dark"]) .panel-shadow {
+    opacity: 0.58;
+  }
+
+  @keyframes artifact-drift {
+    0%,
+    100% {
+      transform:
+        translate3d(0, 0, 0)
+        rotateX(var(--rx))
+        rotateY(var(--ry))
+        rotateZ(var(--rz))
+        scale(var(--scale));
+    }
+
+    50% {
+      transform:
+        translate3d(var(--dx), var(--dy), 0)
+        rotateX(calc(var(--rx) + var(--drx)))
+        rotateY(calc(var(--ry) + var(--dry)))
+        rotateZ(calc(var(--rz) + var(--drz)))
+        scale(var(--scale));
+    }
+  }
+
+  @media (max-width: 760px) {
+    .artifact-stack {
+      inset: -6% -10% -8% -6%;
+      perspective: 760px;
+    }
+
+    .terminal-panel {
+      --left: 0%;
+      --top: 24%;
+      width: 66%;
+    }
+
+    .molecule-panel {
+      --left: 40%;
+      --top: 5%;
+      width: 48%;
+    }
+
+    .vm-panel {
+      --left: 42%;
+      --top: 48%;
+      width: 51%;
+    }
+
+    .data-panel {
+      --left: 4%;
+      --top: 58%;
+      width: 48%;
+    }
+
+    .chess-panel {
+      --left: 61%;
+      --top: 26%;
+      width: 29%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .artifact-panel {
+      animation: none;
+    }
+  }
+</style>
