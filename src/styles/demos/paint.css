@@ -1,6 +1,11 @@
 .paint-demo {
+  --paint-pencil: #161817;
   display: grid;
   gap: 16px;
+}
+
+:root[data-theme="dark"] .paint-demo {
+  --paint-pencil: #eee7d8;
 }
 
 .paint-toolbar,
