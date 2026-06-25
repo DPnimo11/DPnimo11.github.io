@@ -1,9 +1,17 @@
 .spark-map-shell {
+  --spark-ink: #161817;
+  --spark-muted: #5e625e;
+  --spark-line-strong: #252923;
+  --spark-panel: #fffaf0;
+  --spark-grid-soft: rgba(22, 24, 23, 0.055);
+  --spark-red: #b54a35;
+  --spark-blue: #245c73;
+  --spark-map-bg: #d4e0e3;
   --post-dim: rgba(0, 0, 0, 0);
   aspect-ratio: 3 / 2;
   min-height: 0;
-  border-color: var(--line-strong);
-  background: var(--visual-map-bg);
+  border-color: var(--spark-line-strong);
+  background: var(--spark-map-bg);
   isolation: isolate;
 }
 
@@ -80,11 +88,11 @@
   place-items: center;
   padding: 24px;
   background:
-    linear-gradient(var(--grid-soft) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-soft) 1px, transparent 1px),
-    var(--visual-map-bg);
+    linear-gradient(var(--spark-grid-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--spark-grid-soft) 1px, transparent 1px),
+    var(--spark-map-bg);
   background-size: 24px 24px;
-  color: var(--muted);
+  color: var(--spark-muted);
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 0.78rem;
   font-weight: 800;
@@ -175,9 +183,9 @@
   z-index: 1;
   width: 34px;
   height: 34px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--spark-line-strong);
   border-radius: 50% 50% 50% 0;
-  background: var(--marker-bg, var(--red));
+  background: var(--marker-bg, var(--spark-red));
   box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.22);
   transform: translateX(-50%) rotate(-45deg);
   transition:
@@ -191,7 +199,7 @@
   top: 50%;
   width: 15px;
   height: 11px;
-  border: 2px solid var(--panel);
+  border: 2px solid var(--spark-panel);
   border-radius: 3px;
   transform: translate(-50%, -50%) rotate(45deg);
 }
@@ -203,13 +211,13 @@
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: var(--panel);
+  background: var(--spark-panel);
   content: "";
   transform: translate(-50%, -50%);
 }
 
 .spark-marker-text {
-  --marker-bg: var(--red);
+  --marker-bg: var(--spark-red);
 }
 
 .spark-marker-text .spark-marker-pin span {
@@ -217,7 +225,7 @@
   height: 18px;
   border: 0;
   border-radius: 0;
-  background: var(--panel);
+  background: var(--spark-panel);
   -webkit-mask: url("/img/chat.svg") center / contain no-repeat;
   mask: url("/img/chat.svg") center / contain no-repeat;
 }
@@ -228,7 +236,7 @@
 }
 
 .spark-marker-photo {
-  --marker-bg: var(--blue);
+  --marker-bg: var(--spark-blue);
 }
 
 .spark-marker-photo .spark-marker-pin span::before {
@@ -238,7 +246,7 @@
   width: 6px;
   height: 3px;
   border-radius: 2px 2px 0 0;
-  background: var(--panel);
+  background: var(--spark-panel);
   content: "";
 }
 
@@ -254,7 +262,7 @@
 }
 
 .spark-map-marker:focus-visible {
-  outline: 2px solid var(--ink);
+  outline: 2px solid var(--spark-ink);
   outline-offset: 4px;
 }
 
@@ -329,7 +337,7 @@
 
 .spark-post-location {
   margin-bottom: 5px;
-  color: var(--ink);
+  color: var(--spark-ink);
   font-family: var(--font-handwriting);
   font-size: 1.5rem;
   font-weight: 700;
@@ -381,7 +389,7 @@
     rgba(36, 92, 115, 0.28) calc(var(--spark-note-line-height) - 1px),
     rgba(36, 92, 115, 0.28) var(--spark-note-line-height)
   );
-  color: var(--ink);
+  color: var(--spark-ink);
   font-family: var(--font-handwriting);
   font-size: 1.3rem;
   font-weight: 400;
@@ -397,8 +405,8 @@
   flex: 0 0 auto;
   width: 24px;
   height: 24px;
-  border: 1px solid var(--line-strong);
-  background: var(--panel);
+  border: 1px solid var(--spark-line-strong);
+  background: var(--spark-panel);
   cursor: pointer;
 }
 
@@ -409,7 +417,7 @@
   top: 50%;
   width: 14px;
   height: 2px;
-  background: var(--ink);
+  background: var(--spark-ink);
   content: "";
 }
 
