@@ -1,15 +1,11 @@
 ---
-const mapboxToken = import.meta.env.PUBLIC_MAPBOX_TOKEN ?? "";
 const sparkMap = {
   center: { lng: -75.1946, lat: 39.9554 },
   zoom: 13.86,
   width: 1080,
   height: 720,
-  style: "streets-v12",
 };
-const sparkStaticMapUrl = mapboxToken
-  ? `https://api.mapbox.com/styles/v1/mapbox/${sparkMap.style}/static/${sparkMap.center.lng},${sparkMap.center.lat},${sparkMap.zoom},0/${sparkMap.width}x${sparkMap.height}@2x?access_token=${mapboxToken}`
-  : "";
+const sparkStaticMapSrc = "/img/spark-map.png";
 
 const projectSparkPoint = (lng: number, lat: number) => {
   const toRadians = (value: number) => (value * Math.PI) / 180;
@@ -118,10 +114,8 @@ const sparkPosts = [
         <p class="eyebrow">Product surface</p>
         <h2 id="demo-title">Location posts and network filters</h2>
       </div>
-      <div class={`map-sketch spark-map-shell${sparkStaticMapUrl ? "" : " map-fallback"}`} role="group" aria-label="Static map of University City, Philadelphia with sample Spark posts" data-spark-static-map>
-        {sparkStaticMapUrl && (
-          <img class="spark-map-image" src={sparkStaticMapUrl} alt="" loading="eager" fetchpriority="high" decoding="async" data-spark-static-map-image />
-        )}
+      <div class="map-sketch spark-map-shell" role="group" aria-label="Static map of University City, Philadelphia with sample Spark posts" data-spark-static-map>
+        <img class="spark-map-image" src={sparkStaticMapSrc} alt="" loading="eager" fetchpriority="high" decoding="async" data-spark-static-map-image />
         <div class="spark-map-markers" aria-label="Sample Spark posts">
           {sparkPosts.map((post) => (
             <button
@@ -160,8 +154,12 @@ const sparkPosts = [
             <p class="spark-post-message" data-spark-post-message></p>
           </div>
         </article>
+        <p class="spark-map-attribution">
+          &copy; <a href="https://www.mapbox.com/about/maps/" target="_blank" rel="noopener noreferrer">Mapbox</a>
+          &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>
+        </p>
         <div class="spark-map-fallback" data-spark-static-map-fallback>
-          <span>{sparkStaticMapUrl ? "Map preview unavailable" : "Set PUBLIC_MAPBOX_TOKEN to load the map preview"}</span>
+          <span>Map preview unavailable</span>
         </div>
       </div>
     </section>
