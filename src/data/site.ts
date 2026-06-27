@@ -9,7 +9,7 @@ export const site = {
   github: "https://github.com/DPnimo11",
   linkedin: "https://www.linkedin.com/in/darren-wang-penn/",
   scholar: "https://scholar.google.com/citations?hl=en&user=fnvHV0cAAAAJ",
-  emails: ["darrenwa@seas.upenn.edu", "dpnimo11@gmail.com"],
+  emails: ["darrenwa@engineering.upenn.edu", "dpnimo11@gmail.com"],
   affiliation: "University of Pennsylvania",
   role: "Computer science and robotics student",
   keywords: [
