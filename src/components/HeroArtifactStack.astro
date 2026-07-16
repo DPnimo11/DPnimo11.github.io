@@ -1,51 +1,168 @@
-﻿---
-// src/components/HeroArtifactStack.astro
 ---
+// src/components/HeroArtifactStack.astro
+const terminalTranscript = String.raw`$ ls -la
+drwxr-xr-x  trajectories/
+-rw-r--r--  stops.parquet
+-rw-r--r--  gyration.py
+$ python detect_stops.py --eps 50 --min-pts 4
+[12:53] loading 1.2M pings ...
+[12:57] clustering ... done
+$ lomonosov probe --dtm
+position: KQPKRBN
+dtm: 549
+best: Kf5
+$ cowsay "still running"
+ _______________
+< still running >
+ ---------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+$ `;
+
+const chessPieces = [
+  // Higher depth values render in front of lower ones. These values only
+  // control piece-to-piece overlap; --chess-z controls the whole panel.
+  {
+    className: "black-knight",
+    square: "b8",
+    src: "/img/home-artifacts/chess-black-knight-v2.png",
+    width: 320,
+    height: 450,
+    x: 19.463,
+    y: 39.316,
+    pieceWidth: 6.4,
+    anchorX: -44.2,
+    basePad: 8.4,
+    depth: 2,
+  },
+  {
+    className: "black-king",
+    square: "d8",
+    src: "/img/home-artifacts/chess-black-king-v2.png",
+    width: 280,
+    height: 490,
+    x: 27.357,
+    y: 36.582,
+    pieceWidth: 5.9,
+    anchorX: -44.3,
+    basePad: 5.7,
+    depth: 2,
+  },
+  {
+    className: "white-queen",
+    square: "g7",
+    src: "/img/home-artifacts/chess-white-queen-v2.png",
+    width: 260,
+    height: 490,
+    x: 42.209,
+    y: 36.547,
+    pieceWidth: 5.4,
+    anchorX: -46.5,
+    basePad: 5.3,
+    depth: 3,
+  },
+  {
+    className: "white-pawn",
+    square: "g6",
+    src: "/img/home-artifacts/chess-white-pawn-v2.png",
+    width: 250,
+    height: 370,
+    x: 45.219,
+    y: 40.613,
+    pieceWidth: 6.1,
+    anchorX: -37,
+    basePad: 7,
+    depth: 4,
+  },
+  {
+    className: "white-king",
+    square: "f6",
+    src: "/img/home-artifacts/chess-white-king-v2.png",
+    width: 290,
+    height: 510,
+    x: 41.272,
+    y: 41.98,
+    pieceWidth: 5.5,
+    anchorX: -50.2,
+    basePad: 3.7,
+    depth: 5,
+  },
+  {
+    className: "black-bishop",
+    square: "h4",
+    src: "/img/home-artifacts/chess-black-bishop-v2.png",
+    width: 230,
+    height: 470,
+    x: 55.187,
+    y: 47.378,
+    pieceWidth: 5.3,
+    anchorX: -40,
+    basePad: 8.7,
+    depth: 6,
+  },
+  {
+    className: "black-rook",
+    square: "b3",
+    src: "/img/home-artifacts/chess-black-rook-v2.png",
+    width: 300,
+    height: 440,
+    x: 34.515,
+    y: 59.645,
+    pieceWidth: 6.2,
+    anchorX: -39,
+    basePad: 9.1,
+    depth: 7,
+  },
+];
+---
+
 <div class="artifact-stack" aria-hidden="true">
-  <div class="artifact-axis axis-x"></div>
-  <div class="artifact-axis axis-y"></div>
+  <span class="artifact-axis axis-x"></span>
+  <span class="artifact-axis axis-y"></span>
 
   <section class="artifact-panel terminal-panel">
     <span class="panel-shadow"></span>
     <img
       class="panel-base"
-      src="/img/home-artifacts/terminal-panel.png"
-      width="640"
-      height="430"
+      src="/img/home-artifacts/terminal-panel-final.png"
+      width="1080"
+      height="720"
       alt=""
       loading="eager"
       decoding="async"
       fetchpriority="high"
       draggable="false"
     />
+    <pre class="terminal-copy"><code>{terminalTranscript}<span class="terminal-cursor"></span></code></pre>
   </section>
 
-  <section class="artifact-panel molecule-panel">
+  <section class="artifact-panel protein-panel">
     <span class="panel-shadow"></span>
     <img
       class="panel-base"
-      src="/img/home-artifacts/molecule-panel.png"
-      width="640"
-      height="445"
+      src="/img/home-artifacts/protein-panel-final-v4.png"
+      width="1080"
+      height="720"
       alt=""
       loading="eager"
       decoding="async"
-      fetchpriority="high"
       draggable="false"
     />
   </section>
 
-  <section class="artifact-panel vm-panel">
+  <section class="artifact-panel map-panel">
     <span class="panel-shadow"></span>
     <img
       class="panel-base"
-      src="/img/home-artifacts/vm-panel.png"
-      width="640"
-      height="376"
+      src="/img/home-artifacts/map-panel-final.png"
+      width="1080"
+      height="720"
       alt=""
       loading="eager"
       decoding="async"
-      fetchpriority="high"
       draggable="false"
     />
   </section>
@@ -54,13 +171,12 @@
     <span class="panel-shadow"></span>
     <img
       class="panel-base"
-      src="/img/home-artifacts/data-panel.png"
-      width="640"
-      height="387"
+      src="/img/home-artifacts/data-panel-final-v3.png"
+      width="1080"
+      height="720"
       alt=""
       loading="eager"
       decoding="async"
-      fetchpriority="high"
       draggable="false"
     />
   </section>
@@ -69,184 +185,173 @@
     <span class="panel-shadow"></span>
     <img
       class="panel-base"
-      src="/img/home-artifacts/chess-panel.png"
-      width="602"
-      height="640"
+      src="/img/home-artifacts/chess-board-final-v3.png"
+      width="1080"
+      height="720"
       alt=""
       loading="eager"
       decoding="async"
-      fetchpriority="high"
       draggable="false"
     />
+    <span class="chess-position">
+      {
+        chessPieces.map((piece) => (
+          <span
+            class={`chess-piece piece-${piece.className}`}
+            data-square={piece.square}
+            style={`--piece-x: ${piece.x}%; --piece-y: ${piece.y}%; --piece-width: ${piece.pieceWidth}%; --piece-anchor-x: ${piece.anchorX}%; --piece-base-pad: ${piece.basePad}%; --piece-depth: ${piece.depth};`}
+          >
+            <span class="piece-shadow"></span>
+            <img
+              src={piece.src}
+              width={piece.width}
+              height={piece.height}
+              alt=""
+              loading="eager"
+              decoding="async"
+              draggable="false"
+            />
+          </span>
+        ))
+      }
+    </span>
   </section>
 </div>
 
 <style>
   .artifact-stack {
+    /*
+     * QUICK TUNING CONTROLS
+     * x/y move a panel, w changes its size, and z changes overlap order.
+     * Percentages are relative to the full artifact viewport.
+     */
+    --terminal-x: 5%;
+    --terminal-y: -4%;
+    --terminal-w: 50%;
+    --terminal-z: 1;
+
+    --protein-x: 30%;
+    --protein-y: 18%;
+    --protein-w: 50%;
+    --protein-z: 5;
+
+    --map-x: 7%;
+    --map-y: 32%;
+    --map-w: 50%;
+    --map-z: 4;
+
+    --data-x: 38%;
+    --data-y: 42%;
+    --data-w: 50%;
+    --data-z: 3;
+
+    --chess-x: 18%;
+    --chess-y: 55%;
+    --chess-w: 50%;
+    --chess-z: 2;
+
+    /* Any CSS color works here: #315e72, #c89b4a, rgb(...), etc. */
+    --terminal-text-color: #2b3038;
+    --terminal-text-opacity: 0.82;
+
     position: absolute;
-    inset: 1% -5% 0 0;
+    inset: 0 -8% 0 -4%;
     z-index: 1;
-    overflow: hidden;
-    perspective: 980px;
-    perspective-origin: 52% 44%;
+    overflow: visible;
     pointer-events: none;
   }
 
   .artifact-axis {
     position: absolute;
     border-color: var(--line-strong);
-    opacity: 0.18;
+    opacity: 0.13;
   }
 
   .axis-x {
-    right: 8%;
-    bottom: 15%;
-    left: 18%;
+    right: 7%;
+    bottom: 8%;
+    left: 11%;
     border-top: 1px solid var(--line-strong);
   }
 
   .axis-y {
-    top: 13%;
-    bottom: 18%;
-    left: 27%;
+    top: 8%;
+    bottom: 10%;
+    left: 14%;
     border-left: 1px solid var(--line-strong);
   }
 
   .artifact-panel {
-    --left: 0%;
-    --top: 0%;
-    --dx: 0px;
-    --dy: 0px;
-    --rx: 0deg;
-    --ry: 0deg;
-    --rz: 0deg;
-    --drx: 0deg;
-    --dry: 0deg;
-    --drz: 0deg;
-    --scale: 1;
-    --dur: 9s;
+    --panel-x: 0%;
+    --panel-y: 0%;
+    --panel-w: 50%;
+    --panel-z: 1;
     --panel-mask: none;
     position: absolute;
-    top: var(--top);
-    left: var(--left);
+    top: var(--panel-y);
+    left: var(--panel-x);
+    z-index: var(--panel-z);
+    width: var(--panel-w);
+    aspect-ratio: 3 / 2;
+    background: transparent;
+    color: inherit;
     isolation: isolate;
-    transform:
-      translate3d(0, 0, 0)
-      rotateX(var(--rx))
-      rotateY(var(--ry))
-      rotateZ(var(--rz))
-      scale(var(--scale));
-    transform-origin: center;
-    transform-style: preserve-3d;
-    animation: artifact-drift var(--dur) ease-in-out infinite;
-    will-change: transform;
   }
 
   .terminal-panel {
-    --left: 0%;
-    --top: 28%;
-    --dx: 6px;
-    --dy: -8px;
-    --rx: 47deg;
-    --ry: -9deg;
-    --rz: -19deg;
-    --drx: -2deg;
-    --dry: 1deg;
-    --drz: 0.8deg;
-    --dur: 9.5s;
-    --panel-mask: url("/img/home-artifacts/terminal-panel.png");
-    z-index: 5;
-    width: min(53%, 420px);
-    aspect-ratio: 640 / 430;
+    --panel-x: var(--terminal-x);
+    --panel-y: var(--terminal-y);
+    --panel-w: var(--terminal-w);
+    --panel-z: var(--terminal-z);
+    --panel-mask: url("/img/home-artifacts/terminal-panel-final.png");
+    background: transparent;
   }
 
-  .molecule-panel {
-    --left: 40%;
-    --top: 4%;
-    --dx: -5px;
-    --dy: 7px;
-    --rx: 39deg;
-    --ry: 10deg;
-    --rz: 14deg;
-    --drx: 1deg;
-    --dry: -1deg;
-    --drz: -0.8deg;
-    --dur: 10.5s;
-    --panel-mask: url("/img/home-artifacts/molecule-panel.png");
-    z-index: 4;
-    width: min(42%, 328px);
-    aspect-ratio: 640 / 445;
+  .protein-panel {
+    --panel-x: var(--protein-x);
+    --panel-y: var(--protein-y);
+    --panel-w: var(--protein-w);
+    --panel-z: var(--protein-z);
+    --panel-mask: url("/img/home-artifacts/protein-panel-final-v4.png");
   }
 
-  .vm-panel {
-    --left: 45%;
-    --top: 39%;
-    --dx: 7px;
-    --dy: -5px;
-    --rx: 43deg;
-    --ry: -7deg;
-    --rz: -9deg;
-    --drx: -1deg;
-    --dry: 1deg;
-    --drz: 0.7deg;
-    --scale: 0.98;
-    --dur: 8.8s;
-    --panel-mask: url("/img/home-artifacts/vm-panel.png");
-    z-index: 3;
-    width: min(43%, 336px);
-    aspect-ratio: 640 / 376;
+  .map-panel {
+    --panel-x: var(--map-x);
+    --panel-y: var(--map-y);
+    --panel-w: var(--map-w);
+    --panel-z: var(--map-z);
+    --panel-mask: url("/img/home-artifacts/map-panel-final.png");
   }
 
   .data-panel {
-    --left: 19%;
-    --top: 54%;
-    --dx: -6px;
-    --dy: -7px;
-    --rx: 44deg;
-    --ry: 7deg;
-    --rz: 10deg;
-    --drx: 1deg;
-    --dry: -1deg;
-    --drz: -0.6deg;
-    --scale: 0.95;
-    --dur: 9.8s;
-    --panel-mask: url("/img/home-artifacts/data-panel.png");
-    z-index: 6;
-    width: min(40%, 306px);
-    aspect-ratio: 640 / 387;
+    --panel-x: var(--data-x);
+    --panel-y: var(--data-y);
+    --panel-w: var(--data-w);
+    --panel-z: var(--data-z);
+    --panel-mask: url("/img/home-artifacts/data-panel-final-v3.png");
   }
 
   .chess-panel {
-    --left: 62%;
-    --top: 25%;
-    --dx: -4px;
-    --dy: 6px;
-    --rx: 42deg;
-    --ry: 13deg;
-    --rz: 20deg;
-    --drx: 1deg;
-    --dry: -1deg;
-    --drz: -0.7deg;
-    --scale: 0.88;
-    --dur: 11s;
-    --panel-mask: url("/img/home-artifacts/chess-panel.png");
-    z-index: 7;
-    width: min(24%, 184px);
-    aspect-ratio: 602 / 640;
+    --panel-x: var(--chess-x);
+    --panel-y: var(--chess-y);
+    --panel-w: var(--chess-w);
+    --panel-z: var(--chess-z);
+    --panel-mask: url("/img/home-artifacts/chess-board-final-v3.png");
   }
 
   .panel-shadow,
-  .panel-base {
+  .panel-base,
+  .chess-position {
     position: absolute;
     inset: 0;
   }
 
   .panel-shadow {
     z-index: 0;
-    background: color-mix(in srgb, var(--ink) 18%, transparent);
-    filter: blur(2px);
+    background: color-mix(in srgb, var(--ink) 21%, transparent);
+    filter: blur(3px);
     opacity: 0.46;
-    transform: translate3d(17px, 20px, -1px) scale(0.99);
+    transform: translate3d(11px, 13px, -1px) scale(0.985);
     mask-image: var(--panel-mask);
     mask-position: center;
     mask-repeat: no-repeat;
@@ -266,75 +371,126 @@
     user-select: none;
   }
 
-  :global(:root[data-theme="dark"]) .panel-base {
-    filter: brightness(0.86) contrast(1.08) saturate(0.82);
+  .terminal-copy {
+    position: absolute;
+    top: 36.5%;
+    left: 25.2%;
+    z-index: 2;
+    width: 56.5%;
+    margin: 0;
+    border: 0;
+    overflow: hidden;
+    background: transparent;
+    box-shadow: none;
+    color: var(--terminal-text-color);
+    font-family: var(--font-mono);
+    font-size: clamp(4px, 0.4vw, 5.8px);
+    font-weight: 600;
+    line-height: 1.17;
+    letter-spacing: -0.025em;
+    opacity: var(--terminal-text-opacity);
+    transform: skewY(-13deg);
+    transform-origin: top left;
+    white-space: pre;
+  }
+
+  .terminal-copy code {
+    font: inherit;
+  }
+
+  .terminal-cursor {
+    display: inline-block;
+    width: 0.72em;
+    height: 0.9em;
+    margin-left: 0.12em;
+    background: currentColor;
+    vertical-align: -0.08em;
+  }
+
+  .chess-position {
+    z-index: 2;
+  }
+
+  .chess-piece {
+    position: absolute;
+    top: var(--piece-y);
+    left: var(--piece-x);
+    z-index: var(--piece-depth);
+    width: var(--piece-width);
+  }
+
+  .chess-piece img {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    display: block;
+    width: 100%;
+    max-width: none;
+    height: auto;
+    transform: translate(var(--piece-anchor-x), var(--piece-base-pad));
+    user-select: none;
+  }
+
+  .piece-shadow {
+    position: absolute;
+    top: 1px;
+    left: 0;
+    z-index: 1;
+    width: 72%;
+    aspect-ratio: 2.8;
+    border-radius: 50%;
+    background: #25313b;
+    filter: blur(1.5px);
+    opacity: 0.22;
+    transform: translate(-50%, -42%);
+  }
+
+  :global(:root[data-theme="dark"]) .panel-base,
+  :global(:root[data-theme="dark"]) .chess-piece img {
+    filter: brightness(0.8) contrast(1.08) saturate(0.78);
+  }
+
+  :global(:root[data-theme="dark"]) .terminal-copy {
+    opacity: 0.7;
   }
 
   :global(:root[data-theme="dark"]) .panel-shadow {
-    opacity: 0.58;
+    opacity: 0.62;
   }
 
-  @keyframes artifact-drift {
-    0%,
-    100% {
-      transform:
-        translate3d(0, 0, 0)
-        rotateX(var(--rx))
-        rotateY(var(--ry))
-        rotateZ(var(--rz))
-        scale(var(--scale));
+  @media (max-width: 980px) {
+    .artifact-stack {
+      inset: -2% -2% -9% -2%;
     }
 
-    50% {
-      transform:
-        translate3d(var(--dx), var(--dy), 0)
-        rotateX(calc(var(--rx) + var(--drx)))
-        rotateY(calc(var(--ry) + var(--dry)))
-        rotateZ(calc(var(--rz) + var(--drz)))
-        scale(var(--scale));
+    .terminal-copy {
+      font-size: clamp(4px, 0.75vw, 5.8px);
     }
   }
 
   @media (max-width: 760px) {
     .artifact-stack {
-      inset: -6% -10% -8% -6%;
-      perspective: 760px;
+      --terminal-x: 9%;
+      --terminal-y: -7%;
+      --terminal-w: 84%;
+      --protein-x: 43%;
+      --protein-y: 10%;
+      --protein-w: 66%;
+      --map-x: 0%;
+      --map-y: 31%;
+      --map-w: 66%;
+      --data-x: 41%;
+      --data-y: 51%;
+      --data-w: 64%;
+      --chess-x: 6%;
+      --chess-y: 68%;
+      --chess-w: 66%;
+      inset: -8% -24% -20% -9%;
     }
 
-    .terminal-panel {
-      --left: 0%;
-      --top: 24%;
-      width: 66%;
-    }
-
-    .molecule-panel {
-      --left: 40%;
-      --top: 5%;
-      width: 48%;
-    }
-
-    .vm-panel {
-      --left: 42%;
-      --top: 48%;
-      width: 51%;
-    }
-
-    .data-panel {
-      --left: 4%;
-      --top: 58%;
-      width: 48%;
-    }
-
-    .chess-panel {
-      --left: 61%;
-      --top: 26%;
-      width: 29%;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .artifact-panel {
-      animation: none;
+    .terminal-copy {
+      font-size: 4px;
     }
   }
 </style>

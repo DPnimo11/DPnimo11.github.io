@@ -315,9 +315,9 @@ h3 {
   position: relative;
   z-index: 1;
   min-width: 0;
-  min-height: clamp(440px, 58vh, 620px);
+  min-height: clamp(520px, 64vh, 680px);
   margin-right: calc((100vw - min(1180px, calc(100vw - 32px))) / -2 + 12px);
-  overflow: hidden;
+  overflow: visible;
   isolation: isolate;
 }
 

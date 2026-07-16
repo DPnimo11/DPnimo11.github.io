@@ -13,7 +13,7 @@
   }
 
   .hero-artifact {
-    min-height: clamp(300px, 44vh, 420px);
+    min-height: clamp(380px, 50vh, 500px);
     margin-right: 0;
   }
 
