@@ -1,26 +1,58 @@
 ---
 // src/components/HeroArtifactStack.astro
-const terminalTranscript = String.raw`$ ls -la
-drwxr-xr-x  trajectories/
--rw-r--r--  stops.parquet
--rw-r--r--  gyration.py
-$ python detect_stops.py --eps 50 --min-pts 4
-[12:53] loading 1.2M pings ...
-[12:57] clustering ... done
-$ lomonosov probe --dtm
-position: KQPKRBN
-dtm: 549
-best: Kf5
-$ cowsay "still running"
- _______________
-< still running >
- ---------------
-        \   ^__^
-         \  (oo)\_______
-            (__)\       )\/\
-                ||----w |
-                ||     ||
-$ `;
+const terminalLines = [
+  [
+    { text: "$", tone: "prompt" },
+    { text: " ls -la", tone: "command" },
+  ],
+  [
+    { text: "drwxr-xr-x  ", tone: "muted" },
+    { text: "trajectories/", tone: "path" },
+  ],
+  [
+    { text: "-rw-r--r--  ", tone: "muted" },
+    { text: "stops.parquet", tone: "path" },
+  ],
+  [
+    { text: "-rw-r--r--  ", tone: "muted" },
+    { text: "gyration.py", tone: "path" },
+  ],
+  [
+    { text: "$", tone: "prompt" },
+    { text: " python detect_stops.py --eps 50 --min-pts 4", tone: "command" },
+  ],
+  [
+    { text: "[12:53]", tone: "meta" },
+    { text: " loading 1.2M pings ..." },
+  ],
+  [
+    { text: "[12:57]", tone: "meta" },
+    { text: " clustering ... done" },
+  ],
+  [
+    { text: "$", tone: "prompt" },
+    { text: " lomonosov probe --dtm", tone: "command" },
+  ],
+  [{ text: "position: KQPKRBN" }],
+  [{ text: "dtm: 549" }],
+  [{ text: "best: Kf5" }],
+  [
+    { text: "$", tone: "prompt" },
+    { text: ' cowsay "still running"', tone: "command" },
+  ],
+  [{ text: " _______________" }],
+  [{ text: "< still running >" }],
+  [{ text: " ---------------" }],
+  [{ text: "        \\   ^__^" }],
+  [{ text: "         \\  (oo)\\_______" }],
+  [{ text: "            (__)\\       )\\/\\" }],
+  [{ text: "                ||----w |" }],
+  [{ text: "                ||     ||" }],
+  [
+    { text: "$", tone: "prompt" },
+    { text: " " },
+  ],
+];
 
 const chessPieces = [
   // Higher depth values render in front of lower ones. These values only
@@ -31,8 +63,8 @@ const chessPieces = [
     src: "/img/home-artifacts/chess-black-knight-v2.png",
     width: 320,
     height: 450,
-    x: 19.463,
-    y: 39.316,
+    x: 20.351,
+    y: 39.008,
     pieceWidth: 6.4,
     anchorX: -44.2,
     basePad: 8.4,
@@ -44,8 +76,8 @@ const chessPieces = [
     src: "/img/home-artifacts/chess-black-king-v2.png",
     width: 280,
     height: 490,
-    x: 27.357,
-    y: 36.582,
+    x: 29.429,
+    y: 35.865,
     pieceWidth: 5.9,
     anchorX: -44.3,
     basePad: 5.7,
@@ -57,8 +89,8 @@ const chessPieces = [
     src: "/img/home-artifacts/chess-white-queen-v2.png",
     width: 260,
     height: 490,
-    x: 42.209,
-    y: 36.547,
+    x: 46.057,
+    y: 35.215,
     pieceWidth: 5.4,
     anchorX: -46.5,
     basePad: 5.3,
@@ -70,8 +102,8 @@ const chessPieces = [
     src: "/img/home-artifacts/chess-white-pawn-v2.png",
     width: 250,
     height: 370,
-    x: 45.219,
-    y: 40.613,
+    x: 49.068,
+    y: 39.281,
     pieceWidth: 6.1,
     anchorX: -37,
     basePad: 7,
@@ -83,8 +115,8 @@ const chessPieces = [
     src: "/img/home-artifacts/chess-white-king-v2.png",
     width: 290,
     height: 510,
-    x: 41.272,
-    y: 41.98,
+    x: 44.529,
+    y: 40.853,
     pieceWidth: 5.5,
     anchorX: -50.2,
     basePad: 3.7,
@@ -96,8 +128,8 @@ const chessPieces = [
     src: "/img/home-artifacts/chess-black-bishop-v2.png",
     width: 230,
     height: 470,
-    x: 55.187,
-    y: 47.378,
+    x: 59.628,
+    y: 45.84,
     pieceWidth: 5.3,
     anchorX: -40,
     basePad: 8.7,
@@ -109,20 +141,20 @@ const chessPieces = [
     src: "/img/home-artifacts/chess-black-rook-v2.png",
     width: 300,
     height: 440,
-    x: 34.515,
-    y: 59.645,
+    x: 35.403,
+    y: 59.338,
     pieceWidth: 6.2,
     anchorX: -39,
     basePad: 9.1,
     depth: 7,
   },
 ];
+
+const chessPieceStyle = (piece) =>
+  `--piece-x: ${piece.x}%; --piece-y: ${piece.y}%; --piece-width: ${piece.pieceWidth}%; --piece-anchor-x: ${piece.anchorX}%; --piece-base-pad: ${piece.basePad}%; --piece-depth: ${piece.depth};`;
 ---
 
 <div class="artifact-stack" aria-hidden="true">
-  <span class="artifact-axis axis-x"></span>
-  <span class="artifact-axis axis-y"></span>
-
   <section class="artifact-panel terminal-panel">
     <span class="panel-shadow"></span>
     <img
@@ -136,7 +168,12 @@ const chessPieces = [
       fetchpriority="high"
       draggable="false"
     />
-    <pre class="terminal-copy"><code>{terminalTranscript}<span class="terminal-cursor"></span></code></pre>
+    <pre class="terminal-copy"><code>{terminalLines.flatMap((line, lineIndex) => [
+      ...line.map((token) => (
+        <span class={`terminal-token token-${"tone" in token ? token.tone : "output"}`}>{token.text}</span>
+      )),
+      lineIndex < terminalLines.length - 1 ? "\n" : "",
+    ])}<span class="terminal-cursor"></span></code></pre>
   </section>
 
   <section class="artifact-panel protein-panel">
@@ -185,7 +222,7 @@ const chessPieces = [
     <span class="panel-shadow"></span>
     <img
       class="panel-base"
-      src="/img/home-artifacts/chess-board-final-v3.png"
+      src="/img/home-artifacts/chess-board-final-v4.png"
       width="1080"
       height="720"
       alt=""
@@ -193,29 +230,42 @@ const chessPieces = [
       decoding="async"
       draggable="false"
     />
-    <span class="chess-position">
+    <span class="chess-position chess-contact-layer">
       {
         chessPieces.map((piece) => (
           <span
             class={`chess-piece piece-${piece.className}`}
             data-square={piece.square}
-            style={`--piece-x: ${piece.x}%; --piece-y: ${piece.y}%; --piece-width: ${piece.pieceWidth}%; --piece-anchor-x: ${piece.anchorX}%; --piece-base-pad: ${piece.basePad}%; --piece-depth: ${piece.depth};`}
+            style={chessPieceStyle(piece)}
           >
             <span class="piece-shadow"></span>
-            <img
-              src={piece.src}
-              width={piece.width}
-              height={piece.height}
-              alt=""
-              loading="eager"
-              decoding="async"
-              draggable="false"
-            />
           </span>
         ))
       }
     </span>
   </section>
+
+  <span class="chess-position chess-piece-layer">
+    {
+      chessPieces.map((piece) => (
+        <span
+          class={`chess-piece piece-${piece.className}`}
+          data-square={piece.square}
+          style={chessPieceStyle(piece)}
+        >
+          <img
+            src={piece.src}
+            width={piece.width}
+            height={piece.height}
+            alt=""
+            loading="eager"
+            decoding="async"
+            draggable="false"
+          />
+        </span>
+      ))
+    }
+  </span>
 </div>
 
 <style>
@@ -227,7 +277,7 @@ const chessPieces = [
      */
     --terminal-x: 5%;
     --terminal-y: -4%;
-    --terminal-w: 50%;
+    --terminal-w: 57%;
     --terminal-z: 1;
 
     --protein-x: 30%;
@@ -249,9 +299,15 @@ const chessPieces = [
     --chess-y: 55%;
     --chess-w: 50%;
     --chess-z: 2;
+    --chess-pieces-z: 6;
 
     /* Any CSS color works here: #315e72, #c89b4a, rgb(...), etc. */
     --terminal-text-color: #2b3038;
+    --terminal-command-color: #252b31;
+    --terminal-path-color: #315e72;
+    --terminal-meta-color: #59656a;
+    --terminal-muted-color: #5d686c;
+    --terminal-prompt-color: #2e7d56;
     --terminal-text-opacity: 0.82;
 
     position: absolute;
@@ -259,26 +315,6 @@ const chessPieces = [
     z-index: 1;
     overflow: visible;
     pointer-events: none;
-  }
-
-  .artifact-axis {
-    position: absolute;
-    border-color: var(--line-strong);
-    opacity: 0.13;
-  }
-
-  .axis-x {
-    right: 7%;
-    bottom: 8%;
-    left: 11%;
-    border-top: 1px solid var(--line-strong);
-  }
-
-  .axis-y {
-    top: 8%;
-    bottom: 10%;
-    left: 14%;
-    border-left: 1px solid var(--line-strong);
   }
 
   .artifact-panel {
@@ -336,12 +372,11 @@ const chessPieces = [
     --panel-y: var(--chess-y);
     --panel-w: var(--chess-w);
     --panel-z: var(--chess-z);
-    --panel-mask: url("/img/home-artifacts/chess-board-final-v3.png");
+    --panel-mask: url("/img/home-artifacts/chess-board-final-v4.png");
   }
 
   .panel-shadow,
-  .panel-base,
-  .chess-position {
+  .panel-base {
     position: absolute;
     inset: 0;
   }
@@ -398,6 +433,31 @@ const chessPieces = [
     font: inherit;
   }
 
+  .terminal-token {
+    font: inherit;
+  }
+
+  .token-prompt {
+    color: var(--terminal-prompt-color);
+    font-weight: 800;
+  }
+
+  .token-command {
+    color: var(--terminal-command-color);
+  }
+
+  .token-path {
+    color: var(--terminal-path-color);
+  }
+
+  .token-meta {
+    color: var(--terminal-meta-color);
+  }
+
+  .token-muted {
+    color: var(--terminal-muted-color);
+  }
+
   .terminal-cursor {
     display: inline-block;
     width: 0.72em;
@@ -408,7 +468,22 @@ const chessPieces = [
   }
 
   .chess-position {
+    position: absolute;
+    inset: 0;
     z-index: 2;
+  }
+
+  .chess-contact-layer {
+    z-index: 2;
+  }
+
+  .chess-piece-layer {
+    inset: auto;
+    top: var(--chess-y);
+    left: var(--chess-x);
+    z-index: var(--chess-pieces-z);
+    width: var(--chess-w);
+    aspect-ratio: 3 / 2;
   }
 
   .chess-piece {
@@ -452,6 +527,11 @@ const chessPieces = [
   }
 
   :global(:root[data-theme="dark"]) .terminal-copy {
+    --terminal-command-color: #d5d0c4;
+    --terminal-path-color: #93abc0;
+    --terminal-meta-color: #9fa8a3;
+    --terminal-muted-color: #909a96;
+    --terminal-prompt-color: #7fb48e;
     opacity: 0.7;
   }
 

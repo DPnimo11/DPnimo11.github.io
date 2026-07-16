@@ -317,30 +317,11 @@ h3 {
   min-width: 0;
   min-height: clamp(520px, 64vh, 680px);
   margin-right: calc((100vw - min(1180px, calc(100vw - 32px))) / -2 + 12px);
-  overflow: visible;
+  overflow: hidden;
   isolation: isolate;
 }
 
-.hero-artifact::before {
-  position: absolute;
-  inset: 9% 4% 7% 12%;
-  border: 1px solid var(--line);
-  background:
-    linear-gradient(var(--grid-soft) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-soft) 1px, transparent 1px);
-  background-size: 28px 28px;
-  content: "";
-  opacity: 0.42;
-}
 
-.hero-artifact::after {
-  position: absolute;
-  inset: auto 0 9% 18%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--line-strong), transparent);
-  content: "";
-  opacity: 0.65;
-}
 
 .headshot-frame,
 .console-card,
