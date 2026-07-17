@@ -13,8 +13,10 @@
   }
 
   .hero-artifact {
-    min-height: clamp(380px, 50vh, 500px);
-    margin-right: 0;
+    width: min(100%, 860px);
+    height: clamp(420px, 58vw, 500px);
+    min-height: 0;
+    margin: 0 auto;
   }
 
   .project-grid,
@@ -171,7 +173,7 @@
 
   .hero-section {
     gap: 18px;
-    overflow: hidden;
+    overflow: visible;
     padding-bottom: 24px;
   }
 
@@ -186,20 +188,7 @@
   }
 
   .hero-artifact {
-    position: absolute;
-    right: -76px;
-    bottom: 8px;
-    z-index: 0;
-    width: min(82vw, 340px);
-    height: 260px;
-    min-height: 0;
-    opacity: 0.34;
-    pointer-events: none;
-  }
-
-  .hero-artifact::before,
-  .hero-artifact::after {
-    content: none;
+    display: none;
   }
 
   .hero-copy .action-row {
