@@ -5,7 +5,7 @@ University of Pennsylvania pursuing an accelerated master's in robotics. The
 site collects work in computational biology, systems, machine learning/data,
 and full-stack development.
 
-[Visit the live site](https://dpnimo11.github.io/)
+[Visit the live site](https://darren-wang.dev/)
 
 ## Overview
 

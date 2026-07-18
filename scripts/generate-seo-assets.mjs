@@ -43,7 +43,7 @@ const socialPreview = `<svg width="1200" height="630" viewBox="0 0 1200 630" xml
   <text x="132" y="206" fill="#242725" font-family="Arial, Helvetica, sans-serif" font-size="76" font-weight="800">Darren Wang</text>
   <text x="136" y="274" fill="#5f6761" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">Penn CS + Robotics</text>
   <text x="136" y="358" fill="#242725" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="700">Research software / ML / Systems</text>
-  <text x="136" y="418" fill="#5f6761" font-family="Consolas, Menlo, monospace" font-size="26">dpnimo11.github.io</text>
+  <text x="136" y="418" fill="#5f6761" font-family="Consolas, Menlo, monospace" font-size="26">darren-wang.dev</text>
   <path d="M136 472h390" stroke="#242725" stroke-width="3"/>
   <path d="M136 502h270" stroke="#242725" stroke-width="3" opacity="0.45"/>
 </svg>`;
