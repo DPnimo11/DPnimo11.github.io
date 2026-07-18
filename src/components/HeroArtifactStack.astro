@@ -202,6 +202,12 @@ const chessPieceStyle = (piece) =>
       decoding="async"
       draggable="false"
     />
+    <span class="map-marker-cover map-marker-cover-blue"></span>
+    <span class="map-marker-cover map-marker-cover-amber"></span>
+    <span class="map-ripple map-ripple-blue"></span>
+    <span class="map-ripple map-ripple-amber"></span>
+    <span class="map-home-marker map-home-marker-blue"></span>
+    <span class="map-home-marker map-home-marker-amber"></span>
   </section>
 
   <section class="artifact-panel data-panel">
@@ -286,7 +292,7 @@ const chessPieceStyle = (piece) =>
     --protein-z: 5;
 
     --map-x: 7%;
-    --map-y: 37%;
+    --map-y: 40%;
     --map-w: 50%;
     --map-z: 4;
 
@@ -311,6 +317,23 @@ const chessPieceStyle = (piece) =>
     --terminal-text-opacity: 0.82;
     --artifact-stage-w: min(112%, 680px);
 
+    /* Pointer travel is measured in pixels at the front of the stack. */
+    --artifact-parallax-x: 10px;
+    --artifact-parallax-y: 7px;
+    /* Radius is a fraction of each panel's shorter side. */
+    --artifact-parallax-radius: 0.68;
+
+    --pointer-terminal-x: 0px;
+    --pointer-terminal-y: 0px;
+    --pointer-protein-x: 0px;
+    --pointer-protein-y: 0px;
+    --pointer-map-x: 0px;
+    --pointer-map-y: 0px;
+    --pointer-data-x: 0px;
+    --pointer-data-y: 0px;
+    --pointer-chess-x: 0px;
+    --pointer-chess-y: 0px;
+
     position: absolute;
     top: 50%;
     left: 50%;
@@ -329,6 +352,16 @@ const chessPieceStyle = (piece) =>
     --panel-w: 50%;
     --panel-z: 1;
     --panel-mask: none;
+    --pointer-panel-x: 0px;
+    --pointer-panel-y: 0px;
+    --float-from-x: 0px;
+    --float-from-y: 0px;
+    --float-from-rotate: 0deg;
+    --float-to-x: 0px;
+    --float-to-y: -2px;
+    --float-to-rotate: 0deg;
+    --float-duration: 10s;
+    --float-delay: 0s;
     position: absolute;
     top: var(--panel-y);
     left: var(--panel-x);
@@ -338,6 +371,9 @@ const chessPieceStyle = (piece) =>
     background: transparent;
     color: inherit;
     isolation: isolate;
+    animation: artifact-panel-float var(--float-duration) ease-in-out
+      var(--float-delay) infinite alternate;
+    will-change: transform;
   }
 
   .terminal-panel {
@@ -346,6 +382,16 @@ const chessPieceStyle = (piece) =>
     --panel-w: var(--terminal-w);
     --panel-z: var(--terminal-z);
     --panel-mask: url("/img/home-artifacts/terminal-panel-final.png");
+    --pointer-panel-x: var(--pointer-terminal-x);
+    --pointer-panel-y: var(--pointer-terminal-y);
+    --float-from-x: -1.5px;
+    --float-from-y: 3px;
+    --float-from-rotate: -0.07deg;
+    --float-to-x: 2px;
+    --float-to-y: -3.5px;
+    --float-to-rotate: 0.08deg;
+    --float-duration: 8.8s;
+    --float-delay: -4.1s;
     background: transparent;
     container-type: inline-size;
   }
@@ -356,14 +402,35 @@ const chessPieceStyle = (piece) =>
     --panel-w: var(--protein-w);
     --panel-z: var(--protein-z);
     --panel-mask: url("/img/home-artifacts/protein-panel-final-v4.png");
+    --pointer-panel-x: var(--pointer-protein-x);
+    --pointer-panel-y: var(--pointer-protein-y);
+    --float-from-x: -3px;
+    --float-from-y: 1.5px;
+    --float-from-rotate: -0.1deg;
+    --float-to-x: 3px;
+    --float-to-y: -5.5px;
+    --float-to-rotate: 0.12deg;
+    --float-duration: 7.6s;
+    --float-delay: -2.7s;
   }
 
   .map-panel {
+    --map-paper-color: #f8eee3;
     --panel-x: var(--map-x);
     --panel-y: var(--map-y);
     --panel-w: var(--map-w);
     --panel-z: var(--map-z);
     --panel-mask: url("/img/home-artifacts/map-panel-final.png");
+    --pointer-panel-x: var(--pointer-map-x);
+    --pointer-panel-y: var(--pointer-map-y);
+    --float-from-x: 2.3px;
+    --float-from-y: 3px;
+    --float-from-rotate: 0.085deg;
+    --float-to-x: -3.2px;
+    --float-to-y: -4px;
+    --float-to-rotate: -0.1deg;
+    --float-duration: 9.5s;
+    --float-delay: -7.4s;
   }
 
   .data-panel {
@@ -372,6 +439,16 @@ const chessPieceStyle = (piece) =>
     --panel-w: var(--data-w);
     --panel-z: var(--data-z);
     --panel-mask: url("/img/home-artifacts/data-panel-final-v3.png");
+    --pointer-panel-x: var(--pointer-data-x);
+    --pointer-panel-y: var(--pointer-data-y);
+    --float-from-x: -2px;
+    --float-from-y: -2.5px;
+    --float-from-rotate: -0.07deg;
+    --float-to-x: 2.8px;
+    --float-to-y: 3.5px;
+    --float-to-rotate: 0.08deg;
+    --float-duration: 8.9s;
+    --float-delay: -3.8s;
   }
 
   .chess-panel {
@@ -380,6 +457,36 @@ const chessPieceStyle = (piece) =>
     --panel-w: var(--chess-w);
     --panel-z: var(--chess-z);
     --panel-mask: url("/img/home-artifacts/chess-board-final-v4.png");
+    --pointer-panel-x: var(--pointer-chess-x);
+    --pointer-panel-y: var(--pointer-chess-y);
+    --float-from-x: 1.8px;
+    --float-from-y: 3.2px;
+    --float-from-rotate: 0.07deg;
+    --float-to-x: -2.8px;
+    --float-to-y: -3.3px;
+    --float-to-rotate: -0.08deg;
+    --float-duration: 10.2s;
+    --float-delay: -8.1s;
+  }
+
+  @keyframes artifact-panel-float {
+    from {
+      transform: translate3d(
+          calc(var(--pointer-panel-x) + var(--float-from-x)),
+          calc(var(--pointer-panel-y) + var(--float-from-y)),
+          0
+        )
+        rotate(var(--float-from-rotate));
+    }
+
+    to {
+      transform: translate3d(
+          calc(var(--pointer-panel-x) + var(--float-to-x)),
+          calc(var(--pointer-panel-y) + var(--float-to-y)),
+          0
+        )
+        rotate(var(--float-to-rotate));
+    }
   }
 
   .panel-shadow,
@@ -473,6 +580,117 @@ const chessPieceStyle = (piece) =>
     margin-left: 0.12em;
     background: currentColor;
     vertical-align: -0.08em;
+    animation: terminal-blink 0.92s steps(1, end) infinite;
+  }
+
+  @keyframes terminal-blink {
+    0%,
+    52% {
+      opacity: 1;
+    }
+
+    53%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .map-ripple {
+    --ripple-color: #2c86ad;
+    position: absolute;
+    z-index: 3;
+    width: 2%;
+    aspect-ratio: 1;
+    border: 1px solid var(--ripple-color);
+    border-radius: 50%;
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(7deg) scaleY(0.56) scale(0.55);
+    animation: map-ripple 5.8s cubic-bezier(0.2, 0.62, 0.35, 1) infinite;
+    pointer-events: none;
+  }
+
+  .map-ripple-blue {
+    top: 42.86%;
+    left: 34.21%;
+    animation-delay: -0.9s;
+  }
+
+  .map-ripple-amber {
+    --ripple-color: #c98712;
+    top: 55.74%;
+    left: 65.01%;
+    animation-delay: -4.1s;
+  }
+
+  @keyframes map-ripple {
+    0%,
+    34% {
+      opacity: 0;
+      transform: translate(-50%, -50%) rotate(7deg) scaleY(0.56) scale(0.55);
+    }
+
+    38% {
+      opacity: 0.58;
+    }
+
+    70%,
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) rotate(7deg) scaleY(0.56) scale(2.7);
+    }
+  }
+
+  .map-marker-cover,
+  .map-home-marker {
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .map-marker-cover {
+    z-index: 2;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--map-paper-color);
+    box-shadow: 0 0 2px 1px var(--map-paper-color);
+    transform: translate(-50%, -50%) rotate(7deg) scaleY(0.62);
+  }
+
+  .map-marker-cover-blue {
+    top: 43.61%;
+    left: 33.38%;
+    width: 1.7%;
+  }
+
+  .map-marker-cover-amber {
+    top: 55.83%;
+    left: 63.8%;
+    width: 2%;
+  }
+
+  .map-home-marker {
+    z-index: 4;
+    top: var(--marker-y);
+    left: var(--marker-x);
+    transform: translate(-50%, -50%) rotate(7deg) scaleY(0.62);
+  }
+
+  .map-home-marker-blue {
+    --marker-x: 34.21%;
+    --marker-y: 42.86%;
+    width: 1.05%;
+    aspect-ratio: 1;
+    border-radius: 1px;
+    background: #2c86ad;
+  }
+
+  .map-home-marker-amber {
+    --marker-x: 65.01%;
+    --marker-y: 55.74%;
+    width: 1.65%;
+    aspect-ratio: 1;
+    border: 1px solid #c98712;
+    border-radius: 50%;
+    background: var(--map-paper-color);
   }
 
   .chess-position {
@@ -492,6 +710,17 @@ const chessPieceStyle = (piece) =>
     z-index: var(--chess-pieces-z);
     width: var(--chess-w);
     aspect-ratio: 3 / 2;
+    animation: artifact-panel-float 10.2s ease-in-out -8.1s infinite alternate;
+    will-change: transform;
+
+    --float-from-x: 1.8px;
+    --float-from-y: 3.2px;
+    --float-from-rotate: 0.07deg;
+    --float-to-x: -2.8px;
+    --float-to-y: -3.3px;
+    --float-to-rotate: -0.08deg;
+    --pointer-panel-x: var(--pointer-chess-x);
+    --pointer-panel-y: var(--pointer-chess-y);
   }
 
   .chess-piece {
@@ -500,6 +729,16 @@ const chessPieceStyle = (piece) =>
     left: var(--piece-x);
     z-index: var(--piece-depth);
     width: var(--piece-width);
+    transition:
+      top 720ms cubic-bezier(0.22, 0.72, 0.2, 1),
+      left 720ms cubic-bezier(0.22, 0.72, 0.2, 1);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .artifact-stack.is-chess-active .piece-white-king {
+      top: calc(var(--piece-y) + 4.066%);
+      left: calc(var(--piece-x) + 3.01%);
+    }
   }
 
   .chess-piece img {
@@ -547,9 +786,31 @@ const chessPieceStyle = (piece) =>
     opacity: 0.62;
   }
 
+  :global(:root[data-theme="dark"]) .map-panel {
+    --map-paper-color: #c7beb4;
+  }
+
   @media (max-width: 980px) {
     .artifact-stack {
       --artifact-stage-w: clamp(440px, 60vw, 560px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .artifact-panel,
+    .chess-piece-layer,
+    .terminal-cursor,
+    .map-ripple {
+      animation: none;
+    }
+
+    .artifact-panel,
+    .chess-piece-layer {
+      transform: none;
+    }
+
+    .chess-piece {
+      transition: none;
     }
   }
 
@@ -581,6 +842,174 @@ const chessPieceStyle = (piece) =>
 </style>
 
 <script>
+  (() => {
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: no-preference)");
+
+    document.querySelectorAll<HTMLElement>(".artifact-stack").forEach((stack) => {
+      const hero = stack.closest<HTMLElement>(".hero-artifact");
+      if (!hero) return;
+
+      const layers = [
+        { name: "terminal", selector: ".terminal-panel", depth: 0.38 },
+        { name: "chess", selector: ".chess-panel", depth: 0.6 },
+        { name: "data", selector: ".data-panel", depth: 0.75 },
+        { name: "map", selector: ".map-panel", depth: 0.9 },
+        { name: "protein", selector: ".protein-panel", depth: 1.1 },
+      ].map((layer) => ({
+        ...layer,
+        node: stack.querySelector<HTMLElement>(layer.selector),
+        targetX: 0,
+        targetY: 0,
+        currentX: 0,
+        currentY: 0,
+      }));
+
+      let frame = 0;
+
+      const getTravel = () => {
+        const styles = window.getComputedStyle(stack);
+        return {
+          x: Number.parseFloat(styles.getPropertyValue("--artifact-parallax-x")) || 10,
+          y: Number.parseFloat(styles.getPropertyValue("--artifact-parallax-y")) || 7,
+          radius:
+            Number.parseFloat(styles.getPropertyValue("--artifact-parallax-radius")) ||
+            0.68,
+        };
+      };
+
+      const render = () => {
+        layers.forEach(({ name, currentX, currentY }) => {
+          stack.style.setProperty(
+            `--pointer-${name}-x`,
+            `${currentX.toFixed(3)}px`,
+          );
+          stack.style.setProperty(
+            `--pointer-${name}-y`,
+            `${currentY.toFixed(3)}px`,
+          );
+        });
+      };
+
+      const tick = () => {
+        let isMoving = false;
+
+        layers.forEach((layer) => {
+          layer.currentX += (layer.targetX - layer.currentX) * 0.13;
+          layer.currentY += (layer.targetY - layer.currentY) * 0.13;
+
+          if (
+            Math.abs(layer.targetX - layer.currentX) > 0.01 ||
+            Math.abs(layer.targetY - layer.currentY) > 0.01
+          ) {
+            isMoving = true;
+          } else {
+            layer.currentX = layer.targetX;
+            layer.currentY = layer.targetY;
+          }
+        });
+
+        render();
+
+        if (isMoving) {
+          frame = window.requestAnimationFrame(tick);
+        } else {
+          frame = 0;
+        }
+      };
+
+      const schedule = () => {
+        if (!frame) frame = window.requestAnimationFrame(tick);
+      };
+
+      const deactivate = () => {
+        stack.classList.remove("is-chess-active");
+
+        const isAtRest = layers.every(
+          ({ targetX, targetY, currentX, currentY }) =>
+            !targetX && !targetY && !currentX && !currentY,
+        );
+        if (isAtRest) return;
+
+        layers.forEach((layer) => {
+          layer.targetX = 0;
+          layer.targetY = 0;
+        });
+        schedule();
+      };
+
+      window.addEventListener(
+        "pointermove",
+        (event) => {
+          const hasPrecisePointer =
+            event.pointerType === "mouse" || event.pointerType === "pen";
+
+          if (!motionQuery.matches || !hasPrecisePointer) {
+            deactivate();
+            return;
+          }
+
+          const bounds = hero.getBoundingClientRect();
+          const isInside =
+            event.clientX >= bounds.left &&
+            event.clientX <= bounds.right &&
+            event.clientY >= bounds.top &&
+            event.clientY <= bounds.bottom;
+
+          if (!isInside) {
+            deactivate();
+            return;
+          }
+
+          const travel = getTravel();
+          let chessInfluence = 0;
+
+          layers.forEach((layer) => {
+            layer.targetX = 0;
+            layer.targetY = 0;
+
+            if (!layer.node) return;
+
+            const rect = layer.node.getBoundingClientRect();
+            const deltaX = event.clientX - (rect.left + rect.width / 2);
+            const deltaY = event.clientY - (rect.top + rect.height / 2);
+            const radius = Math.min(rect.width, rect.height) * travel.radius;
+            const distance = Math.hypot(deltaX, deltaY);
+            const normalizedDistance = distance / radius;
+            const edgeProgress = Math.max(
+              0,
+              Math.min(1, (normalizedDistance - 0.15) / 0.85),
+            );
+            const smoothEdge =
+              edgeProgress * edgeProgress * (3 - 2 * edgeProgress);
+            const influence = 1 - smoothEdge;
+
+            if (influence <= 0) return;
+
+            layer.targetX =
+              Math.max(-1, Math.min(1, deltaX / radius)) *
+              travel.x *
+              layer.depth *
+              influence;
+            layer.targetY =
+              Math.max(-1, Math.min(1, deltaY / radius)) *
+              travel.y *
+              layer.depth *
+              influence;
+
+            if (layer.name === "chess") chessInfluence = influence;
+          });
+
+          stack.classList.toggle("is-chess-active", chessInfluence > 0.25);
+          schedule();
+        },
+        { passive: true },
+      );
+
+      window.addEventListener("blur", deactivate);
+      motionQuery.addEventListener("change", deactivate);
+    });
+  })();
+
   (() => {
     const params = new URLSearchParams(window.location.search);
     const enabled =
