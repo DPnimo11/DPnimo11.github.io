@@ -1,6 +1,7 @@
 import sharp from "sharp";
 
 const displayImages = [
+  ["public/img/hocking.jpg", "public/img/hocking-display.jpg"],
   ["public/img/yuanmingyuan.jpg", "public/img/yuanmingyuan-display.jpg"],
   ["public/img/pagoda.jpg", "public/img/pagoda-display.jpg"],
   ["public/img/falls.jpg", "public/img/falls-display.jpg"],
