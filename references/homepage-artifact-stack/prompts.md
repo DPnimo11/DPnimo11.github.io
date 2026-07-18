@@ -229,7 +229,7 @@ slate-blue gutter and title-bar detail. No line may converge, bow, or drift away
 from the master geometry.
 ```
 
-Final name: `terminal-panel-final.png`
+Production name: `terminal-panel.png`
 
 ### Deterministic Terminal Overlay
 
@@ -306,7 +306,7 @@ chrome, contact matrix, dashboard panel, or duplicated binding-pocket view. No r
 structural line may converge, bow, or drift away from the master geometry.
 ```
 
-Final name: `protein-panel-final.png`
+Production name: `protein-panel.png`
 
 ## Panel 3: Stops and Radius of Gyration Map
 
@@ -352,7 +352,7 @@ frames, straight streets, and inset rules must follow the master panel's two
 parallel axes; no line may converge, bow, or warp.
 ```
 
-Final name: `map-panel-final.png`
+Production name: `map-panel.png`
 
 ## Panel 4: Exploratory Data Analysis
 
@@ -393,7 +393,7 @@ box-plot baseline must follow the master panel's two exact parallel directions;
 no structural line may converge, bow, skew independently, or warp.
 ```
 
-Final name: `data-panel-final.png`
+Production name: `data-panel.png`
 
 ## Panel 5A: Empty Chessboard
 
@@ -424,20 +424,20 @@ square highlights, coordinates, margin ticks, text, or objects standing on it.
 No grid line or frame may converge, bow, skew independently, or warp.
 ```
 
-Final name: `chess-board-final.png`
+Production name: `chess-board.png`
 
 ## Panel 5B: Accepted Chess Piece Sprites
 
-Do not submit another chess-piece generation. Reuse the accepted v2 sprites
+Do not submit another chess-piece generation. Reuse the accepted sprites
 unchanged:
 
-- `chess-white-king-v2.png`
-- `chess-white-queen-v2.png`
-- `chess-white-pawn-v2.png`
-- `chess-black-king-v2.png`
-- `chess-black-rook-v2.png`
-- `chess-black-bishop-v2.png`
-- `chess-black-knight-v2.png`
+- `chess-white-king.png`
+- `chess-white-queen.png`
+- `chess-white-pawn.png`
+- `chess-black-king.png`
+- `chess-black-rook.png`
+- `chess-black-bishop.png`
+- `chess-black-knight.png`
 
 ## Chess Position and Easter Egg
 
