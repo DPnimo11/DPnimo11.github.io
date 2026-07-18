@@ -168,6 +168,9 @@ const chessPieceStyle = (piece) =>
       fetchpriority="high"
       draggable="false"
     />
+    <span class="terminal-light terminal-light-red"></span>
+    <span class="terminal-light terminal-light-yellow"></span>
+    <span class="terminal-light terminal-light-green"></span>
     <pre class="terminal-copy"><code>{terminalLines.flatMap((line, lineIndex) => [
       ...line.map((token) => (
         <span class={`terminal-token token-${"tone" in token ? token.tone : "output"}`}>{token.text}</span>
@@ -282,12 +285,12 @@ const chessPieceStyle = (piece) =>
      * Percentages are relative to the full artifact viewport.
      */
     --terminal-x: 5%;
-    --terminal-y: 5%;
-    --terminal-w: 57%;
+    --terminal-y: 9%;
+    --terminal-w: 55%;
     --terminal-z: 1;
 
     --protein-x: 30%;
-    --protein-y: 25%;
+    --protein-y: 27%;
     --protein-w: 50%;
     --protein-z: 5;
 
@@ -318,8 +321,8 @@ const chessPieceStyle = (piece) =>
     --artifact-stage-w: min(112%, 680px);
 
     /* Pointer travel is measured in pixels at the front of the stack. */
-    --artifact-parallax-x: 10px;
-    --artifact-parallax-y: 7px;
+    --artifact-parallax-x: 15px;
+    --artifact-parallax-y: 15px;
     /* Radius is a fraction of each panel's shorter side. */
     --artifact-parallax-radius: 0.68;
 
@@ -548,6 +551,36 @@ const chessPieceStyle = (piece) =>
     font: inherit;
   }
 
+  .terminal-light {
+    position: absolute;
+    z-index: 2;
+    width: 0.82%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    box-shadow: inset 0 -0.5px 0 rgba(43, 48, 56, 0.24);
+    opacity: 0.9;
+    transform: translate(-50%, -50%) skewY(-13deg) scaleY(0.84);
+    pointer-events: none;
+  }
+
+  .terminal-light-red {
+    top: 32.78%;
+    left: 20%;
+    background: #c65b50;
+  }
+
+  .terminal-light-yellow {
+    top: 31.94%;
+    left: 22.22%;
+    background: #d1a43c;
+  }
+
+  .terminal-light-green {
+    top: 31.25%;
+    left: 24.44%;
+    background: #4f9668;
+  }
+
   .terminal-token {
     font: inherit;
   }
@@ -771,15 +804,6 @@ const chessPieceStyle = (piece) =>
   :global(:root[data-theme="dark"]) .panel-base,
   :global(:root[data-theme="dark"]) .chess-piece img {
     filter: brightness(0.8) contrast(1.08) saturate(0.78);
-  }
-
-  :global(:root[data-theme="dark"]) .terminal-copy {
-    --terminal-command-color: #d5d0c4;
-    --terminal-path-color: #93abc0;
-    --terminal-meta-color: #9fa8a3;
-    --terminal-muted-color: #909a96;
-    --terminal-prompt-color: #7fb48e;
-    opacity: 0.7;
   }
 
   :global(:root[data-theme="dark"]) .panel-shadow {
