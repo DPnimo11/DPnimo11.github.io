@@ -188,7 +188,12 @@
   }
 
   .hero-artifact {
-    display: none;
+    display: block;
+    width: calc(100% + 20px);
+    max-width: none;
+    height: clamp(320px, 88vw, 410px);
+    margin: -4px -10px 0;
+    overflow: hidden;
   }
 
   .hero-copy .action-row {

@@ -817,7 +817,24 @@ const chessPieceStyle = (piece) =>
   @media (max-width: 980px) {
     .artifact-stack {
       --artifact-stage-w: clamp(440px, 60vw, 560px);
+      left: calc(50% + clamp(20px, 2.5vw, 24px));
     }
+  }
+
+  @media (max-width: 680px) {
+    .artifact-stack {
+      --artifact-stage-w: clamp(440px, 112vw, 500px);
+      --artifact-parallax-x: 11px;
+      --artifact-parallax-y: 10px;
+      --artifact-parallax-radius: 0.76;
+    }
+  }
+
+  .artifact-stack.is-motion-paused .artifact-panel,
+  .artifact-stack.is-motion-paused .chess-piece-layer,
+  .artifact-stack.is-motion-paused .terminal-cursor,
+  .artifact-stack.is-motion-paused .map-ripple {
+    animation-play-state: paused;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -887,8 +904,19 @@ const chessPieceStyle = (piece) =>
         currentX: 0,
         currentY: 0,
       }));
+      const chessBoard = stack.querySelector<HTMLElement>(
+        ".chess-panel .panel-base",
+      );
 
       let frame = 0;
+      let touchStart:
+        | {
+            pointerId: number;
+            x: number;
+            y: number;
+            time: number;
+          }
+        | undefined;
 
       const getTravel = () => {
         const styles = window.getComputedStyle(stack);
@@ -961,73 +989,161 @@ const chessPieceStyle = (piece) =>
         schedule();
       };
 
+      const containsPoint = (clientX: number, clientY: number) => {
+        const bounds = hero.getBoundingClientRect();
+        return (
+          clientX >= bounds.left &&
+          clientX <= bounds.right &&
+          clientY >= bounds.top &&
+          clientY <= bounds.bottom
+        );
+      };
+
+      const containsChessBoardPoint = (clientX: number, clientY: number) => {
+        if (!chessBoard) return false;
+        const bounds = chessBoard.getBoundingClientRect();
+        return (
+          clientX >= bounds.left &&
+          clientX <= bounds.right &&
+          clientY >= bounds.top &&
+          clientY <= bounds.bottom
+        );
+      };
+
+      const moveTowardPoint = (clientX: number, clientY: number) => {
+        const travel = getTravel();
+        let chessInfluence = 0;
+
+        layers.forEach((layer) => {
+          layer.targetX = 0;
+          layer.targetY = 0;
+
+          if (!layer.node) return;
+
+          const rect = layer.node.getBoundingClientRect();
+          const deltaX = clientX - (rect.left + rect.width / 2);
+          const deltaY = clientY - (rect.top + rect.height / 2);
+          const radius = Math.min(rect.width, rect.height) * travel.radius;
+          const distance = Math.hypot(deltaX, deltaY);
+          const normalizedDistance = distance / radius;
+          const edgeProgress = Math.max(
+            0,
+            Math.min(1, (normalizedDistance - 0.15) / 0.85),
+          );
+          const smoothEdge =
+            edgeProgress * edgeProgress * (3 - 2 * edgeProgress);
+          const influence = 1 - smoothEdge;
+
+          if (influence <= 0) return;
+
+          layer.targetX =
+            Math.max(-1, Math.min(1, deltaX / radius)) *
+            travel.x *
+            layer.depth *
+            influence;
+          layer.targetY =
+            Math.max(-1, Math.min(1, deltaY / radius)) *
+            travel.y *
+            layer.depth *
+            influence;
+
+          if (layer.name === "chess") chessInfluence = influence;
+        });
+
+        stack.classList.toggle("is-chess-active", chessInfluence > 0.25);
+        schedule();
+      };
+
       window.addEventListener(
         "pointermove",
         (event) => {
           const hasPrecisePointer =
             event.pointerType === "mouse" || event.pointerType === "pen";
 
-          if (!motionQuery.matches || !hasPrecisePointer) {
+          if (!motionQuery.matches) {
             deactivate();
             return;
           }
 
-          const bounds = hero.getBoundingClientRect();
-          const isInside =
-            event.clientX >= bounds.left &&
-            event.clientX <= bounds.right &&
-            event.clientY >= bounds.top &&
-            event.clientY <= bounds.bottom;
+          if (!hasPrecisePointer) return;
 
-          if (!isInside) {
+          if (!containsPoint(event.clientX, event.clientY)) {
             deactivate();
             return;
           }
 
-          const travel = getTravel();
-          let chessInfluence = 0;
-
-          layers.forEach((layer) => {
-            layer.targetX = 0;
-            layer.targetY = 0;
-
-            if (!layer.node) return;
-
-            const rect = layer.node.getBoundingClientRect();
-            const deltaX = event.clientX - (rect.left + rect.width / 2);
-            const deltaY = event.clientY - (rect.top + rect.height / 2);
-            const radius = Math.min(rect.width, rect.height) * travel.radius;
-            const distance = Math.hypot(deltaX, deltaY);
-            const normalizedDistance = distance / radius;
-            const edgeProgress = Math.max(
-              0,
-              Math.min(1, (normalizedDistance - 0.15) / 0.85),
-            );
-            const smoothEdge =
-              edgeProgress * edgeProgress * (3 - 2 * edgeProgress);
-            const influence = 1 - smoothEdge;
-
-            if (influence <= 0) return;
-
-            layer.targetX =
-              Math.max(-1, Math.min(1, deltaX / radius)) *
-              travel.x *
-              layer.depth *
-              influence;
-            layer.targetY =
-              Math.max(-1, Math.min(1, deltaY / radius)) *
-              travel.y *
-              layer.depth *
-              influence;
-
-            if (layer.name === "chess") chessInfluence = influence;
-          });
-
-          stack.classList.toggle("is-chess-active", chessInfluence > 0.25);
-          schedule();
+          moveTowardPoint(event.clientX, event.clientY);
         },
         { passive: true },
       );
+
+      window.addEventListener(
+        "pointerdown",
+        (event) => {
+          if (
+            !motionQuery.matches ||
+            event.pointerType !== "touch" ||
+            !containsChessBoardPoint(event.clientX, event.clientY)
+          ) {
+            touchStart = undefined;
+            return;
+          }
+
+          touchStart = {
+            pointerId: event.pointerId,
+            x: event.clientX,
+            y: event.clientY,
+            time: event.timeStamp,
+          };
+        },
+        { passive: true },
+      );
+
+      window.addEventListener(
+        "pointerup",
+        (event) => {
+          if (
+            !touchStart ||
+            event.pointerType !== "touch" ||
+            event.pointerId !== touchStart.pointerId
+          ) {
+            return;
+          }
+
+          const distance = Math.hypot(
+            event.clientX - touchStart.x,
+            event.clientY - touchStart.y,
+          );
+          const duration = event.timeStamp - touchStart.time;
+          const isTap =
+            distance <= 10 &&
+            duration <= 350 &&
+            containsChessBoardPoint(event.clientX, event.clientY);
+
+          touchStart = undefined;
+          if (!isTap) return;
+
+          stack.classList.toggle("is-chess-active");
+        },
+        { passive: true },
+      );
+
+      window.addEventListener(
+        "pointercancel",
+        () => {
+          touchStart = undefined;
+        },
+        { passive: true },
+      );
+
+      const visibilityObserver = new IntersectionObserver(
+        ([entry]) => {
+          stack.classList.toggle("is-motion-paused", !entry?.isIntersecting);
+          if (!entry?.isIntersecting) deactivate();
+        },
+        { rootMargin: "120px 0px" },
+      );
+      visibilityObserver.observe(hero);
 
       window.addEventListener("blur", deactivate);
       motionQuery.addEventListener("change", deactivate);
