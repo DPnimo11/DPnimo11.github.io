@@ -38,7 +38,8 @@ export type Project = {
     | "azure-criticality"
     | "translator"
     | "hiring"
-    | "pennbook";
+    | "pennbook"
+    | "nomad";
   visual: ProjectVisualVariant;
   image?: string;
   thumbnailFrameBackground?: string;
@@ -53,6 +54,37 @@ export type Project = {
 };
 
 export const projects: Project[] = [
+  {
+    slug: "nomad",
+    title: "NOMAD",
+    kicker: "Human mobility research",
+    year: "2026",
+    status: "Research software",
+    summary:
+      "Contributions to an NSF-funded platform for processing large-scale GPS mobility data, validating stop-detection methods, and studying co-location.",
+    problem:
+      "Human mobility studies often depend on large, sparse GPS datasets and inconsistent preprocessing, which makes methods difficult to compare, scale, and reproduce.",
+    approach:
+      "At Penn CSS, I contributed to NOMAD's open-source Python/PySpark library and stop-detection dashboard: contact estimation and social interaction potential, temporal-blocking performance work, edge-case tests and notebooks, synthetic-oracle validation, and dashboard interactions and static deployment.",
+    result:
+      "The work supports reusable co-location analysis, faster radius-based contact queries, more robust validation workflows, and a public browser-based demonstration of stop-detection algorithms.",
+    stack: ["Python", "PySpark", "Pandas", "GeoPandas", "Next.js", "TypeScript"],
+    highlights: [
+      "Implemented weighted contact estimation and a social interaction potential metric",
+      "Added temporal blocking to reduce candidate comparisons in radius-based contact analysis",
+      "Strengthened stop-detection validation with edge-case tests, cached attribution, and synthetic-oracle workflows",
+      "Improved dashboard controls, animation performance, and GitHub Pages deployment",
+    ],
+    metrics: ["NSF-funded infrastructure", "Python + PySpark APIs", "8 stop-detection algorithms", "Live public dashboard"],
+    links: [
+      { label: "Live dashboard", href: "https://watts-lab.github.io/nomad-stop-detection-dashboard/" },
+      { label: "GitHub", href: "https://github.com/Watts-Lab/nomad" },
+      { label: "Documentation", href: "https://nomad.readthedocs.io/en/latest/" },
+      { label: "Project site", href: "https://nomad.seas.upenn.edu/" },
+    ],
+    demo: "nomad",
+    visual: "map",
+  },
   {
     slug: "pennos",
     title: "PennOS",
