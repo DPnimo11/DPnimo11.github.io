@@ -79,11 +79,12 @@ export const projects: Project[] = [
     links: [
       { label: "Live dashboard", href: "https://watts-lab.github.io/nomad-stop-detection-dashboard/" },
       { label: "GitHub", href: "https://github.com/Watts-Lab/nomad" },
-      { label: "Documentation", href: "https://nomad.readthedocs.io/en/latest/" },
       { label: "Project site", href: "https://nomad.seas.upenn.edu/" },
     ],
     demo: "nomad",
-    visual: "map",
+    visual: "logo",
+    image: "/img/nomad.png",
+    thumbnailFrameBackground: "#fff",
   },
   {
     slug: "pennos",
