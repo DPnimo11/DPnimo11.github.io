@@ -1,0 +1,21 @@
+.nomad-preview-frame {
+  width: min(100%, 860px);
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  background: var(--terminal-bg);
+}
+
+.nomad-preview-frame video {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--terminal-bg);
+}
+
+.nomad-preview-caption {
+  width: min(100%, 860px);
+  margin: 14px auto 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}

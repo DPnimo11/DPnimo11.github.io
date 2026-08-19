@@ -3,29 +3,37 @@
 
 <section class="demo-panel nomad-panel" aria-labelledby="nomad-demo-title">
   <div class="panel-heading">
-    <p class="eyebrow">Contribution map</p>
-    <h2 id="nomad-demo-title">Library, validation, and dashboard work</h2>
+    <p class="eyebrow">Dashboard preview</p>
+    <h2 id="nomad-demo-title">Stop-detection algorithms in motion</h2>
   </div>
-  <ol class="pipeline-steps">
-    <li>
-      <span>01</span>
-      <strong>Co-location</strong>
-      <p>Added weighted contact estimation and social interaction potential calculations for stop tables.</p>
-    </li>
-    <li>
-      <span>02</span>
-      <strong>Performance</strong>
-      <p>Used temporal blocking to narrow candidate pairs before radius-based contact checks.</p>
-    </li>
-    <li>
-      <span>03</span>
-      <strong>Validation</strong>
-      <p>Expanded edge-case coverage and improved synthetic-oracle workflows for comparing stop-detection output.</p>
-    </li>
-    <li>
-      <span>04</span>
-      <strong>Dashboard</strong>
-      <p>Improved controls, timeline behavior, animation performance, and the static GitHub Pages build.</p>
-    </li>
-  </ol>
+  <div class="nomad-preview-frame">
+    <video autoplay muted loop playsinline controls preload="metadata" data-nomad-preview aria-label="Recorded preview of the NOMAD stop-detection dashboard">
+      <source src="/video/nomad-dashboard-preview.mp4" type="video/mp4" />
+      Your browser does not support embedded MP4 video.
+    </video>
+  </div>
+  <p class="nomad-preview-caption">
+    A recorded run of the public dashboard, which visualizes synthetic mobility trajectories and compares stop-detection output.
+  </p>
 </section>
+
+<script>
+  const preview = document.querySelector("[data-nomad-preview]");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  const syncPlaybackPreference = () => {
+    if (!(preview instanceof HTMLVideoElement)) return;
+
+    if (reducedMotion.matches) {
+      preview.removeAttribute("autoplay");
+      preview.pause();
+      return;
+    }
+
+    preview.setAttribute("autoplay", "");
+    void preview.play().catch(() => {});
+  };
+
+  syncPlaybackPreference();
+  reducedMotion.addEventListener("change", syncPlaybackPreference);
+</script>
